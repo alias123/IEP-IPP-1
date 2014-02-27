@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `accomodation` (
   `end_date` date default NULL,
   PRIMARY KEY  (`uid`),
   KEY `accomodation` (`accomodation`,`student_id`,`start_date`,`end_date`)
-) TYPE=MyISAM  AUTO_INCREMENT=822 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=822 ;
 
 -- 
 -- Dumping data for table `accomodation`
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `address` (
   `cell_ph` varchar(63) default NULL,
   `email_address` varchar(255) default NULL,
   PRIMARY KEY  (`address_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=281 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=281 ;
 
 -- 
 -- Dumping data for table `address`
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `anecdotal` (
   `filename` varchar(255) default NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`date`)
-) TYPE=MyISAM  AUTO_INCREMENT=71 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=71 ;
 
 -- 
 -- Dumping data for table `anecdotal`
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `area_of_strength_or_need` (
   `description` text NOT NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=671 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=671 ;
 
 -- 
 -- Dumping data for table `area_of_strength_or_need`
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `assistive_technology` (
   `technology` text NOT NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=71 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=71 ;
 
 -- 
 -- Dumping data for table `assistive_technology`
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `background_info` (
   `description` text NOT NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`type`)
-) TYPE=MyISAM  AUTO_INCREMENT=275 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=275 ;
 
 -- 
 -- Dumping data for table `background_info`
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `bugs` (
   `referring_page` text,
   PRIMARY KEY  (`uid`),
   KEY `username` (`username`,`status`)
-) TYPE=MyISAM  AUTO_INCREMENT=81 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=81 ;
 
 -- 
 -- Dumping data for table `bugs`
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `coding` (
   PRIMARY KEY  (`uid`),
   KEY `code` (`code`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=256 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=256 ;
 
 -- 
 -- Dumping data for table `coding`
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `coordination_of_services` (
   `filename` varchar(255) default NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`agency`)
-) TYPE=MyISAM  AUTO_INCREMENT=488 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=488 ;
 
 -- 
 -- Dumping data for table `coordination_of_services`
@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `error_log` (
   PRIMARY KEY  (`uid`),
   KEY `level` (`level`,`username`,`time`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 -- 
 -- Dumping data for table `error_log`
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS `grades_repeated` (
   `ipp_present` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`uid`),
   KEY `grade` (`grade`,`student_id`,`year`)
-) TYPE=MyISAM  AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=17 ;
 
 -- 
 -- Dumping data for table `grades_repeated`
@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `guardian` (
   `address_id` bigint(20) default NULL,
   PRIMARY KEY  (`guardian_id`),
   KEY `last_name` (`last_name`,`address_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=324 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=324 ;
 
 -- 
 -- Dumping data for table `guardian`
@@ -311,7 +311,7 @@ CREATE TABLE IF NOT EXISTS `guardian_note` (
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`uid`),
   KEY `guardian_id` (`guardian_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=64 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=64 ;
 
 -- 
 -- Dumping data for table `guardian_note`
@@ -336,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `guardians` (
   `to_date` date default NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`guardian_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=310 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=310 ;
 
 -- 
 -- Dumping data for table `guardians`
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `logged_in` (
   `last_ip` varchar(15) NOT NULL default '',
   `time` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`uid`)
-) TYPE=MyISAM  AUTO_INCREMENT=1728 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=1728 ;
 
 -- 
 -- Dumping data for table `logged_in`
@@ -384,7 +384,7 @@ CREATE TABLE IF NOT EXISTS `long_term_goal` (
   PRIMARY KEY  (`goal_id`),
   KEY `student_id` (`student_id`,`review_date`),
   KEY `is_complete` (`is_complete`)
-) TYPE=MyISAM  AUTO_INCREMENT=322 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=322 ;
 
 -- 
 -- Dumping data for table `long_term_goal`
@@ -411,7 +411,7 @@ CREATE TABLE IF NOT EXISTS `medical_info` (
   `filename` varchar(255) default NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=156 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=156 ;
 
 -- 
 -- Dumping data for table `medical_info`
@@ -434,7 +434,7 @@ CREATE TABLE IF NOT EXISTS `medication` (
   `start_date` date NOT NULL default '0000-00-00',
   `end_date` date default NULL,
   PRIMARY KEY  (`uid`)
-) TYPE=MyISAM  AUTO_INCREMENT=65 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=65 ;
 
 -- 
 -- Dumping data for table `medication`
@@ -459,7 +459,7 @@ CREATE TABLE IF NOT EXISTS `performance_testing` (
   `date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=291 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=291 ;
 
 -- 
 -- Dumping data for table `performance_testing`
@@ -478,7 +478,7 @@ CREATE TABLE IF NOT EXISTS `permission_levels` (
   `level` int(11) NOT NULL default '100',
   `level_name` varchar(15) NOT NULL default '-unknown-',
   PRIMARY KEY  (`level`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 -- 
 -- Dumping data for table `permission_levels`
@@ -508,7 +508,7 @@ CREATE TABLE IF NOT EXISTS `program_area` (
   `end_date` date default '0000-00-00',
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`start_date`,`end_date`)
-) TYPE=MyISAM  AUTO_INCREMENT=27 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=27 ;
 
 -- 
 -- Dumping data for table `program_area`
@@ -529,7 +529,7 @@ CREATE TABLE IF NOT EXISTS `school` (
   `green` char(2) NOT NULL default 'FF',
   `blue` char(2) NOT NULL default 'FF',
   PRIMARY KEY  (`school_code`)
-) TYPE=MyISAM COMMENT='red green and blue are the RGB components of the school colo';
+) ENGINE=MyISAM COMMENT='red green and blue are the RGB components of the school colo';
 
 -- 
 -- Dumping data for table `school`
@@ -562,7 +562,7 @@ CREATE TABLE IF NOT EXISTS `school_history` (
   KEY `start_date` (`start_date`),
   KEY `end_date` (`end_date`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=442 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=442 ;
 
 -- 
 -- Dumping data for table `school_history`
@@ -594,7 +594,7 @@ CREATE TABLE IF NOT EXISTS `short_term_objective` (
   PRIMARY KEY  (`uid`),
   KEY `goal_id` (`goal_id`),
   KEY `review_date` (`review_date`)
-) TYPE=MyISAM  AUTO_INCREMENT=579 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=579 ;
 
 -- 
 -- Dumping data for table `short_term_objective`
@@ -618,7 +618,7 @@ CREATE TABLE IF NOT EXISTS `snapshot` (
   `filename` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`date`)
-) TYPE=MyISAM  AUTO_INCREMENT=94 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=94 ;
 
 -- 
 -- Dumping data for table `snapshot`
@@ -646,7 +646,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   KEY `last_name` (`last_name`),
   KEY `address_id` (`address_id`),
   KEY `prov_ed_num` (`prov_ed_num`)
-) TYPE=MyISAM  AUTO_INCREMENT=308 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=308 ;
 
 -- 
 -- Dumping data for table `student`
@@ -671,7 +671,7 @@ CREATE TABLE IF NOT EXISTS `supervisor` (
   `student_id` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=127 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=127 ;
 
 -- 
 -- Dumping data for table `supervisor`
@@ -695,7 +695,7 @@ CREATE TABLE IF NOT EXISTS `support_list` (
   PRIMARY KEY  (`uid`),
   KEY `egps_username` (`egps_username`),
   KEY `student_id` (`student_id`)
-) TYPE=MyISAM  AUTO_INCREMENT=994 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=994 ;
 
 -- 
 -- Dumping data for table `support_list`
@@ -730,7 +730,7 @@ CREATE TABLE IF NOT EXISTS `support_member` (
   KEY `school_code` (`school_code`),
   KEY `is_local_ipp_administrator` (`is_local_ipp_administrator`),
   KEY `last_name` (`last_name`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 -- 
 -- Dumping data for table `support_member`
@@ -757,7 +757,7 @@ CREATE TABLE IF NOT EXISTS `testing_to_support_code` (
   `file` mediumblob NOT NULL,
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`date`)
-) TYPE=MyISAM  AUTO_INCREMENT=379 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=379 ;
 
 -- 
 -- Dumping data for table `testing_to_support_code`
@@ -779,7 +779,7 @@ CREATE TABLE IF NOT EXISTS `transition_plan` (
   `date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`uid`),
   KEY `student_id` (`student_id`,`date`)
-) TYPE=MyISAM  AUTO_INCREMENT=58 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=58 ;
 
 -- 
 -- Dumping data for table `transition_plan`
@@ -801,7 +801,7 @@ CREATE TABLE IF NOT EXISTS `typical_accomodation` (
   PRIMARY KEY  (`uid`),
   UNIQUE KEY `accomodation` (`accomodation`),
   KEY `order` (`order`)
-) TYPE=MyISAM  AUTO_INCREMENT=58 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=58 ;
 
 -- 
 -- Dumping data for table `typical_accomodation`
@@ -879,7 +879,7 @@ CREATE TABLE IF NOT EXISTS `typical_long_term_goal` (
   `is_deleted` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ltg_id`),
   KEY `area_type_id` (`cid`)
-) TYPE=MyISAM  AUTO_INCREMENT=26 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=26 ;
 
 -- 
 -- Dumping data for table `typical_long_term_goal`
@@ -917,7 +917,7 @@ CREATE TABLE IF NOT EXISTS `typical_long_term_goal_category` (
   PRIMARY KEY  (`cid`),
   KEY `name` (`name`),
   KEY `is_deleted` (`is_deleted`)
-) TYPE=MyISAM  AUTO_INCREMENT=49 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=49 ;
 
 -- 
 -- Dumping data for table `typical_long_term_goal_category`
@@ -967,7 +967,7 @@ CREATE TABLE IF NOT EXISTS `typical_short_term_objective` (
   PRIMARY KEY  (`stg_id`),
   KEY `ltg_id` (`ltg_id`),
   KEY `is_deleted` (`is_deleted`)
-) TYPE=MyISAM  AUTO_INCREMENT=31 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=31 ;
 
 -- 
 -- Dumping data for table `typical_short_term_objective`
@@ -1025,7 +1025,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `login_name_2` (`login_name`),
   KEY `school_code` (`school_code`),
   KEY `aliased_name` (`aliased_name`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 -- 
 -- Dumping data for table `users`
@@ -1047,7 +1047,7 @@ CREATE TABLE IF NOT EXISTS `valid_coding` (
   PRIMARY KEY  (`uid`),
   UNIQUE KEY `code_number` (`code_number`),
   KEY `code_number_2` (`code_number`)
-) TYPE=MyISAM  AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  AUTO_INCREMENT=22 ;
 
 -- 
 -- Dumping data for table `valid_coding`
