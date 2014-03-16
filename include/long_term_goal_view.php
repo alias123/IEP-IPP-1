@@ -1,10 +1,15 @@
 <?php
-
+/* NOTES
+ * 1. line 23 needs clarification and perhaps justification
+ * 2. Relies on addslashes() builtin function to escape output; standardize on alternative contemporary best practice
+ * 3. Copyright header to be updated per license recommendation
+ * 4. Check HTML standardization against James' findings
+ */
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
 
 /**
- * long_term_goal_view.php -- manage student guardians
+ * long_term_goal_view.php -- manage student guardians - Todo: ensure this is accurate summary; looks like it does a lot more and doesn't match the filename
  *
  * Copyright (c) 2005 Grasslands Regional Division #6
  * All rights reserved

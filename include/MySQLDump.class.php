@@ -1,4 +1,14 @@
 <?php
+
+/* Notes
+ * This code is cribbed from another dev, who is credited incompletely.
+ * Purpose: provide a dump of database structure and content; prolly for analysis and troubleshooting
+ * Slightly modified by core dev
+ * output is not escaped as far as I can tell
+ * This can by achieved through MySQL from cli or phpMyadmin via web interface; there is probably a function to get an sqldump to a specific place in a format the database can interpret.
+ * note: this is the first class (object-oriented structure) I've encountered.
+ * To see whether this collection of functions is effective, we need to search and see how it's called and then used
+ */
 /*
 MySQL Dump PHP class by Avram, avramyu@gmail.com
 */

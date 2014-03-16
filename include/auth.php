@@ -1,4 +1,13 @@
 <?php
+/* NOTES:
+ * 1. a lot of things to check here.
+ * 2. line 31 needs a why? for our purposes
+ * 3. check session use; ensure security and best contemporary practice
+ * 4. check that variable names for user and pw don't match table fields in db (a cursory look suggests we're ok there)
+ * 5. line 12 says "files" instead of functions
+ */
+
+
 /**
  * auth.php -- security and authentication
  *             related files

@@ -1,5 +1,7 @@
 <?php
 
+//Todo: Explain and justify not escaping output in this code; use reference to check current pdf generation practices. Is this a security threat?
+
 //the authorization level for this page!
 //$MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 
@@ -109,7 +111,7 @@ function create_anecdotals($student_id) {
   if(!$anecdotal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$anecdotal_query'<BR>";
     $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR'); //todo investigate and expand logging; implement email alerts on certain log key words
     echo $MESSAGE;
     exit();
   }
@@ -138,7 +140,7 @@ function create_anecdotals($student_id) {
 
 
   //lets get some PDF making done...
-  class IPP extends FPDF  //all this and OO too weeeeeeee
+  class IPP extends FPDF  //all this and OO too weeeeeeee  Note: example of coder notes to self cf Art of Commenting
 
   {
      //Page header
@@ -160,11 +162,11 @@ function create_anecdotals($student_id) {
         $this->Cell(60,0,'',0,0,'');
         $this->Cell(0,5,$IPP_ORGANIZATION_ADDRESS1 . ', ' . $IPP_ORGANIZATION_ADDRESS2 . ', ' . $IPP_ORGANIZATION_ADDRESS3,0,0,'R');
         //Logo
-        $this->Image(IPP_PATH . 'images/logo_pb.png',10,8,50);
+        $this->Image(IPP_PATH . 'images/logo_pb.png',10,8,50); // todo: html folk should not icon location for customization features
         //Line break
         $this->Ln(15);
         //Set colour back
-         $this->SetTextColor(153,153,153);  // Well, I'm back in black, yes I'm back in black! Ow!
+         $this->SetTextColor(153,153,153);  // Well, I'm back in black, yes I'm back in black! Ow!  Todo: note again nature of comment
      }
 
      //Page footer
@@ -185,10 +187,10 @@ function create_anecdotals($student_id) {
          $this->SetTextColor(153,153,153);  //greyish
          $this->SetFillColor(255,255,255);
          $this->Ln(1);
-         $this->MultiCell(0,5,"Grasslands Individual Program Plan System (©2005-2006 Grasslands Public Schools)",'T','C',1);
+         $this->MultiCell(0,5,"Grasslands Individual Program Plan System (©2005-2006 Grasslands Public Schools)",'T','C',1); //todo: this should be a variable controlled on admin console
 
          //Set colour back
-         $this->SetTextColor(0,0,0);  // Well, I'm back in black, yes I'm back in black!
+         $this->SetTextColor(0,0,0);  // Well, I'm back in black, yes I'm back in black!  Todo: note the dev listened to ACDC
      }
 }
 
@@ -199,7 +201,7 @@ function create_anecdotals($student_id) {
 
   //set the pdf information
   $pdf->SetAuthor(username_to_common($_SESSION['egps_username']));
-  $pdf->SetCreator('Grasslands IPP System- Michael Nielsen Developer');
+  $pdf->SetCreator('Grasslands IPP System- Michael Nielsen Developer'); //todo strip the vanity of the dev
   $pdf->SetTitle('Individual Program Plan - ' . $student_row['first_name'] . ' ' . $student_row['last_name']);
 
 
@@ -368,7 +370,7 @@ function create_anecdotals($student_id) {
      $pdf->Cell(120,3,'Date: ' . $anecdotal_row['date'], 'B',1,'R');
      $pdf->SetFont('Arial','B',8);
      $pdf->Cell(30);
-     $pdf->MultiCell(120,5,iconv('UTF-8','Windows-1252', $anecdotal_row['report']),0,'L',0);
+     $pdf->MultiCell(120,5,iconv('UTF-8','Windows-1252', $anecdotal_row['report']),0,'L',0); //todo note encoding here is utf-8. standardize charset
      $pdf->Ln(2);
    }
 
