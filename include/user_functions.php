@@ -9,7 +9,7 @@
  * Created: June 06, 2005
  * By: M. Nielsen
  * Modified:
- *
+ * todo: add copyright
  */
 
 if(!defined('IPP_PATH')) define('IPP_PATH','../');
@@ -20,7 +20,7 @@ function getNumUsers() {
     global $error_message;
 
     if(!connectIPPDB()) {
-        $error_message = $error_message;  //just to remember we need this
+        $error_message = $error_message;  //just to remember we need this - todo: give the why?
         return NULL;
     }
 
@@ -38,11 +38,11 @@ function getUserSchoolCode($egps_username="") {
    global $error_message;
 
     if(!connectIPPDB()) {
-        $error_message = $error_message;  //just to remember we need this
+        $error_message = $error_message;  //just to remember we need this - todo: give the why?
         return NULL;
     }
 
-    $query = "SELECT school_code FROM support_member WHERE egps_username='" . addslashes($egps_username) . "'";
+    $query = "SELECT school_code FROM support_member WHERE egps_username='" . addslashes($egps_username) . "'"; //todo: find alternative escape mechanism for output; standardize
     $result = mysql_query($query);
     if(!$result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$query'<BR>";
@@ -56,7 +56,7 @@ function isLocalAdministrator($egps_username="") {
    global $error_message;
 
     if(!connectIPPDB()) {
-        $error_message = $error_message;  //just to remember we need this
+        $error_message = $error_message;  //just to remember we need this todo: explain why?
         return NULL;
     }
 
@@ -77,7 +77,7 @@ function getNumUsersOnline() {
     global $error_message;
 
     if(!connectIPPDB()) {
-        $error_message = $error_message;  //just to remember we need this
+        $error_message = $error_message;  //just to remember we need this - todo: make this a why? comment
         return NULL;
     }
 
@@ -93,7 +93,7 @@ function getNumUsersOnline() {
 
 //get change firstname.lastname to Firsteame Lastname
   function username_to_common($username="-unknown-") {
-    //capitalize the first char...my kingdom for a pointer
+    //capitalize the first char...my kingdom for a pointer - todo: find a solution to the dev's call for help; how can we provide a pointer that improves this function?
     if(ord($username[0]) < 123 && ord($username[0]) >  96)
       $username[0] =chr(ord($username[0]) - 32);
     $index = strpos($username, '.');
