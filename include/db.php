@@ -1,7 +1,7 @@
 <?php
-
+//todo: track db plain text credential file reference; if we change the location in the interest of security, do we know where to change the code?
 /**
- * db.php -- IEP-IPP database utilities
+ * db.php -- IEP-IPP database utilities - todo: note it is simply two functions handling database connection
  *
  * Copyright (c) 2005 Grasslands Regional Division #6
  * All rights reserved
