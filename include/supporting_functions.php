@@ -12,10 +12,12 @@
  *
  */
 
+//summary: Just a spell check function...dev differentiates from user functions
+
 if(!defined('IPP_PATH')) define('IPP_PATH','../');
 
 //spell checking functions
-function checkSpelling ( $string )
+function checkSpelling ( $string ) //todo: investigate and justify possibly unconventional function syntax
 {
    if (!extension_loaded("pspell")) {
       //spell libraries not loaded so just return the same string...
@@ -38,7 +40,7 @@ function checkSpelling ( $string )
        for($i = 0; $i < 3; $i++) {
           $suggest .= $suggestions[$i] . ",";
        }
-       $suggest = substr($suggest, 0, -1);  //chop off the last comma
+       $suggest = substr($suggest, 0, -1);  //chop off the last comma - good but; todo: why? comment
        $return .= "<span class='mispelt_text' title='$suggest'>$word </span>";
      }
    }
