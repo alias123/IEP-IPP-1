@@ -1,5 +1,11 @@
 <?php
-
+/* Notes and observation
+ * 1. this code seems unused
+ * 2. provides bug logging and possible testing
+ * 3. Safely ignore for early sprints
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 60; //teaching assistants and up
 

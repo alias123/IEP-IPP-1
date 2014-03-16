@@ -1,5 +1,11 @@
 <?php
-
+/* 
+ *Notes 
+ * 1. coding the students legally recorded disability
+ * 2. we don't use
+ * 3. addslashes() is used. Find replacement/
+ */
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 50; //Teaching Staff
 

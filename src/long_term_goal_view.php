@@ -1,5 +1,15 @@
 <?php
-
+/* Notes:
+ * 
+ * Purpose - view, edit, add, remove long term objectives in an IEP for a student.
+ * 1. Some code is commented out; determine if it serves a productive function (such as testing)
+ * 2. Dangerous output with inconsistent escaping to html. Output is spell checked, but not escaped consistently.
+ * 3. Where it is escaped, seems to rely on addslashes(). Find contemporary best practice and secure method to escape output.
+ * 4. Use it to escape echoed variables appearing in HTML (bottom)
+ * 5. Standardize HTML - see James' informed recommendation
+ * 6. explanation of code set on line 17 is inaccurate - is not consistent with filename, which is more accurate.
+ */
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
 

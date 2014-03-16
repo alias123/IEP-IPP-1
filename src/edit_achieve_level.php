@@ -1,5 +1,12 @@
 <?php
-
+/* Notes:
+ * 1. This page must filter input
+ * 2. This page must escape output
+ * 3. This is our buggiest page
+ * 4. Still looking for cause of truncated reports
+ * 5. builtin function addslashes() is included for security. Make an informed decision for alternative
+ */
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 

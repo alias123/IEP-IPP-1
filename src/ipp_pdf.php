@@ -1,5 +1,14 @@
 <?php
-
+/* Notes
+ * 1. Produces the IEP PDF report - note it relies on old pdf tool.
+ * 2. some code is commented out. If it serves no testing or other productive purpose, consider removing it
+ * 3. setting the variable $message to " " is a security precaution. check for consistency.
+ * 4. note the file name is wrong in the header
+ * 5. Note "IE6 sucks" in comments. Dev to self and others - IE complicating things. Still the case.
+ * 6. Some uncertainty by the dev about how to handle cookies/sessions. Should the commented attempts be removed? why?
+ * 7. Mostly relies on include code - specifically create_pdf. Output from PHP should be escaped.
+ */
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 

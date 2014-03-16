@@ -1,5 +1,13 @@
 <?php
 
+/* Notes
+ * 1. there's no html here - this is included in another page somewhere
+ * 2. in the lead comments, file name doesn't match description. Update.
+ * 3. Check switch code - is it complete?
+ * 4. Some comments show dev frustration with IE. We will not code for compatibility with IE
+ * 5. stripslashes() is used to *filter input*. Replase with best practice and secure alternative
+ */
+
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;
 /**

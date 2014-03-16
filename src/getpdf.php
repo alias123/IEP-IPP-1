@@ -1,4 +1,13 @@
 <?php
+/* Notes
+ * 1. not the same style as most of the code by the dev
+ * 2. some security measures in place (checking the filename for slashes and backslashes
+ * 3. Purpose: It looks like this displays a generated PDF? Yes, it looks like it's supposed to be a tmp file with a limited lifespan. (does not stay on server)
+ * 4. Special handling again for IE
+ * 5. errors don't seem to go to log
+ * 6. Array $http_get_vars (all caps) should be checked into
+ */ 
+
 $f=$HTTP_GET_VARS['f'];
 //Check file (don't skip it!)
 if(substr($f,0,3)!='tmp' or strpos($f,'/') or strpos($f,'\\'))

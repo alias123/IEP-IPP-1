@@ -2,7 +2,13 @@
 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 60; //TA
-
+/*
+ * Notes: 
+ * 1. Vague title offers nothing except this is a page to edit info for the db
+ * 2. brief description of page on the leading comments suggests either a dual purpose or poor comments.
+ * 3. Looks like input isn't sanitized (all input must be filtered for security of the system)
+ * 
+ * 
 /**
  * edit_general.php -- add student
  *
