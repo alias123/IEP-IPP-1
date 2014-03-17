@@ -1,17 +1,12 @@
-====================
-MyIEP Code Reference
-====================
-
-*To Do: Links*
-
-Code Reference
-==============
+=========================
+Legacy Variable Reference
+=========================
 
 Variables
----------
+=========
 
 A
-+
+-
 
 $accomodation_query
     
@@ -82,7 +77,7 @@ $asst_tech_row
     * edit_assistive_technology.php
 
 B
-+ 
+-
 
 $background_query
 
@@ -135,7 +130,7 @@ $bug_row
     * edit_bug.php
 
 C
-+
+-
 
 $code_history_query 
 
@@ -234,7 +229,7 @@ $current_student_permission
     * guardian_view.php
 
 E
-+
+-
 
 $enum_options_area
 
@@ -259,7 +254,7 @@ $ext
     * get_attached.php
 
 F
-+ 
+-
 
 $f
 
@@ -336,7 +331,7 @@ $fpdf_charwidths
    * zapfdingbats.php
 
 G
-+
+-
 
 $goal_area
 
@@ -403,7 +398,7 @@ $guardians_result
     * guardian_view.php
 
 H
-+
+-
 
 $handle 
 
@@ -436,7 +431,7 @@ $history_result
     * school_history.php
 
 I
-+
+-
 
 $iCur
 
@@ -632,7 +627,7 @@ $iSupportNum
     * student_view.php
 
 L
-+
+-
 
 $long_completed_goal_query
 
@@ -675,7 +670,7 @@ $ltg_result
     * superuser_add_goals.php
 
 M
-+
+-
 
 $medical_query
 
@@ -1014,7 +1009,7 @@ $MINIMUM_AUTHORIZATION_LEVEL
 .. [1] $MESSAGE is a variable that we need to understand well; it's name doesn't offer any help, and there don't seem to be any explanatory comments.
 
 N
-+
+-
 
 $note_query
 
@@ -1139,7 +1134,7 @@ $our_permission
     * student_view.php
 
 P
-+
+-
 
 $path
 
@@ -1294,7 +1289,7 @@ $program_area_result
     * program_area.php
 
 S
-+ 
+- 
 
 $school_code
 
@@ -1727,7 +1722,7 @@ $szTotal
     * student_archive.php
 
 T
-+
+-
 
 $tabindex
 
@@ -1792,7 +1787,7 @@ $transition_row
     * edit_transition_plan.php
 
 U
-+
+-
 
 $uid
 
@@ -1824,7 +1819,7 @@ $username
     * new_ipp_permission.php
 
 V
-+ 
+- 
 
 $valid_code_query
 
@@ -1839,526 +1834,8 @@ $valid_code_result
     * edit_coding.php
 
 W
-+ 
+- 
 
 $white
 
     * smallbutton.php
-
-Functions
----------
-
-A
-+ 
-
-asc2hex()
-
-    * achieve_level.php 
-    
-    * testing_to_support_code.php 
-    
-    * school_history.php 
-    
-    * medical_info.php 
-    
-    * edit_testing_to_support_code.php 
-    
-    * edit_medical_info.php 
-    
-    * edit_coordination_of_services.php 
-    
-    * edit_achieve_level.php 
-    
-    * coordination_of_services.php 
-    
-    * anecdotals.php
-
-C
-+
-
-checkSpelling()
-
-    * supporting_functions.php
-
-connectIPPDB()
-
-    * db.php
-
-connectUserDB()
-
-    * db.php
-
-create_anecdotals()
-
-    * create_anecdotal_pdf.php
-
-create_pdf()
-
-    * create_pdf.php
-
-createJavaScript()
-
-    * edit_support_member.php 
-    
-    * edit_school_history.php 
-    
-    * edit_coordination_of_services.php 
-    
-    * edit_assistive_technology.php 
-    
-    * edit_accomodations.php 
-    
-    * coordination_of_services.php 
-    
-    * assistive_technology.php 
-    
-    * add_objectives.php 
-    
-    * add_goal_1.php 
-    
-    * accomodations.php 
-    
-    * long_term_goal_view.php 
-    
-    * accomodations.php 
-    
-    * program_area.php 
-    
-    * short_term_objectives.php 
-    
-    * school_history.php 
-    
-    * new_ipp_permission.php
-
-E
-+ 
-    
-echoJSServicesArray()
-    
-    * accomodations.php 
-    
-    * user_audit.php 
-    
-    * short_term_objectives.php 
-    
-    * school_history.php 
-    
-    * program_area.php 
-    
-    * new_ipp_permission.php 
-    
-    * edit_support_member.php 
-    
-    * edit_school_history.php 
-    
-    * edit_coordination_of_services.php 
-    
-    * edit_assistive_technology.php 
-    
-    * edit_accomodations.php 
-    
-    * coordination_of_services.php 
-    
-    * assistive_technology.php 
-    
-    * add_objectives.php 
-    
-    * add_goal_1.php 
-    
-    * accomodations.php 
-    
-    * long_term_goal_view.php
-
-G
-+ 
-
-get_age_by_date()
-
-    * student_view.php
-
-get_services()
-
-    * auth.php
-
-getLog()
-
-    * superuser_view_logs.php
-
-getLogTotals()
-
-    * superuser_view_logs.php
-
-getNumUsers()
-
-    * user_functions.php
-
-getNumUsersOnline()
-
-    * user_functions.php
-
-getPermissionLevel()
-
-    * auth.php
-
-getStudentPermission()
-
-    * auth.php
-
-getStudents()
-
-    * manage_student.php 
-    
-    * student_archive.php
-
-getSupportMembers()
-
-    * modify_ipp_permission.php
-
-getUsers()
-
-    * superuser_manage_users.php
-
-getUserSchoolCode()
-
-    * user_functions.php
-
-I
-+
-    
-imagettftextalign()
-    
-    * mainbutton.php 
-    
-    * smallbutton.php
-
-IPP_Log()
-
-    * log.php
-
-isLocalAdministrator()
-
-    * user_functions.php
-
-L
-+
-    
-logout()
-
-    * auth.php
-
-M
-+ 
-    
-mail_notification()
-
-    * mail_functions.php
-    
-mysql_enum_values()
-
-    * strength_need_view.php 
-    
-    * school_history.php 
-    
-    * edit_school_history.php 
-    
-    * edit_bug.php 
-    
-    * edit_background_information.php 
-    
-    * bug_report.php 
-    
-    * background_information.php
-
-N
-+
-
-navbar()
-
-    * navbar.php
-
-P
-+
-    
-parse_submission()
-
-   * achieve_level.php 
-   * testing_to_support_code.php 
-   * superuser_manage_coding.php 
-   * school_info.php 
-   * school_history.php 
-   * new_student.php 
-   * medical_info.php 
-   * edit_testing_to_support_code.php 
-   * edit_school_history.php 
-   * edit_school.php 
-   * edit_medical_info.php 
-   * edit_coordination_of_services.php 
-   * edit_address.php 
-   * edit_achieve_level.php 
-   * duplicate.php 
-   * coordination_of_services.php 
-   * anecdotals.php 
-   * add_guardian.php
-
-R
-+
-    
-register()
-
-    * auth.php
-    
-runQuery()
-
-    * edit_address.php
-
-U
-+
-    
-username_to_common()
-
-    * user_functions.php
-
-V
-+ 
-    
-validate()
-
-    * auth.php
-
-
-Summary of component files
---------------------------
- 
-Base
-++++
-
-index.php
-
-LICENSE.txt
-
-    GPLv2 directly from GNU in plain text.
-
-COPYRIGHT.md
-
-    I've separated the license from the copyright and formatted in markdown.
-
-README.md
-
-    It's not elaborate, but it summarizes the project: it is the default page for the repository (in generic markdown).
-
-include/
-++++++++
-
-This directory (folder) contains code that other files refer to and make use of. Only PHP code included here.
-
-accomodations.php
-  
-auth.php
-
-create_anecdotal_pdf.php
-
-create_pdf.php
-
-db.php
-
-fileutils.php
-
-log.php
-
-long_term_goal_view.php
-
-mail_functions.php
-
-MySQLDump.class.php
-
-navbar.php
-
-picker.js
-
-popcalendar.js
-
-popupchooser.js
-
-supporting_functions.php
-
-user_functions.php
-
-src/
-++++
-
-The src/ directory contains the bulk of the code that makes the application work for the user. These files rely on code in includes/ directory. Only PHP code is included here.
-
-about.php
-
-accomodations.php
-
-achieve_level.php
-
-add_goal_1.php
-
-add_guardian.php
-
-add_objective.php
-
-anecdotal_pdf.php
-
-anecdotals.php
-
-assistive_technology.php
-
-background_information.php
-
-backup_db.php
-
-bug_report.php
-
-change_ipp_password.php
-
-coding.php
-
-coordination_of_services.php
-
-duplicate.php
-
-edit_accomodations.php
-
-edit_achieve_level.php
-
-edit_address.php
-
-edit_anecdotal.php
-
-edit_assistive_technology.php
-
-edit_background_information.php
-
-edit_bug.php
-
-edit_coding.php
-
-edit_coordination_of_services.php
-
-edit_general.php
-
-edit_medical_info.php
-
-edit_medication.php
-
-edit_school.php
-
-edit_school_history.php
-
-edit_short_term_objective.php
-
-edit_strength_need.php
-
-edit_support_member.php
-
-edit_testing_to_support_code.php
-
-edit_transition_plan.php
-
-get_attached.php
-
-getpdf.php
-
-grades_repeated.php
-
-guardian_notes.php
-
-guardian_view.php
-
-index.php
-
-ipp_pdf.php
-
-launch.php
-
-login.php
-
-long_term_goal_view.php
-
-main.php
-
-manage_student.php
-
-medical_info.php
-
-medication_view.php
-
-modify_ipp_permission.php
-
-new_ipp_permission.php
-
-new_student.php
-
-program_area.php
-
-school_history.php
-
-school_info.php
-
-security_error.php
-
-short_term_objectives.php
-
-snapshots.php
-
-strength_need_view.php
-
-student_archive.php
-
-student_view.php
-
-superuser_add_goals.php
-
-superuser_add_program_area.php
-
-superuser_manage_coding.php
-
-superuser_manage_user.php
-
-superuser_manage_users.php
-
-superuser_new_member.php
-
-superuser_new_member_2.php
-
-    ?
-    
-superuser_view_logs.php
-
-supervisor_view.php
-
-testing_to_support_code.php
-
-transition_plan.php
-
-user_audit.php
-
-year_end_review.php
-
-install/
-++++++++
-
-cleanup.php
-
-config.php
-
-database.php
-
-default.sql
-
-index.php
-
-permissions.php
-
-layout/
-+++++++
-
-Pending
-
-images/
-+++++++
-
-Pending
