@@ -113,7 +113,7 @@ $student_id=$goal_row['student_id'];
 
 
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -241,7 +241,7 @@ if(!$student_result) {
                         <tr>
                             <td valign="center" bgcolor="#E0E2F2" class="row_default">Progress Review:</td>
                             <td bgcolor="#E0E2F2" class="row_default">
-                            <textarea name="results_and_recommendations" cols="40" rows="3" wrap="soft"><?php echo $goal_row['results_and_recommendations']; ?></textarea>
+                            <textarea name="results_and_recommendations" cols="40" rows="3" wrap="soft"><?php echo stripslashes($goal_row['results_and_recommendations']); ?></textarea>
                             </td>
                         </tr>
                         <tr>
