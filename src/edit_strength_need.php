@@ -94,7 +94,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -108,7 +108,7 @@ if(isset($_POST['edit_strength_or_need']) && $have_write_permission) {
      if($_POST['strength_or_need'] == "") $MESSAGE = $MESSAGE . "You must choose either strength or need<BR>";
      if($_POST['is_valid'] != "Y" && $_POST['is_valid'] != "N") $MESSAGE = $MESSAGE . "Unknown 'ongoing' field value<BR>";
      else {
-         $edit_query = "UPDATE area_of_strength_or_need SET strength_or_need='" . addslashes($_POST['strength_or_need']) . "',description='" . addslashes($_POST['description']) . "',is_valid='" . addslashes($_POST['is_valid']) . "' WHERE uid=" . addslashes($_POST['uid']) . " LIMIT 1";
+         $edit_query = "UPDATE area_of_strength_or_need SET strength_or_need='" . mysql_real_escape_string($_POST['strength_or_need']) . "',description='" . mysql_real_escape_string($_POST['description']) . "',is_valid='" . mysql_real_escape_string($_POST['is_valid']) . "' WHERE uid=" . mysql_real_escape_string($_POST['uid']) . " LIMIT 1";
          $edit_result = mysql_query($edit_query);
          if(!$edit_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$edit_query'<BR>";
