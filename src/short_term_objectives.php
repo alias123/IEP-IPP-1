@@ -1,5 +1,12 @@
 <?php
 
+/** This page is called by long_term_goal_view.php
+ * I've never seen it actually called up on the browser. Maybe for IEP creation instead of reporting.
+ * Filtering and escaping still has to happen
+ * JavaScript intertwined with PHP for some dynamics. 
+ * Line 429 or so is our concern
+ */
+
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody check within
 
@@ -92,12 +99,14 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
     $have_write_permission = false;
 }
 
+//This works by using regular expressions to get rid of dangerous, meaningful stuff (a filter)
 //check if we are adding an objective...
 if(isset($_GET['add_objective']) && $have_write_permission) {
   $description=strip_tags($_GET['description']);
   $description=eregi_replace("\r\n",' ',$description);
   $description=eregi_replace("\r",' ',$description);
   $description=eregi_replace("\n",' ',$description);
+  //after the filter, it's escaped output
   $description= addslashes($description);
   //check if we have this objective already...
   $check_query="SELECT * FROM short_term_objective WHERE DESCRIPTION='$description' AND goal_id=" . $long_term_goal_row['goal_id'];
@@ -105,10 +114,13 @@ if(isset($_GET['add_objective']) && $have_write_permission) {
   if(mysql_num_rows($check_result) > 0) { $MESSAGE = $MESSAGE . "This objective is already added<BR>"; }
   else {
      $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
+     //regular expression to filter date input
+     //if it doesn't match the pattern, error
      if(!preg_match($regexp,$_GET['review_date'])) { $MESSAGE = $MESSAGE . "Date must be in YYYY-MM-DD format<BR>"; }
      else {
       if($_GET['description']=="") { $MESSAGE = $MESSAGE . "You must supply a description"; } else
       {
+       //puts new info into database.. there is not reporting at this point, so nothing is put that field
        $insert_query = "INSERT INTO short_term_objective (goal_id,description,review_date) VALUES (" . $long_term_goal_row['goal_id'] . ",'$description','" . addslashes($_GET['review_date']) . "')";
        $insert_result = mysql_query($insert_query);
        if(!$insert_result) {
@@ -126,6 +138,7 @@ if(isset($_GET['add_objective']) && $have_write_permission) {
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
+//if conditions are met, deletes a short term objective
 if($have_write_permission && $_GET['delete']) {
     $delete_query = "DELETE from short_term_objective WHERE uid=" . addslashes($_GET['sto']);
     $delete_result = mysql_query($delete_query);
@@ -137,7 +150,7 @@ if($have_write_permission && $_GET['delete']) {
       $MESSAGE = $MESSAGE . "Deleted short term objective<BR>";
     }
 }
-
+//updates db when student achieves an objective
 if($have_write_permission && $_GET['set_achieved']) {
     $achieved_query = "UPDATE short_term_objective SET achieved='Y' WHERE uid=" . addslashes($_GET['sto']);
     $achieved_result = mysql_query($achieved_query);
@@ -149,7 +162,7 @@ if($have_write_permission && $_GET['set_achieved']) {
       $MESSAGE = $MESSAGE . "Set short term objective achieved<BR>";
     }
 }
-
+//change achieved objective to not achieved
 if($have_write_permission && $_GET['set_not_achieved']) {
     $achieved_query = "UPDATE short_term_objective SET achieved='N' WHERE uid=" . addslashes($_GET['sto']);
     $achieved_result = mysql_query($achieved_query);
@@ -161,7 +174,7 @@ if($have_write_permission && $_GET['set_not_achieved']) {
       $MESSAGE = $MESSAGE . "Set short term objective not achieved<BR>";
     }
 }
-
+//try to get all objectives attached to a student in the db
 $student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
@@ -169,7 +182,7 @@ if(!$student_result) {
     $MESSAGE=$MESSAGE . $error_message;
     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
-
+//try to get all objectives attached to a certain goal
 $objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . addslashes($long_term_goal_row['goal_id']) . " and achieved='Y'";
 $objectives_result=mysql_query($objectives_query);
 if(!$objectives_result) {
@@ -177,7 +190,7 @@ if(!$objectives_result) {
     $MESSAGE=$MESSAGE . $error_message;
     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 }
-
+//if conditions are met, find all objectives not completed
 $completed_objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . addslashes($long_term_goal_row['goal_id']) . " and achieved='N'";
 $completed_objectives_result=mysql_query($completed_objectives_query);
 if(!$completed_objectives_result) {
@@ -235,7 +248,7 @@ if(!$completed_objectives_result) {
       // return JavaScript code
       return $javascript;
     }
-
+//interesting. Makes a function available that makes a very long query. we can check in phpmyadmin
     function echoJSServicesArray() {
         global $MESSAGE;
         //get a list of all available goal categories...
@@ -250,6 +263,8 @@ if(!$completed_objectives_result) {
             //$MESSAGE = $MESSAGE . "Rows returned=" . mysql_num_rows($catlist_result) . " Query=$catlist_query<BR><BR>";
             echo createJavaScript($catlist_result,"popuplist");
         }
+
+//This code block was commented out by dev.
 
         //while($catlist=mysql_fetch_array($catlist_result)) {
            //$objlist_query="SELECT typical_long_term_goal.goal FROM typical_long_term_goal WHERE cid=" . $catlist['cid'] . " AND typical_long_term_goal.is_deleted='N'";
@@ -385,6 +400,9 @@ if(!$completed_objectives_result) {
                         <center>
                         <table width="80%" border="0" cellpadding="0" cellspacing="0">
                         <?php
+                        
+                        //Output HTML for each objective?
+                        //so it's in the array called $goal that needs filtered and escaped
                         while($goal = mysql_fetch_array($completed_objectives_result)) {
                             echo "<tr><td colspan=\"2\" class=\"wrap_top\">";
 
@@ -407,6 +425,8 @@ if(!$completed_objectives_result) {
 
                             echo "</td></tr>\n";
                             echo "<tr><td class=\"wrap_left\" bgcolor=\"$colour0\"><b>Strategies:</b><blockquote>" . $goal['strategies'] . "</blockquote></tr>\n";
+                            
+                            //"results_and_recommendations" is our concern: make sure all of $goal is filtered and escaped
                             echo "<tr><td class=\"wrap_left\" bgcolor=\"$colour0\"><b>Results and Recommendations:</b><blockquote>" . $goal['results_and_recommendations'] . "</blockquote></td></tr>\n";
 
                             echo "<tr><td class=\"wrap_left\" bgcolor=\"$colour0\"><BR></td></tr>\n";
