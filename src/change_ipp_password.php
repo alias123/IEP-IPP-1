@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	user password reset
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;  //don't rely on this on this page.
 

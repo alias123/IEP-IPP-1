@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	coding of student learning
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 60; //TA
 

@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @BRIEF 	login page
+ * 
+ */
+ 
+ 
 /**
  * launch.php -- initial screen will launch the ipp program
  *               the rationale behind this is to get a window

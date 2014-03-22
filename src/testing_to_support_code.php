@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @BRIEF 	display data supporting code
+ * 
+ */
+ 
+ 
+
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 

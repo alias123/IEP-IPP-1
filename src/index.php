@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @BRIEF 	redirects to login page
+ * 
+ */
+ 
+ 
 /**
  * index.php -- Displays the main frameset
  *

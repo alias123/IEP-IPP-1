@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	manage report access?
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 60;    //Teaching staff and up
 

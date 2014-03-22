@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	display and add to goals database
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 20;    //assistant_admin
 

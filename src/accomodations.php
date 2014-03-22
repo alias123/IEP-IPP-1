@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	manage and edit student accomodations
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 

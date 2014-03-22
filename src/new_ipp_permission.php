@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @BRIEF 	assign new permissions
+ * 
+ */
+ 
+ 
+
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 60;  //TA
 

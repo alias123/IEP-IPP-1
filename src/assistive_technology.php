@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	assistive technology perscribed by IEP
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 

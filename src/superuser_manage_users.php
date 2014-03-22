@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	mangage users ?
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 0; //Super admin only (note: exception is local administrators)
 

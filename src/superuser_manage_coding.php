@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @BRIEF 	manage code availability
+ * 
+ */
+ 
+ 
+
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 0; //only super administrator
 

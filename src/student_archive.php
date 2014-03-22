@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @BRIEF 	document a student history
+ * 
+ */
+ 
+ 
+
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;  //all, decide in the page
 

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @BRIEF 	display objectives related to a goal belonging to a student
+ * 
+ */
+ 
+ 
+
 /** This page is called by long_term_goal_view.php
  * I've never seen it actually called up on the browser. Maybe for IEP creation instead of reporting.
  * Filtering and escaping still has to happen

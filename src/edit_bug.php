@@ -1,4 +1,10 @@
 <?php
+/**
+ * @BRIEF 	update a bug report
+ * 
+ */
+ 
+ 
 /* Notes and observation
  * 1. this code seems unused
  * 2. provides bug logging and possible testing

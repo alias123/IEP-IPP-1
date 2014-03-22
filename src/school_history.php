@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	view student's school history
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 

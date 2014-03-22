@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	user managment ?
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 20;
 

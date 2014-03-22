@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @BRIEF 	articulate student strengths and needs
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 

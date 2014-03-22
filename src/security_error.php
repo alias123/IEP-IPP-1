@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	display security error
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;    //anybody
 

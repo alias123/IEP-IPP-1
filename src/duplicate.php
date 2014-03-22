@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @BRIEF 	copy an IEP without demographics
+ * 
+ */
+ 
+ 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 50;
 
