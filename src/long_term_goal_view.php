@@ -21,7 +21,8 @@
  * 3. Where it is escaped, seems to rely on addslashes(). Find contemporary best practice and secure method to escape output.
  * 4. Use it to escape echoed variables appearing in HTML (bottom)
  * 5. Standardize HTML - see James' informed recommendation
- * 6. explanation of code set on line 17 is inaccurate - is not consistent with filename, which is more accurate.}
+ * 6. explanation of code set on line 17 is inaccurate - is not consistent with filename, which is more accurate.
+ * 7. Test! }
  */
  
 //the authorization level for this page!
