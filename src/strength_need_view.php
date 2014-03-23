@@ -11,7 +11,12 @@
     You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph
  * @author		M. Nielson
- * @todo		Filter input
+ * @todo		
+ * 1. Filter input
+ * 2. Why not set whole header with PHP, rather than just pragma?
+ * 3. Set form character set (UTF-8)
+ * 4. Make all pages UTF-8 in html header or php
+ * 
  */  
  
 
@@ -190,11 +195,8 @@ function mysql_enum_values($tableName,$fieldName)
   //then loop:
   while($row = mysql_fetch_array($result))
   {
-   //# row is mysql type, in format "int(11) unsigned zerofill"
-   //# or "enum('cheese','salmon')" etc.
-
    ereg('^([^ (]+)(\((.+)\))?([ ](.+))?$',$row['Type'],$fieldTypeSplit);
-   //# split type up into array
+   //split type up into array
    $ret_fieldName = $row['Field'];
    $fieldType = $fieldTypeSplit[1];// eg 'int' for integer.
    $fieldFlags = $fieldTypeSplit[5]; // eg 'binary' or 'unsigned zerofill'.
@@ -207,9 +209,9 @@ function mysql_enum_values($tableName,$fieldName)
    }
   }
 
-  //if the funciton makes it this far, then it either
-  //did not find an enum/set field type, or it
-  //failed to find the the fieldname, so exit FALSE!
+  /* if the funciton makes it this far, then it either
+    did not find an enum/set field type, or it
+	failed to find the the fieldname, so exit FALSE! */
   return FALSE;
 
 }
@@ -219,7 +221,7 @@ $enum_options_area = mysql_enum_values("area_of_strength_or_need","area");
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-    <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+    <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
     <TITLE><?php echo $page_title; ?></TITLE>
     <style type="text/css" media="screen">
         <!--
