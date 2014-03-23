@@ -169,7 +169,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-    <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+    <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
     <TITLE><?php echo $page_title; ?></TITLE>
     <style type="text/css" media="screen">
         <!--
