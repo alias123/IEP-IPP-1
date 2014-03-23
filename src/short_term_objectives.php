@@ -1,33 +1,24 @@
 <?php
 
-/**
- * @BRIEF 	display objectives related to a goal belonging to a student
- * 
- */
+/** @file
+ * @brief 	display objectives related to a goal belonging to a student
+ * @copyright 	2014 Chelsea School 
+ * @copyright 	2005 Grasslands Regional Division #6
+ * @copyright		This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph
+ * @author		M. Nielson
+ * @todo		Filter input
+ */ 
  
- 
-
-/** This page is called by long_term_goal_view.php
- * I've never seen it actually called up on the browser. Maybe for IEP creation instead of reporting.
- * Filtering and escaping still has to happen
- * JavaScript intertwined with PHP for some dynamics. 
- * Line 429 or so is our concern
- */
 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody check within
 
-/**
- * short_term_objectives.php -- strength and needs management.
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: September 8, 2005
- * By: M. Nielsen
- * Modified:
- *
- */
+
 
 /*   INPUTS: $_GET['student_id']
  *

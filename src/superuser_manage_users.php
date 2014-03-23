@@ -1,25 +1,23 @@
 <?php
 
-/**
- * @BRIEF 	mangage users ?
- * 
- */
- 
+/** @file
+ * @brief 	mangage users main menu (superuser)
+ * @copyright 	2014 Chelsea School 
+ * @copyright 	2005 Grasslands Regional Division #6
+ * @copyright		This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph
+ * @author		M. Nielson
+ * @todo		Investigate and clarify script function
+ */  
  
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 0; //Super admin only (note: exception is local administrators)
 
-/**
- * superuser_manage_users.php --  main menu
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: June 06, 2005
- * By: M. Nielsen
- * Modified: March 18, 2006
- * Modified Feburary 11, 2007
- */
+
 
 /**
  * Path for IPP required files.
