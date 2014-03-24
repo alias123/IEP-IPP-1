@@ -96,7 +96,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -111,7 +111,7 @@ if(isset($_GET['add_grade_repeated']) && $have_write_permission) {
    else {
      if($_GET['year'] == "") $MESSAGE = $MESSAGE . "You must enter a year<BR>";
      else {
-       $add_query = "INSERT INTO grades_repeated (student_id, grade, year,ipp_present) VALUES (" . addslashes($student_id) . "," . addslashes($_GET['grade']) . "," . addslashes($_GET['year']) . ",";
+       $add_query = "INSERT INTO grades_repeated (student_id, grade, year,ipp_present) VALUES (" . mysql_real_escape_string($student_id) . "," . addslashes($_GET['grade']) . "," . addslashes($_GET['year']) . ",";
        if($_GET['ipp_present']) $add_query = $add_query . "'Y')";
        else $add_query = $add_query . "'N')";
        $add_result = mysql_query($add_query);

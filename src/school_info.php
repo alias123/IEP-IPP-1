@@ -97,7 +97,7 @@ if(isset($_POST['add_school'])) {
     $red=substr($_POST['school_colour'],1,2);
     $green=substr($_POST['school_colour'],3,2);
     $blue=substr($_POST['school_colour'],5,2);
-    $insert_query = "INSERT INTO school (school_code,school_name,school_address,red,green,blue) VALUES ('" . addslashes($_POST['school_code']) . "','" . addslashes($_POST['school_name']) . "','" . addslashes($_POST['school_address']) . "','$red','$green','$blue')";
+    $insert_query = "INSERT INTO school (school_code,school_name,school_address,red,green,blue) VALUES ('" . mysql_real_escape_string($_POST['school_code']) . "','" . addslashes($_POST['school_name']) . "','" . addslashes($_POST['school_address']) . "','$red','$green','$blue')";
     $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . $insert_query . "<BR>";

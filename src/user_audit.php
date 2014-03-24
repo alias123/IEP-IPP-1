@@ -72,7 +72,7 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
 if(isset($_POST['username'])) {
-  $user_query = "SELECT support_list.*,student.first_name,student.last_name FROM support_list LEFT JOIN student ON support_list.student_id=student.student_id WHERE egps_username='" . addslashes($_POST['username']) . "' AND student.student_id IS NOT NULL ORDER BY student.first_name";
+  $user_query = "SELECT support_list.*,student.first_name,student.last_name FROM support_list LEFT JOIN student ON support_list.student_id=student.student_id WHERE egps_username='" . mysql_real_escape_string($_POST['username']) . "' AND student.student_id IS NOT NULL ORDER BY student.first_name";
   $user_result = mysql_query($user_query);
   if(!$user_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$user_query'<BR>";
@@ -86,7 +86,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
     if($retval != null ) {
         $MESSAGE .= $retval . "<BR>";
     } else { 
-           $add_query = "INSERT INTO accomodation (student_id,accomodation,start_date,end_date,subject,file,filename) VALUES (" . addslashes($student_id) . ",'" . AddSlashes($_POST['accomodation']) . "',NOW(),NULL,'" . addslashes($_POST['subject']) . "','$content','$fileName')";
+           $add_query = "INSERT INTO accomodation (student_id,accomodation,start_date,end_date,subject,file,filename) VALUES (" . mysql_real_escape_string($student_id) . ",'" . AddSlashes($_POST['accomodation']) . "',NOW(),NULL,'" . addslashes($_POST['subject']) . "','$content','$fileName')";
            $add_result = mysql_query($add_query);
            if(!$add_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
@@ -238,7 +238,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
                         <div id="main">
                         <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
 
-                        <center><table width="80%"><tr><td><center><p class="header">- Audit User (<?php if(addslashes($_POST['username']) != "" )echo addslashes($_POST['username']); else echo "nobody choosen yet"; ?>)-</p></center></td></tr></table></center>
+                        <center><table width="80%"><tr><td><center><p class="header">- Audit User (<?php if(mysql_real_escape_string($_POST['username']) != "" )echo addslashes($_POST['username']); else echo "nobody choosen yet"; ?>)-</p></center></td></tr></table></center>
                         <BR>
 
                         <!-- BEGIN choose user -->
@@ -271,7 +271,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
 
                         <?php
                         $bgcolor = "#DFDFDF";
-                        if (isset($_POST['username'])) echo "<center>" . addslashes($_POST['username']) . " is a support member to the following students</center><BR>";
+                        if (isset($_POST['username'])) echo "<center>" . mysql_real_escape_string($_POST['username']) . " is a support member to the following students</center><BR>";
                         //print the header row...
                         echo "<tr><td bgcolor=\"#F4EFCF\">&nbsp;</td><td align=\"center\" bgcolor=\"#F4EFCF\">Student Last Name</td><td align=\"center\" bgcolor=\"#F4EFCF\">Student First Name</td><td align=\"center\" bgcolor=\"#F4EFCF\">Permission</td><td align=\"center\" bgcolor=\"#F4EFCF\">Students Current School</td></tr>\n";
                         while (isset($user_result) && $user_row=mysql_fetch_array($user_result)) { //current...

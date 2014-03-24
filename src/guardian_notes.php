@@ -130,7 +130,7 @@ if(isset($_GET['delete_x'])) {
 
 //check if we are adding...
 if(isset($_GET['add_note'])) {
-    $add_query = "INSERT INTO guardian_note (guardian_id,note,date,priority_note) VALUES (" . $_GET['guardian_id'] . ",'" . addslashes($_GET['note']) . "',NOW(),";
+    $add_query = "INSERT INTO guardian_note (guardian_id,note,date,priority_note) VALUES (" . $_GET['guardian_id'] . ",'" . mysql_real_escape_string($_GET['note']) . "',NOW(),";
     if(isset($_GET['priority_note']) && $_GET['priority_note'] == '1') {
        $add_query = $add_query . "'Y')";
     } else {

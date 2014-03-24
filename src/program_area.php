@@ -87,7 +87,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -107,7 +107,7 @@ if(!$student_result) {
 if(isset($_GET['add_area']) && $have_write_permission) {
 
    //check for duplicate...
-   $check_query = "SELECT * FROM program_area WHERE area='" . addslashes($_GET['program_area']) . "' AND end_date IS NULL AND student_id=" . addslashes($student_id);
+   $check_query = "SELECT * FROM program_area WHERE area='" . mysql_real_escape_string($_GET['program_area']) . "' AND end_date IS NULL AND student_id=" . addslashes($student_id);
    $check_result = mysql_query($check_query);
    if(!$check_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$check_query'<BR>";
@@ -118,7 +118,7 @@ if(isset($_GET['add_area']) && $have_write_permission) {
            $check_row = mysql_fetch_array($check_result);
            $MESSAGE = $MESSAGE . "That is already a program area of this student<BR>";
        } else {
-           $add_query = "INSERT INTO program_area (student_id,area,start_date,end_date) VALUES (" . addslashes($student_id) . ",'" . addslashes($_GET['program_area']) . "',NOW(),NULL)";
+           $add_query = "INSERT INTO program_area (student_id,area,start_date,end_date) VALUES (" . mysql_real_escape_string($student_id) . ",'" . addslashes($_GET['program_area']) . "',NOW(),NULL)";
            $add_result = mysql_query($add_query);
            if(!$add_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
@@ -185,7 +185,7 @@ if($_GET['set_continue'] && $have_write_permission ) {
     }
 }
 
-$program_area_query = "SELECT * FROM program_area WHERE student_id=" . addslashes($student_id) . " ORDER BY end_date ASC,start_date DESC";
+$program_area_query = "SELECT * FROM program_area WHERE student_id=" . mysql_real_escape_string($student_id) . " ORDER BY end_date ASC,start_date DESC";
 $program_area_result = mysql_query($program_area_query);
 if(!$program_area_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$program_area_query'<BR>";

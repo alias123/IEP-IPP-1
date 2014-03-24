@@ -90,7 +90,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -123,7 +123,7 @@ if($_POST['move_out_of_district']) {
   $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
   if(!preg_match($regexp,$_POST['move_out_of_district_start_date'])) return "Start date must be in YYYY-MM-DD format<BR>";
   else {
-    $update_query="UPDATE school_history SET end_date='" . addslashes($_POST['move_out_of_district_start_date']) . "' WHERE student_id=$student_id AND end_date IS NULL";
+    $update_query="UPDATE school_history SET end_date='" . mysql_real_escape_string($_POST['move_out_of_district_start_date']) . "' WHERE student_id=$student_id AND end_date IS NULL";
     $update_result=mysql_query($update_query);
     if(!$update_result) {
        $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
@@ -161,7 +161,7 @@ if($_POST['move_to_school']) {
               $accommodations .= date("Y-m-d");
            $accommodations .= "): " . $accommodation_row['accomodation'] . "\n\n";
        }
-       $school_query="SELECT * FROM school WHERE school_code=" . addslashes($_POST['school_code']);
+       $school_query="SELECT * FROM school WHERE school_code=" . mysql_real_escape_string($_POST['school_code']);
        $school_result=mysql_query($school_query);
        if(!$school_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
@@ -170,7 +170,7 @@ if($_POST['move_to_school']) {
         } else {
            $school_row=mysql_fetch_array($school_result);
            //we need to set any current schools to innactive...
-           $update_query="UPDATE school_history SET end_date='" . addslashes($_POST['move_start_date']) . "' WHERE student_id=$student_id AND end_date IS NULL";
+           $update_query="UPDATE school_history SET end_date='" . mysql_real_escape_string($_POST['move_start_date']) . "' WHERE student_id=$student_id AND end_date IS NULL";
            $update_result = mysql_query($update_query);
            if(!$update_result) {
              $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
@@ -178,7 +178,7 @@ if($_POST['move_to_school']) {
              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
              //just carry on...
            }
-           $insert_query="INSERT INTO school_history (student_id,start_date,end_date,school_code,school_name,school_address,ipp_present,accommodations) VALUES (" . AddSlashes($student_id) . ",'" . addslashes($_POST['move_start_date']) . "',NULL,'" . addslashes($_POST['school_code']) . "','" . $school_row['school_name'] . "','" . $school_row['school_address'] . "','Y','$accommodations')";
+           $insert_query="INSERT INTO school_history (student_id,start_date,end_date,school_code,school_name,school_address,ipp_present,accommodations) VALUES (" . AddSlashes($student_id) . ",'" . mysql_real_escape_string($_POST['move_start_date']) . "',NULL,'" . addslashes($_POST['school_code']) . "','" . $school_row['school_name'] . "','" . $school_row['school_address'] . "','Y','$accommodations')";
            $insert_result=mysql_query($insert_query);
            if(!$insert_result) {
              $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
@@ -186,7 +186,7 @@ if($_POST['move_to_school']) {
              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
            } else {
              //we need to notify the school based ipp administrator
-             $ipp_admin_query="SELECT * FROM support_member WHERE school_code=" . addslashes($_POST['school_code']) . " and is_local_ipp_administrator='Y'";
+             $ipp_admin_query="SELECT * FROM support_member WHERE school_code=" . mysql_real_escape_string($_POST['school_code']) . " and is_local_ipp_administrator='Y'";
              $ipp_admin_result=mysql_query($ipp_admin_query);
              if(!$ipp_admin_result) {
                $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$ipp_admin_query'<BR>";
@@ -211,7 +211,7 @@ You should update the supervisor information and add the appropriate support mem
              $pdf=create_pdf($student_id);
 
              //we add the entry.
-             $insert_query = "INSERT INTO snapshot(student_id,date,file,filename) VALUES (" . addslashes($student_id) . ",NOW(),'" . addslashes($pdf->Output("ignored",'S')) . "','IPP-" . $student_row['first_name'] . " " . $student_row['last_name'] . " " . date("F-d-Y") . ".pdf')";
+             $insert_query = "INSERT INTO snapshot(student_id,date,file,filename) VALUES (" . mysql_real_escape_string($student_id) . ",NOW(),'" . addslashes($pdf->Output("ignored",'S')) . "','IPP-" . $student_row['first_name'] . " " . $student_row['last_name'] . " " . date("F-d-Y") . ".pdf')";
              $insert_result = mysql_query($insert_query);
              if(!$insert_result) {
                $error_message = "Snapshot not taken because the database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($insert_query,0,100) . "[truncated]'<BR>";
@@ -236,12 +236,12 @@ if($_POST['add_school_history']) {
     $MESSAGE = $MESSAGE . $retval;
   } else {
     //we add the entry.
-    $insert_query = "INSERT INTO school_history (student_id,school_name,school_address,grades,start_date,end_date,accommodations,ipp_present) VALUES (" . addslashes($student_id) . ",'" . addslashes($_POST['school_name']) . "',";
-     if($_POST['school_address']) $insert_query .= "'" . addslashes($_POST['school_address']) . "',";
+    $insert_query = "INSERT INTO school_history (student_id,school_name,school_address,grades,start_date,end_date,accommodations,ipp_present) VALUES (" . mysql_real_escape_string($student_id) . ",'" . addslashes($_POST['school_name']) . "',";
+     if($_POST['school_address']) $insert_query .= "'" . mysql_real_escape_string($_POST['school_address']) . "',";
      else $insert_query .= "NULL,";
-     if($_POST['grades']) $insert_query .= "'" . addslashes($_POST['grades']) . "',";
+     if($_POST['grades']) $insert_query .= "'" . mysql_real_escape_string($_POST['grades']) . "',";
      else $insert_query .= "NULL,";
-     $insert_query = $insert_query . "'" . addslashes($_POST['start_date']) . "','" . addslashes($_POST['end_date']) . "',";
+     $insert_query = $insert_query . "'" . mysql_real_escape_string($_POST['start_date']) . "','" . addslashes($_POST['end_date']) . "',";
      if($_POST['accommodations']) $insert_query .= "'" . $_POST['accommodations'] . "',";
      else $insert_query .= "NULL,";
      if($_POST['ipp_present']) $insert_query .= "'" . $_POST['ipp_present'] . "')";

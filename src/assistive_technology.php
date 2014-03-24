@@ -89,7 +89,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -110,7 +110,7 @@ if(isset($_POST['add_asst_tech']) && $have_write_permission) {
     $MESSAGE = $MESSAGE . "You must supply information on the techology<BR>";
   } else {
     //we add the entry.
-    $insert_query = "INSERT INTO assistive_technology (student_id,technology) VALUES (" . addslashes($student_id) . ",'" . addslashes($_POST['technology']) . "')";
+    $insert_query = "INSERT INTO assistive_technology (student_id,technology) VALUES (" . mysql_real_escape_string($student_id) . ",'" . addslashes($_POST['technology']) . "')";
      $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($insert_query,0,200) . "[truncated]'<BR>";

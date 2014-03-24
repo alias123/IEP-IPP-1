@@ -60,8 +60,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //************* SESSION active past here **************************
 
 $uid="";
-if(isset($_GET['uid'])) $uid= addslashes($_GET['uid']);
-if(isset($_POST['uid'])) $uid = addslashes($_POST['uid']);
+if(isset($_GET['uid'])) $uid= mysql_real_escape_string($_GET['uid']);
+if(isset($_POST['uid'])) $uid = mysql_real_escape_string($_POST['uid']);
 
 //get the medication for this student...
 $medication_row="";
@@ -101,7 +101,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -119,9 +119,9 @@ if(isset($_POST['edit_medication']) && $have_write_permission) {
      else {
        if(!($_POST['end_date'] == ""  || preg_match($regexp,$_POST['end_date']))) { $MESSAGE = $MESSAGE . "End Date must be in YYYY-MM-DD format<BR>"; }
        else {
-          $update_query = "UPDATE medication SET medication_name='" . addslashes($_POST['medication_name']) . "',doctor='" . addslashes($_POST['doctor']) . "',start_date='" . addslashes($_POST['start_date']) . "',";
+          $update_query = "UPDATE medication SET medication_name='" . mysql_real_escape_string($_POST['medication_name']) . "',doctor='" . addslashes($_POST['doctor']) . "',start_date='" . addslashes($_POST['start_date']) . "',";
           if($_POST['end_date'] == "") $update_query .= "end_date=NULL";   //set no end date.
-          else $update_query .= "end_date='" . addslashes($_POST['end_date']) . "'";
+          else $update_query .= "end_date='" . mysql_real_escape_string($_POST['end_date']) . "'";
           //$MESSAGE = $MESSAGE . $add_query . "<BR>";
           $update_query .= " WHERE uid=$uid LIMIT 1";
           $update_result = mysql_query($update_query);

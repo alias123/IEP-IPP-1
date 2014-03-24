@@ -205,9 +205,9 @@ function getUsers() {
     }
 
     if(isset($_GET['index'])) {
-      $query = "SELECT * FROM support_member LEFT JOIN school on support_member.school_code=school.school_code WHERE ASCII(LOWER(egps_username)) >= ASCII('" . addslashes($_GET['index']) . "') ORDER BY egps_username ASC LIMIT $iLimit";
+      $query = "SELECT * FROM support_member LEFT JOIN school on support_member.school_code=school.school_code WHERE ASCII(LOWER(egps_username)) >= ASCII('" . mysql_real_escape_string($_GET['index']) . "') ORDER BY egps_username ASC LIMIT $iLimit";
       //do some moronic thing to find our index- were I not so lazy I'd find a more elegant method.
-      $get_index_query="SELECT * FROM support_member LEFT JOIN school on support_member.school_code=school.school_code WHERE ASCII(LOWER(egps_username)) < ASCII('" . addslashes($_GET['index']) . "')";
+      $get_index_query="SELECT * FROM support_member LEFT JOIN school on support_member.school_code=school.school_code WHERE ASCII(LOWER(egps_username)) < ASCII('" . mysql_real_escape_string($_GET['index']) . "')";
       $get_index_result=mysql_query($get_index_query);
       if($get_index_result) $iCur=mysql_num_rows($get_index_result);
       else $MESSAGE .= "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$get_index_query'<BR>";

@@ -99,7 +99,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -112,7 +112,7 @@ if(isset($_POST['add_background_information']) && $have_write_permission) {
    //minimal testing of input...
      if($_POST['type'] == "") $MESSAGE = $MESSAGE . "You must choose a type<BR>";
      else {
-       $add_query = "INSERT INTO background_info (student_id, type,description) VALUES (" . addslashes($student_id) . ",'" . addslashes($_POST['type']) . "','" . addslashes($_POST['description']) . "')";
+       $add_query = "INSERT INTO background_info (student_id, type,description) VALUES (" . mysql_real_escape_string($student_id) . ",'" . addslashes($_POST['type']) . "','" . addslashes($_POST['description']) . "')";
        $add_result = mysql_query($add_query);
        if(!$add_result) {
          $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";

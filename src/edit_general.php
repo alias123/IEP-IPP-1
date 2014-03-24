@@ -120,11 +120,11 @@ function parse_submission() {
           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
      }
      if($_POST['prov_ed_num'] != "") {
-       $duplicate_query = "SELECT * FROM student WHERE prov_ed_num='" . addslashes($_POST['prov_ed_num']) . "' AND student_id !=" . $_POST['student_id'];
+       $duplicate_query = "SELECT * FROM student WHERE prov_ed_num='" . mysql_real_escape_string($_POST['prov_ed_num']) . "' AND student_id !=" . $_POST['student_id'];
        $duplicate_result= mysql_query($duplicate_query);
        if(mysql_num_rows($duplicate_result) > 0) {$duplicate_row = mysql_fetch_array($duplicate_result);return "Duplicate Provincial Education Number (name:" . $duplicate_row['first_name'] . " " . $duplicate_row['last_name'] ."),<BR>This student probably already exists in the database<BR>";}
      }
-     //$duplicate_query = "SELECT * FROM student WHERE ab_ed_code='" . addslashes($_POST['ab_ed_code']) ."' AND student_id !=" . $_POST['student_id'];
+     //$duplicate_query = "SELECT * FROM student WHERE ab_ed_code='" . mysql_real_escape_string($_POST['ab_ed_code']) ."' AND student_id !=" . $_POST['student_id'];
      //$duplicate_result= mysql_query($duplicate_query);
      //if(mysql_num_rows($duplicate_result) > 0) {$duplicate_row = mysql_fetch_array($duplicate_result);return "Duplicate Alberta Education Code Number (name:" . $duplicate_row['first_name'] . " " . $duplicate_row['last_name'] ."),<BR>This student probably already exists in the database<BR>"; }
     
@@ -146,7 +146,7 @@ if(isset($_POST['modify_student'])) {
      if($retval != NULL) {
          $MESSAGE = $MESSAGE . $retval;
      } else {
-       $update_query="UPDATE student SET first_name='" . addslashes($_POST['first_name']) . "',last_name='" .  addslashes($_POST['last_name']) ."',birthday='" . addslashes($_POST['birthday']) . "',prov_ed_num='" .  addslashes($_POST['prov_ed_num']) . "',current_grade='" . addslashes($_POST['current_grade']) . "',gender='" . addslashes($_POST['gender']) . "' WHERE student_id=" . $_POST['student_id'];
+       $update_query="UPDATE student SET first_name='" . mysql_real_escape_string($_POST['first_name']) . "',last_name='" .  addslashes($_POST['last_name']) ."',birthday='" . addslashes($_POST['birthday']) . "',prov_ed_num='" .  addslashes($_POST['prov_ed_num']) . "',current_grade='" . addslashes($_POST['current_grade']) . "',gender='" . addslashes($_POST['gender']) . "' WHERE student_id=" . $_POST['student_id'];
        $update_result=mysql_query($update_query);
        if(!$update_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";

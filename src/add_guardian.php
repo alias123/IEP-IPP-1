@@ -118,7 +118,7 @@ if(isset($_GET['add_guardian'])) {
   if($retval != NULL) {
       $MESSAGE = $MESSAGE . $retval;
   } else {
-      $guardian_query="INSERT INTO guardian (first_name,last_name) VALUES ('" . addslashes($_GET['first_name']) . "','" . addslashes($_GET['last_name']) . "')";
+      $guardian_query="INSERT INTO guardian (first_name,last_name) VALUES ('" . mysql_real_escape_string($_GET['first_name']) . "','" . addslashes($_GET['last_name']) . "')";
       $guardian_result=mysql_query($guardian_query);
        if(!$guardian_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$guardian_query'<BR>";
@@ -127,7 +127,7 @@ if(isset($_GET['add_guardian'])) {
        } else {
          //attach to student ID and redirect...
             $guardian_id = mysql_insert_id();
-            $guardians_query="INSERT INTO guardians (student_id,guardian_id,from_date,to_date) VALUES (" . addslashes($_GET['student_id']) . ",$guardian_id,NOW(),null)";
+            $guardians_query="INSERT INTO guardians (student_id,guardian_id,from_date,to_date) VALUES (" . mysql_real_escape_string($_GET['student_id']) . ",$guardian_id,NOW(),null)";
             $guardians_result=mysql_query($guardians_query);
             if(!$guardians_result) {
                  $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$guardians_query'<BR>";
@@ -135,7 +135,7 @@ if(isset($_GET['add_guardian'])) {
                  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
             } else {
                //redirect to student page....
-               header("Location: ./guardian_view.php?student_id=" . addslashes($_GET['student_id']));
+               header("Location: ./guardian_view.php?student_id=" . mysql_real_escape_string($_GET['student_id']));
                exit();
             }
          }

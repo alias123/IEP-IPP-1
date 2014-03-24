@@ -78,7 +78,7 @@ if($student_id=="") {
    echo "You've entered this page without supplying a valid student id. Fatal, quitting";
    exit();
 } else {
-   $student_id = addslashes($student_id);
+   $student_id = mysql_real_escape_string($student_id);
 }
 
 //check permission levels
@@ -100,7 +100,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -130,7 +130,7 @@ if($have_write_permission && isset($_GET['modify'])) {
          $MESSAGE = $MESSAGE . "You must be set with 'ALL' level permission to grant 'ASSIGN' permissions and higher";
        } else {
          //we need to update the information here...
-         $update_query = "UPDATE support_list SET support_area='" . addslashes($_GET['support_area']) . "', permission='" . addslashes($_GET['permission']) . "' WHERE student_id=$student_id AND egps_username='" . AddSlashes($_GET['username']) . "'";
+         $update_query = "UPDATE support_list SET support_area='" . mysql_real_escape_string($_GET['support_area']) . "', permission='" . addslashes($_GET['permission']) . "' WHERE student_id=$student_id AND egps_username='" . AddSlashes($_GET['username']) . "'";
          $update_result = mysql_query($update_query);
          if(!$update_result) {
               $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
@@ -138,7 +138,7 @@ if($have_write_permission && isset($_GET['modify'])) {
               IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
          } else {
             if(isset($_GET['mail_notification'])) {
-              mail_notification(AddSlashes($_GET['username']),"This email has been sent to you to notify you that your permission levels for " . $student_row['first_name'] . " " . $student_row['last_name'] . "'s IPP on the $IPP_ORGANIZATION online individual program plan system have been changed to " . addslashes($_GET['permission']) . " access.");
+              mail_notification(AddSlashes($_GET['username']),"This email has been sent to you to notify you that your permission levels for " . $student_row['first_name'] . " " . $student_row['last_name'] . "'s IPP on the $IPP_ORGANIZATION online individual program plan system have been changed to " . mysql_real_escape_string($_GET['permission']) . " access.");
             }
             //we need to redirect back to main...
             header("Location: " . IPP_PATH . "src/student_view.php?student_id=$student_id");

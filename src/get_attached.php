@@ -101,7 +101,7 @@ if (!($our_permission =="READ" || $our_permission == "WRITE" || $our_permission 
 
 
 //OK, past here we can spit out files- we have permission...
-$file_query = "SELECT file,filename FROM " . addslashes($_GET['table']) . " WHERE uid=" . addslashes($_GET['uid']) . " AND student_id=" . addslashes($_GET['student_id']);
+$file_query = "SELECT file,filename FROM " . mysql_real_escape_string($_GET['table']) . " WHERE uid=" . addslashes($_GET['uid']) . " AND student_id=" . addslashes($_GET['student_id']);
 $file_result = mysql_query($file_query);
 if(!$file_result) {
   echo "<HTML><body>";

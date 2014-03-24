@@ -74,8 +74,8 @@ if(($_SESSION['egps_username'] != $ippuserid ) && (getPermissionLevel($_SESSION[
 
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 
-if(isset($_GET['username'])) $ippuserid=addslashes($_GET['username']);
-   else if(isset($_POST['username'])) $ippuserid=addslashes($_POST['username']);
+if(isset($_GET['username'])) $ippuserid=mysql_real_escape_string($_GET['username']);
+   else if(isset($_POST['username'])) $ippuserid=mysql_real_escape_string($_POST['username']);
    else $ippuserid = $_SESSION['egps_username'];
 
 //we want to run a check to make sure that if we are a local admin that
@@ -120,14 +120,14 @@ if(($_SESSION['egps_username'] != $ippuserid ) && (isLocalAdministrator($_SESSIO
 
 if(isset($_POST['Update'])) {
    //check for blanks passwords...
-   if(addslashes($_POST['pwd1']) == addslashes($_POST['pwd2']) && addslashes($_POST['pwd2']) == "") {
+   if(mysql_real_escape_string($_POST['pwd1']) == addslashes($_POST['pwd2']) && addslashes($_POST['pwd2']) == "") {
        $MESSAGE .= "Passwords cannot be blank, try again<BR>";
    } {
-     if(addslashes($_POST['pwd1']) != addslashes($_POST['pwd2'])) {
+     if(mysql_real_escape_string($_POST['pwd1']) != addslashes($_POST['pwd2'])) {
        $MESSAGE .= "Passwords do not match, try again<BR>";
      } else {
-       $pwd = addslashes($_POST['pwd1']);
-       $update_query = "UPDATE users SET unencrypted_password='" . addslashes($pwd) . "', encrypted_password=PASSWORD('" . addslashes($pwd) . "') WHERE login_name=concat('" . $ippuserid ."','$mysql_user_append_to_login') LIMIT 1";
+       $pwd = mysql_real_escape_string($_POST['pwd1']);
+       $update_query = "UPDATE users SET unencrypted_password='" . mysql_real_escape_string($pwd) . "', encrypted_password=PASSWORD('" . addslashes($pwd) . "') WHERE login_name=concat('" . $ippuserid ."','$mysql_user_append_to_login') LIMIT 1";
           $update_result = mysql_query($update_query);
           //$MESSAGE .= $update_query . "<BR>";
           if(!$update_result) {

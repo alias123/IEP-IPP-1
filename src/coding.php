@@ -109,7 +109,7 @@ if(isset($_GET['modify_coding']) && $have_write_permission ) {
         if(!preg_match($regexp,$_GET['date'])) $MESSAGE = $MESSAGE .  "Date must be in YYYY-MM-DD format<BR>";
     }
     //check to see if we are already coded this way...
-    $check_query = "SELECT * FROM coding WHERE end_date IS NULL AND code='" . addslashes($_GET['code']) . "' AND student_id=" . addslashes($student_id);
+    $check_query = "SELECT * FROM coding WHERE end_date IS NULL AND code='" . mysql_real_escape_string($_GET['code']) . "' AND student_id=" . addslashes($student_id);
     if($_GET['code'] == "") $MESSAGE = $MESSAGE . "You must supply a code<BR>";
     $check_result = mysql_query($check_query);
     if(!$check_result) {
@@ -123,9 +123,9 @@ if(isset($_GET['modify_coding']) && $have_write_permission ) {
       //update existing codings...set to end NOW().
       //can only have 1 coding per student.
       if($_GET['date']) {
-          $update_query = "UPDATE coding SET end_date='" . addslashes($_GET['date']) . "' WHERE student_id=" . addslashes($student_id) . " AND end_date IS NULL";
+          $update_query = "UPDATE coding SET end_date='" . mysql_real_escape_string($_GET['date']) . "' WHERE student_id=" . addslashes($student_id) . " AND end_date IS NULL";
       } else {
-          $update_query = "UPDATE coding SET end_date=now() WHERE student_id=" . addslashes($student_id) . " AND end_date IS NULL";
+          $update_query = "UPDATE coding SET end_date=now() WHERE student_id=" . mysql_real_escape_string($student_id) . " AND end_date IS NULL";
       }
       if(!$MESSAGE) {
          $update_result = mysql_query($update_query);
@@ -139,9 +139,9 @@ if(isset($_GET['modify_coding']) && $have_write_permission ) {
            //special case just do nothing...
         } else {
           if($_GET['date']) {
-              $modify_query = "INSERT INTO coding (student_id,code,start_date,end_date) VALUES (" . addslashes($student_id) . ",'" . addslashes($_GET['code']) . "','" . addslashes($_GET['date']) . "',NULL)";
+              $modify_query = "INSERT INTO coding (student_id,code,start_date,end_date) VALUES (" . mysql_real_escape_string($student_id) . ",'" . addslashes($_GET['code']) . "','" . addslashes($_GET['date']) . "',NULL)";
           } else {
-              $modify_query = "INSERT INTO coding (student_id,code,start_date,end_date) VALUES (" . addslashes($student_id) . ",'" . addslashes($_GET['code']) . "',NOW(),NULL)";
+              $modify_query = "INSERT INTO coding (student_id,code,start_date,end_date) VALUES (" . mysql_real_escape_string($student_id) . ",'" . addslashes($_GET['code']) . "',NOW(),NULL)";
           }
           if(!$MESSAGE) {
             //echo $modify_query . "<BR>";
@@ -189,7 +189,7 @@ if(!$code_result) {
 }
 $code_row= mysql_fetch_array($code_result);
 
-$code_history_query = "SELECT * FROM coding WHERE student_id=" . addslashes($student_id) . " ORDER BY start_date DESC";
+$code_history_query = "SELECT * FROM coding WHERE student_id=" . mysql_real_escape_string($student_id) . " ORDER BY start_date DESC";
 $code_history_result = mysql_query ($code_history_query);
 if(!$code_history_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$code_history_query'<BR>";

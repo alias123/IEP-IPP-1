@@ -9,7 +9,7 @@
  *Notes 
  * 1. coding the students legally recorded disability
  * 2. we don't use
- * 3. addslashes() is used. Find replacement/
+ * 3. mysql_real_escape_string() is used. Find replacement/
  */
  
 //the authorization level for this page!
@@ -69,8 +69,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //************* SESSION active past here **************************
 
 $uid="";
-if(isset($_GET['uid'])) $uid= addslashes($_GET['uid']);
-if(isset($_POST['uid'])) $uid = addslashes($_POST['uid']);
+if(isset($_GET['uid'])) $uid= mysql_real_escape_string($_GET['uid']);
+if(isset($_POST['uid'])) $uid = mysql_real_escape_string($_POST['uid']);
 
 //check this students existing coding...
 $code_row="";
@@ -118,9 +118,9 @@ if(isset($_POST['modify_coding']) =="1" && $have_write_permission ) {
      else {
        if(!($_POST['end_date'] == ""  || preg_match($regexp,$_POST['end_date']))) { $MESSAGE = $MESSAGE . "End Date must be in YYYY-MM-DD format<BR>"; }
        else {
-           $update_query = "UPDATE coding SET code='" . AddSlashes($_POST['code']) . "',start_date='" . addslashes($_POST['start_date']) . "'";
+           $update_query = "UPDATE coding SET code='" . AddSlashes($_POST['code']) . "',start_date='" . mysql_real_escape_string($_POST['start_date']) . "'";
            if($_POST['end_date'] == "") $update_query .= ",end_date=NULL";   //set no end date.
-           else $update_query .= ",end_date='" . addslashes($_POST['end_date']) . "'";
+           else $update_query .= ",end_date='" . mysql_real_escape_string($_POST['end_date']) . "'";
            $update_query .= " WHERE uid=$uid LIMIT 1";
            $update_result = mysql_query($update_query);
            if(!$update_result) {

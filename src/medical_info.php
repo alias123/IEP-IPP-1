@@ -89,7 +89,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -117,9 +117,9 @@ function parse_submission() {
      if($_FILES['supporting_file']['size'] >= 1048576) return "File must be smaller than 1MB (1048567Bytes) but is " . $_FILES['supporting_file']['size'] . "MB"; //Must be less than 1 Megabyte
 
      //we have a file so get the file information...
-     $fileName = addslashes($_FILES['supporting_file']['name']);
+     $fileName = mysql_real_escape_string($_FILES['supporting_file']['name']);
      $tmpName  = $_FILES['supporting_file']['tmp_name'];
-     $fileSize = addslashes($_FILES['supporting_file']['size']);
+     $fileSize = mysql_real_escape_string($_FILES['supporting_file']['size']);
      $fileType = "";
 
      if(is_uploaded_file($tmpName)){
@@ -132,7 +132,7 @@ function parse_submission() {
       $fp      = fopen($tmpName, 'rb');
       if(!$fp) return "Unable to open temporary upload file $tmpname<BR>";
       $content = fread($fp, filesize($tmpName));
-      $content = addslashes($content);
+      $content = mysql_real_escape_string($content);
       fclose($fp);
 
       switch($ext) {
@@ -176,12 +176,12 @@ if(isset($_POST['add_medical_info']) && $have_write_permission) {
     $MESSAGE = $MESSAGE . $retval;
   } else {
     //we add the entry.
-    $insert_query = "INSERT INTO medical_info (student_id,copy_in_file,is_priority,date,description,file,filename) VALUES (" . addslashes($student_id) . ",'";
+    $insert_query = "INSERT INTO medical_info (student_id,copy_in_file,is_priority,date,description,file,filename) VALUES (" . mysql_real_escape_string($student_id) . ",'";
      if(isset($_POST['report_in_file'])) $insert_query = $insert_query . "Y";
      else $insert_query = $insert_query . "N";
      if(isset($_POST['is_priority'])) $insert_query = $insert_query . "','Y";
      else $insert_query = $insert_query . "','N";
-     $insert_query = $insert_query . "','" . addslashes($_POST['date']) . "','" . addslashes($_POST['description']) . "','$content','$fileName')";
+     $insert_query = $insert_query . "','" . mysql_real_escape_string($_POST['date']) . "','" . addslashes($_POST['description']) . "','$content','$fileName')";
      $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($insert_query,0,100) . "[truncated]'<BR>";

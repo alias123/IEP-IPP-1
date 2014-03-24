@@ -77,7 +77,7 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 }
 
 //find the student owner of this objective...
-$goal_query="SELECT * FROM short_term_objective LEFT JOIN long_term_goal ON short_term_objective.goal_id=long_term_goal.goal_id WHERE short_term_objective.uid=" . addslashes($_GET['sto']);
+$goal_query="SELECT * FROM short_term_objective LEFT JOIN long_term_goal ON short_term_objective.goal_id=long_term_goal.goal_id WHERE short_term_objective.uid=" . mysql_real_escape_string($_GET['sto']);
 $goal_result=mysql_query($goal_query);
 if(!$goal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
@@ -96,7 +96,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 }
 
 if($have_write_permission && isset($_GET['edit'])) {
-    $update_query = "UPDATE short_term_objective  SET goal_id=" . $goal_row['goal_id'] . ",review_date='" . addslashes($_GET['review_date']) . "',description='" . addslashes($_GET['description']) . "',results_and_recommendations='" . addslashes($_GET['results_and_recommendations']) . "',strategies='" . AddSlashes($_GET['strategies']) . "',assessment_procedure='" . addslashes($_GET['assessment_procedure']) . "' WHERE uid=" . addslashes($_GET['sto']);
+    $update_query = "UPDATE short_term_objective  SET goal_id=" . $goal_row['goal_id'] . ",review_date='" . mysql_real_escape_string($_GET['review_date']) . "',description='" . addslashes($_GET['description']) . "',results_and_recommendations='" . addslashes($_GET['results_and_recommendations']) . "',strategies='" . AddSlashes($_GET['strategies']) . "',assessment_procedure='" . addslashes($_GET['assessment_procedure']) . "' WHERE uid=" . addslashes($_GET['sto']);
     $update_result = mysql_query($update_query);
     if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
@@ -112,7 +112,7 @@ if($have_write_permission && isset($_GET['edit'])) {
 //now we need to rerun the goal query because we may have added above
 //if brain wasn't off might be able to figure out a better way to do this
 //find the student owner of this objective...
-$goal_query="SELECT * FROM short_term_objective LEFT JOIN long_term_goal ON short_term_objective.goal_id=long_term_goal.goal_id WHERE short_term_objective.uid=" . addslashes($_GET['sto']);
+$goal_query="SELECT * FROM short_term_objective LEFT JOIN long_term_goal ON short_term_objective.goal_id=long_term_goal.goal_id WHERE short_term_objective.uid=" . mysql_real_escape_string($_GET['sto']);
 $goal_result=mysql_query($goal_query);
 if(!$goal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";

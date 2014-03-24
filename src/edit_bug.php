@@ -80,7 +80,7 @@ else $uid=$_GET['uid'];
 //run the strength/need query first then validate...
 //get the strengths/needs for this student...
 $bug_row="";
-$bug_query="SELECT * FROM bugs WHERE uid=" . addslashes($uid);
+$bug_query="SELECT * FROM bugs WHERE uid=" . mysql_real_escape_string($uid);
 $bug_result = mysql_query($bug_query);
 if(!$bug_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$bug_query'<BR>";
@@ -103,9 +103,9 @@ if(isset($_POST['edit_bug_report'])) {
    else {
      if(!$have_write_permission) { $MESSAGE = $MESSAGE . "You don't have permission<BR>"; }
      else {
-       $update_query = "UPDATE bugs set bug='" . addslashes($_POST['bug']) . "'";
+       $update_query = "UPDATE bugs set bug='" . mysql_real_escape_string($_POST['bug']) . "'";
        if($permission_level <= $IPP_MIN_EDIT_BUG_PERMISSION) {
-         $update_query .= ",resolution='" . addslashes($_POST['resolution']) . "',status='" . addslashes($_POST['status']) . "'";
+         $update_query .= ",resolution='" . mysql_real_escape_string($_POST['resolution']) . "',status='" . addslashes($_POST['status']) . "'";
        }
        $update_query .= " WHERE uid=$uid LIMIT 1";
        $update_result = mysql_query($update_query);

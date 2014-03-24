@@ -85,7 +85,7 @@ if(isset($_POST['add_code'])) {
     $MESSAGE = $MESSAGE . $retval;
   } else {
     //we add the entry.
-    $insert_query = "INSERT INTO valid_coding (code_number,code_text) VALUES ('" . addslashes($_POST['code']) . "','" . addslashes($_POST['code_text']) . "')";
+    $insert_query = "INSERT INTO valid_coding (code_number,code_text) VALUES ('" . mysql_real_escape_string($_POST['code']) . "','" . addslashes($_POST['code_text']) . "')";
     $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . $insert_query . "<BR>";

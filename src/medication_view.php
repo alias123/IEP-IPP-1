@@ -91,7 +91,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -109,11 +109,11 @@ if(isset($_GET['add_medication']) && $have_write_permission) {
      else {
        //one more check...is this student currently on this medication?
        //check for duplicates....
-       $check_query="SELECT * FROM medication where student_id=" . addslashes($student_id) . " AND end_date IS NULL and medication_name='" . addslashes($_GET['medication_name']) . "'";
+       $check_query="SELECT * FROM medication where student_id=" . mysql_real_escape_string($student_id) . " AND end_date IS NULL and medication_name='" . addslashes($_GET['medication_name']) . "'";
        $check_result = mysql_query($check_query); //just ignore the errors...like who cares anyways hey?
        if(mysql_num_rows($check_result) > 0) $MESSAGE = $MESSAGE . "This student is listed as currently on this medication<BR>";
        else {
-          $add_query = "INSERT INTO medication (student_id,medication_name,doctor,start_date,end_date) VALUES (" . addslashes($_GET['student_id']) . ",'" . addslashes($_GET['medication_name']) . "','" . addslashes($_GET['doctor']) . "','" . addslashes($_GET['start_date']) . "',NULL)";
+          $add_query = "INSERT INTO medication (student_id,medication_name,doctor,start_date,end_date) VALUES (" . mysql_real_escape_string($_GET['student_id']) . ",'" . addslashes($_GET['medication_name']) . "','" . addslashes($_GET['doctor']) . "','" . addslashes($_GET['start_date']) . "',NULL)";
           //$MESSAGE = $MESSAGE . $add_query . "<BR>";
           $add_result = mysql_query($add_query);
           if(!$add_result) {

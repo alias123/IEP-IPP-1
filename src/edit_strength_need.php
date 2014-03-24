@@ -73,7 +73,7 @@ if(isset($_POST['uid'])) $uid=$_POST['uid'];
 else $uid=$_GET['uid'];
 //run the strength/need query first then validate...
 //get the strengths/needs for this student...
-$strength_query="SELECT * FROM area_of_strength_or_need WHERE uid=" . addslashes($uid);
+$strength_query="SELECT * FROM area_of_strength_or_need WHERE uid=" . mysql_real_escape_string($uid);
 $strength_result = mysql_query($strength_query);
 if(!$strength_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$strength_query'<BR>";

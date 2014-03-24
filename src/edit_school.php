@@ -80,8 +80,8 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 
 //************** validated past here ****************
 $school_code="";
-if(isset($_GET['school_code'])) $school_code= addslashes($_GET['school_code']);
-if(isset($_POST['school_code'])) $school_code = addslashes($_POST['school_code']);
+if(isset($_GET['school_code'])) $school_code= mysql_real_escape_string($_GET['school_code']);
+if(isset($_POST['school_code'])) $school_code = mysql_real_escape_string($_POST['school_code']);
 
 //get the coordination of services for this student...
 $school_row="";
@@ -127,7 +127,7 @@ if(isset($_POST['edit_school'])) {
     $red=substr($_POST['school_colour'],1,2);
     $green=substr($_POST['school_colour'],3,2);
     $blue=substr($_POST['school_colour'],5,2);
-    $insert_query = "UPDATE school SET school_name='" . addslashes($_POST['school_name']) . "',school_address='" . addslashes($_POST['school_address']) . "',red='$red',green='$green',blue='$blue'";
+    $insert_query = "UPDATE school SET school_name='" . mysql_real_escape_string($_POST['school_name']) . "',school_address='" . addslashes($_POST['school_address']) . "',red='$red',green='$green',blue='$blue'";
     $insert_query .= " WHERE school_code='$school_code' LIMIT 1";
     $insert_result = mysql_query($insert_query);
      if(!$insert_result) {

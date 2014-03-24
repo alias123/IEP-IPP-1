@@ -13,7 +13,7 @@
  * @todo		
  * 1. Some code is commented out; determine if it serves a productive function (such as testing)
  * 2. Dangerous output from DB with inconsistent escaping. Output from DB is spell checked, but not escaped consistently.
- * 3. Where it is escaped, seems to rely on addslashes(). Find contemporary best practice and secure method to escape output.
+ * 3. Where it is escaped, seems to rely on mysql_real_escape_string(). Find contemporary best practice and secure method to escape output.
  * 4. Use it to escape echoed variables appearing in HTML (bottom)
  * 5. Standardize HTML - see James' informed recommendation
  * 6. explanation of code set on line 17 is inaccurate - is not consistent with filename, which is more accurate.
@@ -157,7 +157,7 @@ if(isset($_GET['deleteLTG']) && $have_write_permission) {
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
    }  else {
-     $update_query = "DELETE FROM long_term_goal WHERE goal_id=" . addslashes($_GET['deleteLTG']);
+     $update_query = "DELETE FROM long_term_goal WHERE goal_id=" . mysql_real_escape_string($_GET['deleteLTG']);
      $update_result = mysql_query($update_query);
      if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";

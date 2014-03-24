@@ -64,7 +64,7 @@ else $uid=$_GET['uid'];
 //run query first then validate...
 //get the values for this student...
 $info_row="";
-$info_query="SELECT * FROM background_info WHERE uid=" . addslashes($uid);
+$info_query="SELECT * FROM background_info WHERE uid=" . mysql_real_escape_string($uid);
 $info_result = mysql_query($info_query);
 if(!$info_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$info_query'<BR>";
@@ -101,7 +101,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -114,7 +114,7 @@ if(isset($_POST['edit_info']) && $have_write_permission) {
    //minimal testing of input...
      if($_POST['type'] == "") $MESSAGE = $MESSAGE . "You must choose a type<BR>";
      else {
-         $edit_query = "UPDATE background_info SET type='" . addslashes($_POST['type']) . "',description='" . addslashes($_POST['description']) . "' WHERE uid=" . addslashes($_POST['uid']) . " LIMIT 1";
+         $edit_query = "UPDATE background_info SET type='" . mysql_real_escape_string($_POST['type']) . "',description='" . addslashes($_POST['description']) . "' WHERE uid=" . addslashes($_POST['uid']) . " LIMIT 1";
          $edit_result = mysql_query($edit_query);
          if(!$edit_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$edit_query'<BR>";

@@ -34,7 +34,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
  * Path for IPP required files.
  */
 
-if(isset($_GET['MESSAGE'])) $MESSAGE = addslashes($_GET['MESSAGE']); else $MESSAGE="";
+if(isset($_GET['MESSAGE'])) $MESSAGE = mysql_real_escape_string($_GET['MESSAGE']); else $MESSAGE="";
 
 define('IPP_PATH','../');
 
@@ -121,7 +121,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -129,7 +129,7 @@ if(!$student_result) {
     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
-$goal_category_name_query= "SELECT * FROM typical_long_term_goal_category where cid=" . addslashes($goal_area) . " limit 1";
+$goal_category_name_query= "SELECT * FROM typical_long_term_goal_category where cid=" . mysql_real_escape_string($goal_area) . " limit 1";
 $goal_category_name_result=mysql_query($goal_category_name_query);
 if(!$goal_category_name_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_category_name_query'<BR>";
@@ -192,7 +192,7 @@ if(!$goal_category_name_result) {
 
         //while($catlist=mysql_fetch_array($catlist_result)) {
         if(isset($_GET['goal_area']) && !$_GET['goal_area']=="") {
-           $objlist_query="SELECT typical_long_term_goal.goal FROM typical_long_term_goal WHERE cid=" . addslashes($_GET['goal_area']) . " AND typical_long_term_goal.is_deleted='N'";
+           $objlist_query="SELECT typical_long_term_goal.goal FROM typical_long_term_goal WHERE cid=" . mysql_real_escape_string($_GET['goal_area']) . " AND typical_long_term_goal.is_deleted='N'";
            $objlist_result = mysql_query($objlist_query);
            if(!$objlist_result) {
              $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objlist_query'<BR>";

@@ -86,7 +86,7 @@ $have_write_permission = FALSE;
 if(isset($_POST['add_bug_report'])) {
    //minimal testing of input...
 
-       $add_query = "INSERT INTO bugs (username, status, bug, resolution,referring_page) VALUES ('" . addslashes($_SESSION['egps_username']) . "','Active','" . addslashes($_POST['description']) . "', NULL,'" . addslashes($_POST['referring_page']) . "')";
+       $add_query = "INSERT INTO bugs (username, status, bug, resolution,referring_page) VALUES ('" . mysql_real_escape_string($_SESSION['egps_username']) . "','Active','" . addslashes($_POST['description']) . "', NULL,'" . addslashes($_POST['referring_page']) . "')";
        $add_result = mysql_query($add_query);
        if(!$add_result) {
          $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";

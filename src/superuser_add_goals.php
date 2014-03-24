@@ -67,7 +67,7 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 
 //check if we are deleting an area...
 if(isset($_GET['delete_area'])) {
-         $delete_query="UPDATE typical_long_term_goal_category SET is_deleted='Y' where cid=" . addslashes($_GET['delete_area']);
+         $delete_query="UPDATE typical_long_term_goal_category SET is_deleted='Y' where cid=" . mysql_real_escape_string($_GET['delete_area']);
          $delete_result = mysql_query($delete_query);
          if(!$delete_result) {
              $error_message = $error_message . "Delete query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
@@ -79,7 +79,7 @@ if(isset($_GET['delete_area'])) {
 
 //check if we are deleting a long term goal...
 if(isset($_GET['delete_ltg'])) {
-         $delete_query="UPDATE typical_long_term_goal SET is_deleted='Y' where ltg_id=" . addslashes($_GET['delete_ltg']);
+         $delete_query="UPDATE typical_long_term_goal SET is_deleted='Y' where ltg_id=" . mysql_real_escape_string($_GET['delete_ltg']);
          $delete_result = mysql_query($delete_query);
          if(!$delete_result) {
              $error_message = $error_message . "Delete query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
@@ -91,7 +91,7 @@ if(isset($_GET['delete_ltg'])) {
 
 //check if we are deleting a long term goal...
 if(isset($_GET['delete_stg'])) {
-         $delete_query="UPDATE typical_short_term_objective SET is_deleted='Y' where stg_id=" . addslashes($_GET['delete_stg']);
+         $delete_query="UPDATE typical_short_term_objective SET is_deleted='Y' where stg_id=" . mysql_real_escape_string($_GET['delete_stg']);
          $delete_result = mysql_query($delete_query);
          if(!$delete_result) {
              $error_message = $error_message . "Delete query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
@@ -104,10 +104,10 @@ if(isset($_GET['delete_stg'])) {
 //check if we are adding a long term goal...
 if(isset($_GET['ltg_name'])) {
     //check if we already have this goal value
-    $check_query="SELECT * FROM typical_long_term_goal where cid='" . addslashes($_GET['program_area']) . "' and goal='" . addslashes($_GET['ltg_name']) . "'";
+    $check_query="SELECT * FROM typical_long_term_goal where cid='" . mysql_real_escape_string($_GET['program_area']) . "' and goal='" . addslashes($_GET['ltg_name']) . "'";
     $check_result=mysql_query($check_query);
     if($check_result && mysql_num_rows($check_result) == 0) {
-         $insert_query="INSERT INTO typical_long_term_goal (goal,cid) VALUES ('" . addslashes($_GET['ltg_name']) . "','" . addslashes($_GET['program_area']) . "')";
+         $insert_query="INSERT INTO typical_long_term_goal (goal,cid) VALUES ('" . mysql_real_escape_string($_GET['ltg_name']) . "','" . addslashes($_GET['program_area']) . "')";
          $insert_result = mysql_query($insert_query);
          if(!$insert_result) {
              $error_message = $error_message . "Insert query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
@@ -122,10 +122,10 @@ if(isset($_GET['ltg_name'])) {
 //check if we are adding a category...
 if(isset($_GET['category_name'])) {
     //check if we already have this goal value
-    $check_query="SELECT * FROM typical_long_term_goal_category where name='" . addslashes($_GET['category_name']) . "' AND is_deleted='N'";
+    $check_query="SELECT * FROM typical_long_term_goal_category where name='" . mysql_real_escape_string($_GET['category_name']) . "' AND is_deleted='N'";
     $check_result=mysql_query($check_query);
     if($check_result && mysql_num_rows($check_result) == 0) {
-         $insert_query="INSERT INTO typical_long_term_goal_category (name) VALUES ('" . addslashes($_GET['category_name']) . "')";
+         $insert_query="INSERT INTO typical_long_term_goal_category (name) VALUES ('" . mysql_real_escape_string($_GET['category_name']) . "')";
          $insert_result = mysql_query($insert_query);
          if(!$insert_result) {
              $error_message = $error_message . "Insert query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
@@ -140,10 +140,10 @@ if(isset($_GET['category_name'])) {
 //check if we are adding a category...
 if(isset($_GET['stg_name'])) {
     //check if we already have this goal value
-    $check_query="SELECT * FROM typical_short_term_objective where goal='" . addslashes($_GET['stg_name']) . "' AND is_deleted='N' AND ltg_id=" . addslashes($_GET['ltg_id']);
+    $check_query="SELECT * FROM typical_short_term_objective where goal='" . mysql_real_escape_string($_GET['stg_name']) . "' AND is_deleted='N' AND ltg_id=" . addslashes($_GET['ltg_id']);
     $check_result=mysql_query($check_query);
     if($check_result && mysql_num_rows($check_result) == 0) {
-         $insert_query="INSERT INTO typical_short_term_objective (goal,ltg_id) VALUES ('" . addslashes($_GET['stg_name']) . "'," . addslashes($_GET['ltg_id']) . ")";
+         $insert_query="INSERT INTO typical_short_term_objective (goal,ltg_id) VALUES ('" . mysql_real_escape_string($_GET['stg_name']) . "'," . addslashes($_GET['ltg_id']) . ")";
          $insert_result = mysql_query($insert_query);
          if(!$insert_result) {
              $error_message = $error_message . "Insert query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";

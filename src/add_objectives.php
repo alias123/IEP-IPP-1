@@ -84,14 +84,14 @@ if((!isset($_GET['student_id']) || $_GET['student_id']=="") &&  (!isset($_POST['
     exit();
 } else {
    if(!isset($_POST['student_id']))
-    $student_id=addslashes($_GET['student_id']);
+    $student_id=mysql_real_escape_string($_GET['student_id']);
    else
-    $student_id=addslashes($_POST['student_id']);
+    $student_id=mysql_real_escape_string($_POST['student_id']);
 }
 
 $goal_id="";
-if(isset($_POST['lto'])) $goal_id=addslashes($_POST['lto']);
-if(isset($_GET['lto'])) $goal_id=addslashes($_GET['lto']);
+if(isset($_POST['lto'])) $goal_id=mysql_real_escape_string($_POST['lto']);
+if(isset($_GET['lto'])) $goal_id=mysql_real_escape_string($_GET['lto']);
 
 $our_permission = getStudentPermission($student_id);
 if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission == "ALL") {
@@ -113,8 +113,8 @@ if(isset($_POST['add_goal']) && $have_write_permission) {
       //$description=eregi_replace("\r\n",' ',$description);
       //$description=eregi_replace("\r",' ',$description);
       //$description=eregi_replace("\n",' ',$description);
-      $description= addslashes($description);
-      $check_query="SELECT * FROM long_term_goal WHERE student_id=" . addslashes($student_id) . " AND goal='" . addslashes($description) . "'";
+      $description= mysql_real_escape_string($description);
+      $check_query="SELECT * FROM long_term_goal WHERE student_id=" . mysql_real_escape_string($student_id) . " AND goal='" . addslashes($description) . "'";
       $check_result=mysql_query($check_query);
       if(mysql_num_rows($check_result) > 0) {
           $MESSAGE = $MESSAGE . "This is already set as a goal for this student (you might have hit reload)<BR>";
@@ -133,12 +133,12 @@ if(isset($_POST['add_goal']) && $have_write_permission) {
                 $area = "Other";
             } else {
                 //lets get the area...
-                $area_query="SELECT * FROM typical_long_term_goal_category WHERE cid=" . addslashes($_POST['goal_area']);
+                $area_query="SELECT * FROM typical_long_term_goal_category WHERE cid=" . mysql_real_escape_string($_POST['goal_area']);
                 $area_result=mysql_query($area_query);
                 if(!$area_result) $area="Other";
                 else { $area_row=mysql_fetch_array($area_result); $area = $area_row['name'];}
             }
-            $insert_goal_query="INSERT INTO long_term_goal (goal,student_id,review_date,area) VALUES ('$description',$student_id,'" . addslashes($_POST['review_date']) . "','" . addslashes($area) . "')";
+            $insert_goal_query="INSERT INTO long_term_goal (goal,student_id,review_date,area) VALUES ('$description',$student_id,'" . mysql_real_escape_string($_POST['review_date']) . "','" . addslashes($area) . "')";
             $insert_goal_result = mysql_query($insert_goal_query);
             if(!$insert_goal_result) {
                 $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_goal_query'<BR>";
@@ -159,7 +159,7 @@ if($goal_id == "" && (!isset($goal_id) || $goal_id=="") ) {
 } else {
    if($goal_id == "") { $goal_id=$goal_id; }
    //find the student owner of this objective...
-   $goal_query="SELECT long_term_goal.*,short_term_objective.*,long_term_goal.review_date AS goal_review_date FROM long_term_goal LEFT JOIN short_term_objective ON long_term_goal.goal_id=short_term_objective.goal_id WHERE long_term_goal.goal_id=" . addslashes($goal_id);
+   $goal_query="SELECT long_term_goal.*,short_term_objective.*,long_term_goal.review_date AS goal_review_date FROM long_term_goal LEFT JOIN short_term_objective ON long_term_goal.goal_id=short_term_objective.goal_id WHERE long_term_goal.goal_id=" . mysql_real_escape_string($goal_id);
    $goal_result=mysql_query($goal_query);
    if(!$goal_result) {
      $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
@@ -186,8 +186,8 @@ if(isset($_POST['update_goal']) && $have_write_permission) {
    if($_POST['goal_text'] == "") $MESSAGE = $MESSAGE . "You must supply goal text<BR>";
    else {
       $update_query="UPDATE long_term_goal SET area=";
-      $update_query .= "'" . addslashes($_POST['goal_area']) . "'";
-      $update_query .= ", review_date='" . addslashes($_POST['goal_review_date']) . "',goal='" . addslashes($_POST['goal_text']) . "' WHERE goal_id=$goal_id LIMIT 1";
+      $update_query .= "'" . mysql_real_escape_string($_POST['goal_area']) . "'";
+      $update_query .= ", review_date='" . mysql_real_escape_string($_POST['goal_review_date']) . "',goal='" . addslashes($_POST['goal_text']) . "' WHERE goal_id=$goal_id LIMIT 1";
       $update_result = mysql_query($update_query);
       if(!$update_result) {
          $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
@@ -195,7 +195,7 @@ if(isset($_POST['update_goal']) && $have_write_permission) {
          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
       }
     //rerun the queries
-    $goal_query="SELECT long_term_goal.*,short_term_objective.*,long_term_goal.review_date AS goal_review_date FROM long_term_goal LEFT JOIN short_term_objective ON long_term_goal.goal_id=short_term_objective.goal_id WHERE long_term_goal.goal_id=" . addslashes($goal_id);
+    $goal_query="SELECT long_term_goal.*,short_term_objective.*,long_term_goal.review_date AS goal_review_date FROM long_term_goal LEFT JOIN short_term_objective ON long_term_goal.goal_id=short_term_objective.goal_id WHERE long_term_goal.goal_id=" . mysql_real_escape_string($goal_id);
     $goal_result=mysql_query($goal_query);
     if(!$goal_result) {
      $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
@@ -221,7 +221,7 @@ if(isset($_POST['add_objective']) && $have_write_permission) {
           $MESSAGE = $MESSAGE . "Date must be in YYYY-MM-DD format<BR>";
      } else {
        $insert_query = "INSERT INTO short_term_objective (goal_id,description,review_date,results_and_recommendations,strategies,assessment_procedure) values (";
-       $insert_query = $insert_query . addslashes($goal_id) . ",";
+       $insert_query = $insert_query . mysql_real_escape_string($goal_id) . ",";
        $insert_query = $insert_query . "'" . AddSlashes($_POST['description']) . "',";
        $insert_query = $insert_query . "'" . AddSlashes($_POST['review_date']) . "',";
 
@@ -264,7 +264,7 @@ if($goal_id == "" && (!isset($goal_id) || $goal_id=="") ) {
 } else {
    if($goal_id == "") { $goal_id=$goal_id; }
    //find the student owner of this objective...
-   $goal_query="SELECT * FROM long_term_goal LEFT JOIN short_term_objective ON long_term_goal.goal_id=short_term_objective.goal_id WHERE long_term_goal.goal_id=" . addslashes($goal_id);
+   $goal_query="SELECT * FROM long_term_goal LEFT JOIN short_term_objective ON long_term_goal.goal_id=short_term_objective.goal_id WHERE long_term_goal.goal_id=" . mysql_real_escape_string($goal_id);
    $goal_result=mysql_query($goal_query);
    if(!$goal_result) {
      $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
@@ -281,7 +281,7 @@ if($goal_id == "" && (!isset($goal_id) || $goal_id=="") ) {
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
 if($student_id) {
-  $student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+  $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
   $student_result = mysql_query($student_query);
   if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -332,7 +332,7 @@ $MESSAGE = $MESSAGE . "<BR>Please add short term objectives to achieve this goal
           $row=mysql_fetch_array($dataSource);
 
           $bad_chars = array("\n", "\r");
-          $tempOutput.= addslashes(str_replace($bad_chars, "\\n",$row[0])) . ' ';
+          $tempOutput.= mysql_real_escape_string(str_replace($bad_chars, "\\n",$row[0])) . ' ';
 
           $javascript.=trim($tempOutput).'";';
         }

@@ -63,7 +63,7 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
 
 //find the student owner of this objective...
-$long_term_goal_query="SELECT * FROM long_term_goal WHERE goal_id=" . addslashes($_GET['goal_id']);
+$long_term_goal_query="SELECT * FROM long_term_goal WHERE goal_id=" . mysql_real_escape_string($_GET['goal_id']);
 $long_term_goal_result=mysql_query($long_term_goal_query);
 if(!$long_term_goal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$long_term_goal_query'<BR>";
@@ -105,7 +105,7 @@ if(isset($_GET['add_objective']) && $have_write_permission) {
   $description=eregi_replace("\r",' ',$description);
   $description=eregi_replace("\n",' ',$description);
   //after the filter, it's escaped output
-  $description= addslashes($description);
+  $description= mysql_real_escape_string($description);
   //check if we have this objective already...
   $check_query="SELECT * FROM short_term_objective WHERE DESCRIPTION='$description' AND goal_id=" . $long_term_goal_row['goal_id'];
   $check_result=mysql_query($check_query);
@@ -119,7 +119,7 @@ if(isset($_GET['add_objective']) && $have_write_permission) {
       if($_GET['description']=="") { $MESSAGE = $MESSAGE . "You must supply a description"; } else
       {
        //puts new info into database.. there is not reporting at this point, so nothing is put that field
-       $insert_query = "INSERT INTO short_term_objective (goal_id,description,review_date) VALUES (" . $long_term_goal_row['goal_id'] . ",'$description','" . addslashes($_GET['review_date']) . "')";
+       $insert_query = "INSERT INTO short_term_objective (goal_id,description,review_date) VALUES (" . $long_term_goal_row['goal_id'] . ",'$description','" . mysql_real_escape_string($_GET['review_date']) . "')";
        $insert_result = mysql_query($insert_query);
        if(!$insert_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
@@ -138,7 +138,7 @@ if(isset($_GET['add_objective']) && $have_write_permission) {
 
 //if conditions are met, deletes a short term objective
 if($have_write_permission && $_GET['delete']) {
-    $delete_query = "DELETE from short_term_objective WHERE uid=" . addslashes($_GET['sto']);
+    $delete_query = "DELETE from short_term_objective WHERE uid=" . mysql_real_escape_string($_GET['sto']);
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
@@ -150,7 +150,7 @@ if($have_write_permission && $_GET['delete']) {
 }
 //updates db when student achieves an objective
 if($have_write_permission && $_GET['set_achieved']) {
-    $achieved_query = "UPDATE short_term_objective SET achieved='Y' WHERE uid=" . addslashes($_GET['sto']);
+    $achieved_query = "UPDATE short_term_objective SET achieved='Y' WHERE uid=" . mysql_real_escape_string($_GET['sto']);
     $achieved_result = mysql_query($achieved_query);
     if(!$achieved_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$achieved_query'<BR>";
@@ -162,7 +162,7 @@ if($have_write_permission && $_GET['set_achieved']) {
 }
 //change achieved objective to not achieved
 if($have_write_permission && $_GET['set_not_achieved']) {
-    $achieved_query = "UPDATE short_term_objective SET achieved='N' WHERE uid=" . addslashes($_GET['sto']);
+    $achieved_query = "UPDATE short_term_objective SET achieved='N' WHERE uid=" . mysql_real_escape_string($_GET['sto']);
     $achieved_result = mysql_query($achieved_query);
     if(!$achieved_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$achieved_query'<BR>";
@@ -173,7 +173,7 @@ if($have_write_permission && $_GET['set_not_achieved']) {
     }
 }
 //try to get all objectives attached to a student in the db
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -181,7 +181,7 @@ if(!$student_result) {
     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 //try to get all objectives attached to a certain goal
-$objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . addslashes($long_term_goal_row['goal_id']) . " and achieved='Y'";
+$objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . mysql_real_escape_string($long_term_goal_row['goal_id']) . " and achieved='Y'";
 $objectives_result=mysql_query($objectives_query);
 if(!$objectives_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objectives_query'<BR>";
@@ -189,7 +189,7 @@ if(!$objectives_result) {
     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 }
 //if conditions are met, find all objectives not completed
-$completed_objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . addslashes($long_term_goal_row['goal_id']) . " and achieved='N'";
+$completed_objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . mysql_real_escape_string($long_term_goal_row['goal_id']) . " and achieved='N'";
 $completed_objectives_result=mysql_query($completed_objectives_query);
 if(!$completed_objectives_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$completed_objectives_query'<BR>";
@@ -250,7 +250,7 @@ if(!$completed_objectives_result) {
     function echoJSServicesArray() {
         global $MESSAGE;
         //get a list of all available goal categories...
-        $catlist_query="SELECT typical_short_term_objective.goal FROM long_term_goal RIGHT JOIN typical_long_term_goal ON long_term_goal.goal LIKE typical_long_term_goal.goal RIGHT JOIN typical_short_term_objective ON typical_long_term_goal.ltg_id=typical_short_term_objective.ltg_id WHERE long_term_goal.goal_id=" . addslashes($_GET['goal_id']) . " AND student_id=" . addslashes($_GET['student_id']);
+        $catlist_query="SELECT typical_short_term_objective.goal FROM long_term_goal RIGHT JOIN typical_long_term_goal ON long_term_goal.goal LIKE typical_long_term_goal.goal RIGHT JOIN typical_short_term_objective ON typical_long_term_goal.ltg_id=typical_short_term_objective.ltg_id WHERE long_term_goal.goal_id=" . mysql_real_escape_string($_GET['goal_id']) . " AND student_id=" . addslashes($_GET['student_id']);
         $catlist_result=mysql_query($catlist_query);
         if(!$catlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$catlist_query'<BR>";

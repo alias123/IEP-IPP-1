@@ -138,7 +138,7 @@ function getStudents() {
 
     //do a subquery to find our school code...easier than messing with the ugly
     //query below...
-    $school_code_query="SELECT school_code FROM support_member WHERE egps_username='" . addslashes($_SESSION['egps_username']) . "'";
+    $school_code_query="SELECT school_code FROM support_member WHERE egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "'";
     $school_code_result=mysql_query($school_code_query);
     if(!$school_code_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_code_query'<BR>";
@@ -147,9 +147,9 @@ function getStudents() {
     $school_code_row=mysql_fetch_array($school_code_result);
     $school_code= $school_code_row['school_code'];
 
-    $student_query = "SELECT DISTINCT student.student_id,last_name,first_name FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id WHERE ((support_list.egps_username='" . addslashes($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL)";
-    //prior to april 20/06: $student_query = "SELECT DISTINCT student.student_id,last_name,first_name FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id WHERE ((support_list.egps_username='" . addslashes($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL)";
-    //prior to march 18/06: $student_query = "SELECT DISTINCT student.student_id,last_name,first_name,school_history.school_code,school.* FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id LEFT JOIN school ON school_history.school_code=school.school_code WHERE (support_list.egps_username='" . addslashes($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL) OR (";
+    $student_query = "SELECT DISTINCT student.student_id,last_name,first_name FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id WHERE ((support_list.egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL)";
+    //prior to april 20/06: $student_query = "SELECT DISTINCT student.student_id,last_name,first_name FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id WHERE ((support_list.egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL)";
+    //prior to march 18/06: $student_query = "SELECT DISTINCT student.student_id,last_name,first_name,school_history.school_code,school.* FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id LEFT JOIN school ON school_history.school_code=school.school_code WHERE (support_list.egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL) OR (";
     
     if(($IPP_MIN_VIEW_LIST_ALL_STUDENTS >= $permission_level)) {
         //orig 2006-04-20: $student_query = $student_query . " OR (end_date IS NOT NULL)";

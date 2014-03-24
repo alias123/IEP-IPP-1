@@ -73,7 +73,7 @@ if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL
 
 //check if we do add...
 if(isset($_GET['add'])) {
-    $add_query = "INSERT into area_type (type) VALUES ('" . addslashes($_GET['type']) . "')";
+    $add_query = "INSERT into area_type (type) VALUES ('" . mysql_real_escape_string($_GET['type']) . "')";
     $add_result = mysql_query($add_query);
     if(!$add_result) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";

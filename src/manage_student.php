@@ -145,7 +145,7 @@ function getStudents() {
 
     //do a subquery to find our school code...easier than messing with the ugly
     //query below...
-    $school_code_query="SELECT school_code FROM support_member WHERE egps_username='" . addslashes($_SESSION['egps_username']) . "'";
+    $school_code_query="SELECT school_code FROM support_member WHERE egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "'";
     $school_code_result=mysql_query($school_code_query);
     if(!$school_code_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_code_query'<BR>";
@@ -155,15 +155,15 @@ function getStudents() {
     $school_code= $school_code_row['school_code'];
 
     //$student_query = "SELECT student.student_id,last_name,first_name,school_history.school_code,school.* FROM student LEFT JOIN school_history ON student.student_id=school_history.student_id LEFT JOIN school ON school_history.school_code=school.school_code WHERE end_date IS NULL ";
-    $student_query = "SELECT DISTINCT student.student_id,last_name,first_name,school_history.school_code,school.* FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id LEFT JOIN school ON school_history.school_code=school.school_code WHERE ((support_list.egps_username='" . addslashes($_SESSION['egps_username']) . "' AND school_history.end_date IS NULL AND support_list.student_id IS NOT NULL) OR (";
-    //prior to march 18/06: $student_query = "SELECT DISTINCT student.student_id,last_name,first_name,school_history.school_code,school.* FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id LEFT JOIN school ON school_history.school_code=school.school_code WHERE (support_list.egps_username='" . addslashes($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL) OR (";
+    $student_query = "SELECT DISTINCT student.student_id,last_name,first_name,school_history.school_code,school.* FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id LEFT JOIN school ON school_history.school_code=school.school_code WHERE ((support_list.egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "' AND school_history.end_date IS NULL AND support_list.student_id IS NOT NULL) OR (";
+    //prior to march 18/06: $student_query = "SELECT DISTINCT student.student_id,last_name,first_name,school_history.school_code,school.* FROM student LEFT JOIN support_list ON student.student_id = support_list.student_id LEFT JOIN school_history ON student.student_id=school_history.student_id LEFT JOIN school ON school_history.school_code=school.school_code WHERE (support_list.egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "' AND support_list.student_id IS NOT NULL) OR (";
     
     if(!($IPP_MIN_VIEW_LIST_ALL_STUDENTS >= $permission_level)) { //$IPP_MIN_VIEW_LIST_ALL_LOCAL_STUDENTS >= $permission_level) {
           $student_query = $student_query . "school_history.school_code='$school_code' AND "; //prior to 2006-03-21: $student_query = $student_query . "school_history.school_code='$school_code' AND ";
       if($IPP_MIN_VIEW_LIST_ALL_LOCAL_STUDENTS < $permission_level)
         {
           //$MESSAGE .= "debug: permission level: $IPP_MIN_VIEW_LIST_ALL_LOCAL_STUDENTS < $permission_level<BR><BR>";
-          $student_query .= "support_list.egps_username='" . addslashes($_SESSION['egps_username']) . "' AND ";
+          $student_query .= "support_list.egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "' AND ";
         }
           $student_query .= "end_date IS NULL) ";
     } else {
@@ -172,19 +172,19 @@ function getStudents() {
     if(isset($_GET['SEARCH'])) {
         switch ($_GET['field']) {
            case 'last_name':
-               $student_query = $student_query . "AND student.last_name LIKE '". addslashes($_GET['szSearchVal']) ."' ";
+               $student_query = $student_query . "AND student.last_name LIKE '". mysql_real_escape_string($_GET['szSearchVal']) ."' ";
            break;
            case 'first_name':
-               $student_query = $student_query . "AND student.first_name LIKE '". addslashes($_GET['szSearchVal']) ."' ";
+               $student_query = $student_query . "AND student.first_name LIKE '". mysql_real_escape_string($_GET['szSearchVal']) ."' ";
            break;
            case 'last_name':
-               $student_query = $student_query . "AND student.last_name LIKE '". addslashes($_GET['szSearchVal']) ."' ";
+               $student_query = $student_query . "AND student.last_name LIKE '". mysql_real_escape_string($_GET['szSearchVal']) ."' ";
            break;
            case 'school_name':
-               $student_query = $student_query . "AND school.school_name LIKE '". addslashes($_GET['szSearchVal']) ."' ";
+               $student_query = $student_query . "AND school.school_name LIKE '". mysql_real_escape_string($_GET['szSearchVal']) ."' ";
            break;
            case 'school_code':
-               $student_query = $student_query . "AND school_history.school_code LIKE '". addslashes($_GET['szSearchVal']) ."' ";
+               $student_query = $student_query . "AND school_history.school_code LIKE '". mysql_real_escape_string($_GET['szSearchVal']) ."' ";
         
         }
     }

@@ -104,7 +104,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -131,7 +131,7 @@ if(isset($_POST['update_school_history'])) {
     $MESSAGE = $MESSAGE . $retval;
   } else {
            if($_POST['end_date']=="") $end_date = "NULL";
-           else $end_date = "'" . addslashes($_POST['end_date']) . "'";
+           else $end_date = "'" . mysql_real_escape_string($_POST['end_date']) . "'";
            if($history_row['end_date'] != "" && $_POST['end_date'] == "") {
               //we need to set any other currently enrolled end date
               //for this student to end now() ...student can only
@@ -144,11 +144,11 @@ if(isset($_POST['update_school_history'])) {
                  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
               }
            }
-           $update_query="UPDATE school_history SET start_date='" . addslashes($_POST['start_date']) . "', end_date=$end_date,school_name='" . addslashes($_POST['school_name']) . "', school_address='" . addslashes($_POST['school_address']) . "', ipp_present='" . addslashes($_POST['ipp_present']) . "',accommodations='" . addslashes($_POST['accommodations']) . "'";
+           $update_query="UPDATE school_history SET start_date='" . mysql_real_escape_string($_POST['start_date']) . "', end_date=$end_date,school_name='" . addslashes($_POST['school_name']) . "', school_address='" . addslashes($_POST['school_address']) . "', ipp_present='" . addslashes($_POST['ipp_present']) . "',accommodations='" . addslashes($_POST['accommodations']) . "'";
            if($_POST['grades']=="")
               $update_query .= ",grades=NULL";
            else
-              $update_query .= ",grades='" . addslashes($_POST['grades']) . "'";
+              $update_query .= ",grades='" . mysql_real_escape_string($_POST['grades']) . "'";
            $update_query .= " WHERE uid=$uid LIMIT 1";
            $update_result=mysql_query($update_query);
            if(!$update_result) {

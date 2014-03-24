@@ -115,7 +115,7 @@ if($our_permission != "READ" && $our_permission != "WRITE" && $our_permission !=
 }
 
 $supervisor_row="";
-$supervisor_query = "SELECT * FROM supervisor WHERE student_id=" . addslashes($_GET['student_id']) . " AND end_date IS NULL";
+$supervisor_query = "SELECT * FROM supervisor WHERE student_id=" . mysql_real_escape_string($_GET['student_id']) . " AND end_date IS NULL";
 $supervisor_result = mysql_query($supervisor_query);
 if(!$supervisor_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";

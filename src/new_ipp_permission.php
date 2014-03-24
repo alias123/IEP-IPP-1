@@ -95,7 +95,7 @@ if($our_permission != "ASSIGN" && $our_permission != "ALL") {
 }
 
 //************** validated past here SESSION ACTIVE****************
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 $student_row="";
 if(!$student_result) {
@@ -109,7 +109,7 @@ if(isset($_GET['username'])) $username=$_GET['username'];
 else $username=$_POST['username'];
 
 //get all authorized ipp support members...
-$ipp_username_query="SELECT * FROM support_member WHERE egps_username LIKE '%" . addslashes($username) . "%'";
+$ipp_username_query="SELECT * FROM support_member WHERE egps_username LIKE '%" . mysql_real_escape_string($username) . "%'";
 $ipp_username_result = mysql_query($ipp_username_query);
 if(!$ipp_username_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$ipp_username_query'<BR>";
@@ -134,13 +134,13 @@ if(isset($_POST['ACTION']) && $_POST['ACTION'] == "Add"   && !isset($_POST['add_
 if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_username'])) {
 
    //make sure we don't have a duplicate...
-   $duplicate_query = "SELECT * FROM support_list WHERE egps_username='". addslashes($_POST['add_username']) . "' and student_id=" . addslashes($_POST['student_id']);
+   $duplicate_query = "SELECT * FROM support_list WHERE egps_username='". mysql_real_escape_string($_POST['add_username']) . "' and student_id=" . addslashes($_POST['student_id']);
    $duplicate_result = mysql_query($duplicate_query);
    if(mysql_num_rows($duplicate_result) > 0 ) {
       //already have this person as a support member for this student...
       $MESSAGE = $MESSAGE . "This person already appears to be a support member for this student<BR>";
    } else {
-       $insert_query = "INSERT INTO support_list (egps_username,student_id,permission,support_area) VALUES ('" . addslashes($_POST['add_username']) . "'," . addslashes($_POST['student_id']) . ",'" . addslashes($_POST['permission_level']) . "','" . addslashes($_POST['support_area']) . "')";
+       $insert_query = "INSERT INTO support_list (egps_username,student_id,permission,support_area) VALUES ('" . mysql_real_escape_string($_POST['add_username']) . "'," . addslashes($_POST['student_id']) . ",'" . addslashes($_POST['permission_level']) . "','" . addslashes($_POST['support_area']) . "')";
        $insert_result = mysql_query($insert_query);
        if(!$insert_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
@@ -152,10 +152,10 @@ if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_usern
 
           //successful add...log information and return to
           //this students ipp main page
-          IPP_LOG("Added support member " . addslashes($_POST['add_username']) . " to student #" . addslashes($_POST['student_id']),$_SESSION['egps_username'],'INFORMATIONAL');
+          IPP_LOG("Added support member " . mysql_real_escape_string($_POST['add_username']) . " to student #" . addslashes($_POST['student_id']),$_SESSION['egps_username'],'INFORMATIONAL');
           if(isset($_POST['mail_notification'])) {
             //echo "mailing<BR>";
-            mail_notification(addslashes($_POST['add_username']),"This email has been sent to you to notify you that you have been given " . addslashes($_POST['permission_level']) . " access to " . $student_row['first_name'] . " " . $student_row['last_name'] . "'s IPP on the $IPP_ORGANIZATION online individual program plan system.");
+            mail_notification(mysql_real_escape_string($_POST['add_username']),"This email has been sent to you to notify you that you have been given " . addslashes($_POST['permission_level']) . " access to " . $student_row['first_name'] . " " . $student_row['last_name'] . "'s IPP on the $IPP_ORGANIZATION online individual program plan system.");
           }
           header("Location: " . IPP_PATH . "src/modify_ipp_permission.php?student_id=" . $_POST['student_id']);
           exit();

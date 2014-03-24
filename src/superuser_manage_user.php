@@ -65,8 +65,8 @@ if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 
 $ippuserid="";
-if(isset($_GET['ippuserid'])) $ippuserid=addslashes($_GET['ippuserid']);
-   else $ippuserid=addslashes($_POST['ippuserid']);
+if(isset($_GET['ippuserid'])) $ippuserid=mysql_real_escape_string($_GET['ippuserid']);
+   else $ippuserid=mysql_real_escape_string($_POST['ippuserid']);
 
 //we want to run a check to make sure that if we are a local admin that
 //we can't access a person not at our school...
@@ -108,17 +108,17 @@ if(isLocalAdministrator($_SESSION['egps_username']) && getPermissionLevel($_SESS
 if(isset($_POST['Update'])) {
    //we are updating this users information...
    $update_query = "UPDATE support_member SET egps_username='$ippuserid',";  //do this so we start with a comma.
-   $update_query .= "first_name='" . addslashes($_POST['first_name']) . "',";
-   $update_query .= "last_name='" . addslashes($_POST['last_name']) . "',";
-   $update_query .= "email='" . addslashes($_POST['email']) . "',";
+   $update_query .= "first_name='" . mysql_real_escape_string($_POST['first_name']) . "',";
+   $update_query .= "last_name='" . mysql_real_escape_string($_POST['last_name']) . "',";
+   $update_query .= "email='" . mysql_real_escape_string($_POST['email']) . "',";
    if($permission_level <= 20 || (isLocalAdministrator($_SESSION['egps_username']))) {
       if(($_POST['permission_level'] > 20 && (isLocalAdministrator($_SESSION['egps_username']))) || $permission_level==0) {
-         $update_query .= " permission_level=" . addslashes($_POST['permission_level']) . ",";
+         $update_query .= " permission_level=" . mysql_real_escape_string($_POST['permission_level']) . ",";
       } else {
          $MESSAGE .= "You do not have permission to make this modification to this IPP members permission level<BR>";
       }
       if($permission_level==0) {
-        $update_query .= " school_code=" . addslashes($_POST['school_code']) . ",";
+        $update_query .= " school_code=" . mysql_real_escape_string($_POST['school_code']) . ",";
         $update_query .= " is_local_ipp_administrator='";
         if(isset($_POST['is_local_ipp_administrator'])) $update_query .= "Y";
         else $update_query .= "N";

@@ -60,8 +60,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //************* SESSION active past here **************************
 
 $uid="";
-if(isset($_GET['uid'])) $uid= addslashes($_GET['uid']);
-if(isset($_POST['uid'])) $uid = addslashes($_POST['uid']);
+if(isset($_GET['uid'])) $uid= mysql_real_escape_string($_GET['uid']);
+if(isset($_POST['uid'])) $uid = mysql_real_escape_string($_POST['uid']);
 
 //get the coordination of services for this student...
 $anecdotal_row = "";
@@ -101,7 +101,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -120,7 +120,7 @@ if(isset($_POST['edit_anecdotal_report']) && $have_write_permission) {
     $MESSAGE = $MESSAGE . "Date must be in YYYY-MM-DD format<BR>";
   } else {
     //we add the entry.
-    $update_query = "UPDATE anecdotal SET date='" . addslashes($_POST['date']) . "',report='" . addslashes($_POST['report']) . "'";
+    $update_query = "UPDATE anecdotal SET date='" . mysql_real_escape_string($_POST['date']) . "',report='" . addslashes($_POST['report']) . "'";
     $update_query .= " WHERE uid=$uid LIMIT 1";
     $update_result = mysql_query($update_query);
      if(!update_result) {

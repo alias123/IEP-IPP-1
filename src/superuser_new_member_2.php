@@ -85,7 +85,7 @@ if(isset($_GET['add_username'])) {
 
    //check to make sure passwords match.
    $regexp='/^[a-zA-Z0-9]*$/';
-   if(addslashes($_GET['pwd1']) != addslashes($_GET['pwd2'])) {
+   if(mysql_real_escape_string($_GET['pwd1']) != addslashes($_GET['pwd2'])) {
      $MESSAGE .= "Passwords do not match<BR>";
    } elseif (!preg_match($regexp, $_GET['add_username'])) {
      $MESSAGE .= "Username must be a combination letters and numbers only (no spaces or punctuation)<BR>";
@@ -99,7 +99,7 @@ if(isset($_GET['add_username'])) {
         IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
     }
 
-    $pwd = str_replace("$mysql_user_append_to_login","",addslashes($_GET['pwd1']));
+    $pwd = str_replace("$mysql_user_append_to_login","",mysql_real_escape_string($_GET['pwd1']));
 
     if(mysql_num_rows($duplicate_result) > 0) {
         $MESSAGE = $MESSAGE . "User already exists in database<BR>";
@@ -111,7 +111,7 @@ if(isset($_GET['add_username'])) {
           $MESSAGE = $MESSAGE . "You are limited to adding persons to your school<BR>"; // . $_GET['school_code'] ." != " . getUserSchoolCode($_SESSION['egps_username']) . "<BR>";
         } else {
           //we need to add this user...
-          $update_query = "INSERT INTO support_member (egps_username,permission_level,first_name,last_name,email,school_code) VALUES ('" . addslashes($_GET['add_username']) . "'," . addslashes($_GET['permission_level']) . ",'" . addslashes($_GET['first_name']) . "','" . addslashes($_GET['last_name']) . "','" . addslashes($_GET['email']) . "'," . addslashes($_GET['school_code']) . ")";
+          $update_query = "INSERT INTO support_member (egps_username,permission_level,first_name,last_name,email,school_code) VALUES ('" . mysql_real_escape_string($_GET['add_username']) . "'," . addslashes($_GET['permission_level']) . ",'" . addslashes($_GET['first_name']) . "','" . addslashes($_GET['last_name']) . "','" . addslashes($_GET['email']) . "'," . addslashes($_GET['school_code']) . ")";
           $update_result = mysql_query($update_query);
           if(!$update_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
@@ -119,7 +119,7 @@ if(isset($_GET['add_username'])) {
               IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
           } else {
               //we need to update or add into the users table...
-              $update_users_query = "UPDATE users SET unencrypted_password='" . addslashes($pwd) . "', encrypted_password=PASSWORD('" . addslashes($pwd) . "') WHERE login_name=concat('" . addslashes($_GET['add_username']) ."','$mysql_user_append_to_login') LIMIT 1";
+              $update_users_query = "UPDATE users SET unencrypted_password='" . mysql_real_escape_string($pwd) . "', encrypted_password=PASSWORD('" . addslashes($pwd) . "') WHERE login_name=concat('" . addslashes($_GET['add_username']) ."','$mysql_user_append_to_login') LIMIT 1";
               $update_users_result = mysql_query($update_users_query);
               if(!$update_users_result) {
                  $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_users_query'<BR>";
@@ -128,7 +128,7 @@ if(isset($_GET['add_username'])) {
                 }  else {
                  //if we don't have this user already in the users database then add them
                  if(!mysql_affected_rows()) {
-                  $insert_users_query = "INSERT INTO users (login_name,encrypted_password,unencrypted_password,school_code,aliased_name) values (concat('" . addslashes($_GET['add_username']) ."','$mysql_user_append_to_login'),PASSWORD('" . addslashes($pwd) . "'),'" . addslashes($pwd) . "'," . addslashes($_GET['school_code']) . ",NULL)";
+                  $insert_users_query = "INSERT INTO users (login_name,encrypted_password,unencrypted_password,school_code,aliased_name) values (concat('" . mysql_real_escape_string($_GET['add_username']) ."','$mysql_user_append_to_login'),PASSWORD('" . addslashes($pwd) . "'),'" . addslashes($pwd) . "'," . addslashes($_GET['school_code']) . ",NULL)";
                   $insert_users_result = mysql_query($insert_users_query);
                   if(!$insert_users_result) {
                     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_users_query'<BR>";

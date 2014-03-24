@@ -104,7 +104,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -250,7 +250,7 @@ class year_end_review extends FPDF  //all this and OO too weeeeeeee
          $pdf->SetFont('Arial','',8);
          $pdf->MultiCell(150,5,preg_replace("/\\n/", " ",$goal_row['goal']),0,1);
          //add the objectives...
-         $objective_query = "SELECT * FROM short_term_objective WHERE goal_id='" . addslashes($goal_row['goal_id']) . "' ORDER BY achieved ASC";
+         $objective_query = "SELECT * FROM short_term_objective WHERE goal_id='" . mysql_real_escape_string($goal_row['goal_id']) . "' ORDER BY achieved ASC";
          $objective_result = mysql_query($objective_query);
          if(!$objective_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objective_query'<BR>";
@@ -315,7 +315,7 @@ class year_end_review extends FPDF  //all this and OO too weeeeeeee
          $pdf->SetFont('Arial','',12);
          $pdf->MultiCell(0,5,$goal_row['goal'],0,1);
          //add the objectives...
-         $objective_query = "SELECT * FROM short_term_objective WHERE goal_id='" . addslashes($goal_row['goal_id']) . "' ORDER BY achieved ASC";
+         $objective_query = "SELECT * FROM short_term_objective WHERE goal_id='" . mysql_real_escape_string($goal_row['goal_id']) . "' ORDER BY achieved ASC";
          $objective_result = mysql_query($objective_query);
          if(!$objective_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objective_query'<BR>";

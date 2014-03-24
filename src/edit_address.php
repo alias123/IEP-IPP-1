@@ -157,7 +157,7 @@ if(isset($_GET['update'])) {
 
         }
     }
-    $update_query = "UPDATE address SET po_box='" . addslashes($_GET['po_box']) . "',street='" . addslashes($_GET['street']) . "',city='" . addslashes($_GET['city']) . "',province='" . addslashes($_GET['province']) . "',country='" . addslashes($_GET['country']) . "',postal_code='" . addslashes($_GET['postal_code']) . "',home_ph='" . addslashes($_GET['home_ph']) . "',business_ph='" . addslashes($_GET['business_ph']) . "',cell_ph='" . addslashes($_GET['cell_ph']) . "',email_address='" . addslashes($_GET['email_address']) . "' WHERE address_id=" . addslashes($address_id);
+    $update_query = "UPDATE address SET po_box='" . mysql_real_escape_string($_GET['po_box']) . "',street='" . addslashes($_GET['street']) . "',city='" . addslashes($_GET['city']) . "',province='" . addslashes($_GET['province']) . "',country='" . addslashes($_GET['country']) . "',postal_code='" . addslashes($_GET['postal_code']) . "',home_ph='" . addslashes($_GET['home_ph']) . "',business_ph='" . addslashes($_GET['business_ph']) . "',cell_ph='" . addslashes($_GET['cell_ph']) . "',email_address='" . addslashes($_GET['email_address']) . "' WHERE address_id=" . addslashes($address_id);
     $update_result = mysql_query($update_query);
     if(!$update_result) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
@@ -171,7 +171,7 @@ if(isset($_GET['update'])) {
         switch($_GET['target']) {
             case "guardian":
                 //we need to update the guardian names...
-                $update2_query = "UPDATE guardian SET last_name='" . addslashes($_GET['guardian_last_name']) . "',first_name='" . addslashes($_GET['guardian_first_name']) . "' WHERE guardian_id='" . $target_row['guardian_id'] . "' LIMIT 1";
+                $update2_query = "UPDATE guardian SET last_name='" . mysql_real_escape_string($_GET['guardian_last_name']) . "',first_name='" . addslashes($_GET['guardian_first_name']) . "' WHERE guardian_id='" . $target_row['guardian_id'] . "' LIMIT 1";
                 $update2_result = mysql_query($update2_query);
                 if(!$update2_result) {
                   $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update2_query'<BR>";

@@ -62,8 +62,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //************* SESSION active past here **************************
 
 $student_id="";
-if(isset($_GET['student_id'])) $student_id= addslashes($_GET['student_id']);
-if(isset($_POST['student_id'])) $student_id = addslashes($_POST['student_id']);
+if(isset($_GET['student_id'])) $student_id= mysql_real_escape_string($_GET['student_id']);
+if(isset($_POST['student_id'])) $student_id = mysql_real_escape_string($_POST['student_id']);
 
 if($student_id=="") {
    //we shouldn't be here without a student id.
@@ -90,7 +90,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -103,7 +103,7 @@ if($_POST['take_snapshot']) {
     $pdf=create_pdf($student_id);
     //$pdf->Output();
     //we add the entry.
-    $insert_query = "INSERT INTO snapshot(student_id,date,file,filename) VALUES (" . addslashes($student_id) . ",NOW(),'" . addslashes($pdf->Output("ignored",'S')) . "','IPP-" . $student_row['first_name'] . " " . $student_row['last_name'] . " " . date("F-d-Y") . ".pdf')";
+    $insert_query = "INSERT INTO snapshot(student_id,date,file,filename) VALUES (" . mysql_real_escape_string($student_id) . ",NOW(),'" . addslashes($pdf->Output("ignored",'S')) . "','IPP-" . $student_row['first_name'] . " " . $student_row['last_name'] . " " . date("F-d-Y") . ".pdf')";
     $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($insert_query,0,100) . "[truncated]'<BR>";

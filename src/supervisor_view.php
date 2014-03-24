@@ -100,7 +100,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -112,7 +112,7 @@ if(!$student_result) {
 if(isset($_GET['add']) && $have_write_permission && $_GET['supervisor'] != "SELECT") {
 
    //check for duplicate...
-   $check_query = "SELECT * FROM supervisor WHERE egps_username='" . addslashes($_GET['supervisor']) . "' AND end_date IS NULL AND student_id=" . addslashes($student_id);
+   $check_query = "SELECT * FROM supervisor WHERE egps_username='" . mysql_real_escape_string($_GET['supervisor']) . "' AND end_date IS NULL AND student_id=" . addslashes($student_id);
    $check_result = mysql_query($check_query);
    if(!$check_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$check_query'<BR>";
@@ -123,7 +123,7 @@ if(isset($_GET['add']) && $have_write_permission && $_GET['supervisor'] != "SELE
            $check_row = mysql_fetch_array($check_result);
            $MESSAGE = $MESSAGE . "'" . $check_row['egps_username'] . "' is already a supervisor<BR>";
        } else {
-           $add_query = "INSERT INTO supervisor (egps_username,student_id,position,start_date,end_date) VALUES ('" . addslashes($_GET['supervisor']) . "'," . addslashes($student_id) . ",'" . addslashes($_GET['position']) . "',NOW(),NULL)";
+           $add_query = "INSERT INTO supervisor (egps_username,student_id,position,start_date,end_date) VALUES ('" . mysql_real_escape_string($_GET['supervisor']) . "'," . addslashes($student_id) . ",'" . addslashes($_GET['position']) . "',NOW(),NULL)";
            $add_result = mysql_query($add_query);
            if(!$add_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
@@ -182,7 +182,7 @@ if(!$supervisor_result) {
 }
 
 //get a history...
-$supervisor_history_query = "SELECT * FROM supervisor WHERE student_id=" . addslashes($student_id) . " AND end_date IS NOT NULL ORDER BY end_date DESC";
+$supervisor_history_query = "SELECT * FROM supervisor WHERE student_id=" . mysql_real_escape_string($student_id) . " AND end_date IS NOT NULL ORDER BY end_date DESC";
 $supervisor_history_result = mysql_query ($supervisor_history_query);
 if(!$supervisor_history_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_history_query'<BR>";
@@ -191,7 +191,7 @@ if(!$supervisor_history_result) {
 }
 
 //get a list of all support members to build supervisor list...
-$support_member_query = "SELECT * FROM support_list WHERE student_id=" . addslashes($student_id);
+$support_member_query = "SELECT * FROM support_list WHERE student_id=" . mysql_real_escape_string($student_id);
 $support_member_result = mysql_query($support_member_query);
 if(!$support_member_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$support_member_query'<BR>";

@@ -54,8 +54,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 }
 
 $student_id="";
-if(isset($_GET['student_id'])) $student_id= addslashes($_GET['student_id']);
-if(isset($_POST['student_id'])) $student_id = addslashes($_POST['student_id']);
+if(isset($_GET['student_id'])) $student_id= mysql_real_escape_string($_GET['student_id']);
+if(isset($_POST['student_id'])) $student_id = mysql_real_escape_string($_POST['student_id']);
 
 if($student_id=="") {
    //we shouldn't be here without a student id.
@@ -90,7 +90,7 @@ $szBackGetVars="";
 if(isset($_GET['szBackGetVars']))$szBackGetVars = $_GET['szBackGetVars']; 
 if(isset($_POST['szBackGetVars']))$szBackGetVars = $_POST['szBackGetVars'];
 
-$student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
@@ -115,11 +115,11 @@ function parse_submission() {
           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
      }
      if($_POST['prov_ed_num'] != "") {
-       $duplicate_query = "SELECT * FROM student WHERE prov_ed_num='" . addslashes($_POST['prov_ed_num']) ."'";
+       $duplicate_query = "SELECT * FROM student WHERE prov_ed_num='" . mysql_real_escape_string($_POST['prov_ed_num']) ."'";
        $duplicate_result= mysql_query($duplicate_query);
        if(mysql_num_rows($duplicate_result) > 0) {$duplicate_row = mysql_fetch_array($duplicate_result);return "Duplicate Provincial Education Number (name:" . $duplicate_row['first_name'] . " " . $duplicate_row['last_name'] ."),<BR>This student probably already exists in the database<BR>";}
      }
-     //$duplicate_query = "SELECT * FROM student WHERE ab_ed_code='" . addslashes($_POST['ab_ed_code']) ."'";
+     //$duplicate_query = "SELECT * FROM student WHERE ab_ed_code='" . mysql_real_escape_string($_POST['ab_ed_code']) ."'";
      //$duplicate_result= mysql_query($duplicate_query);
      //if(mysql_num_rows($duplicate_result) > 0) {$duplicate_row = mysql_fetch_array($duplicate_result);return "Duplicate Alberta Education Code Number (name:" . $duplicate_row['first_name'] . " " . $duplicate_row['last_name'] ."),<BR>This student probably already exists in the database<BR>"; }
     
@@ -141,7 +141,7 @@ if(isset($_POST['add_student'])) {
      if($retval != NULL) {
          $MESSAGE = $MESSAGE . $retval;
      } else {
-       $add_query="INSERT INTO student (first_name,last_name,birthday,prov_ed_num,current_grade,gender) values ('" . addslashes($_POST['first_name']) . "','" .  addslashes($_POST['last_name']) ."','" . addslashes($_POST['birthday']) . "','" .  addslashes($_POST['prov_ed_num']) . "','" . addslashes($_POST['current_grade']) . "','" . addslashes($_POST['gender']) . "')";
+       $add_query="INSERT INTO student (first_name,last_name,birthday,prov_ed_num,current_grade,gender) values ('" . mysql_real_escape_string($_POST['first_name']) . "','" .  addslashes($_POST['last_name']) ."','" . addslashes($_POST['birthday']) . "','" .  addslashes($_POST['prov_ed_num']) . "','" . addslashes($_POST['current_grade']) . "','" . addslashes($_POST['gender']) . "')";
        $add_result=mysql_query($add_query);
        if(!$add_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
@@ -149,7 +149,7 @@ if(isset($_POST['add_student'])) {
            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
        } else {
            //get the school information to create a history for this student...
-           $school_history_query="SELECT * FROM school WHERE school_code='" . addslashes($_POST['school_code']) . "'";
+           $school_history_query="SELECT * FROM school WHERE school_code='" . mysql_real_escape_string($_POST['school_code']) . "'";
            $school_history_result=mysql_query($school_history_query);
            $school_history_row="";
            if(!$school_history_result) {
@@ -167,11 +167,11 @@ if(isset($_POST['add_student'])) {
            $history_update_result=mysql_query($history_update_query); //ignore returned errors.
 
            //add a new school history...choosen school start today, end NULL...
-           $history_insert_query = "INSERT INTO school_history (start_date,end_date,school_code,student_id,school_name,school_address,ipp_present) VALUES ('" . addslashes($_POST['at_school_since']) . "',NULL,'" . $school_history_row['school_code'] ."'," . addslashes($new_student_id) . ",'" . $school_history_row['school_name']  . "','" . $school_history_row['school_address']  . "','Y')";
+           $history_insert_query = "INSERT INTO school_history (start_date,end_date,school_code,student_id,school_name,school_address,ipp_present) VALUES ('" . mysql_real_escape_string($_POST['at_school_since']) . "',NULL,'" . $school_history_row['school_code'] ."'," . addslashes($new_student_id) . ",'" . $school_history_row['school_name']  . "','" . $school_history_row['school_address']  . "','Y')";
            $history_insert_result = mysql_query($history_insert_query); //ignore returned errors. What we don't know can't hurt us.
 
            //add this user as a support member for this IPP...
-           //$support_list_query = "INSERT INTO support_list (egps_username,student_id,permission) VALUES ('" . addslashes($_SESSION['egps_username']) . "'," . addslashes($new_student_id) . ",'ASSIGN')"; //give self assign
+           //$support_list_query = "INSERT INTO support_list (egps_username,student_id,permission) VALUES ('" . mysql_real_escape_string($_SESSION['egps_username']) . "'," . addslashes($new_student_id) . ",'ASSIGN')"; //give self assign
            //$support_list_result = mysql_query($support_list_query); //ignore returned errors...won't cause major problem.
 
            //now we copy the data as requested!
@@ -215,7 +215,7 @@ if(isset($_POST['add_student'])) {
                         IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
                    }
                    //we need to set this person to assign...
-                   $update_query = "UPDATE support_list SET permission='ASSIGN' WHERE  student_id=" . $new_student_id . " AND egps_username='" . addslashes($_SESSION['egps_username']) . "'";
+                   $update_query = "UPDATE support_list SET permission='ASSIGN' WHERE  student_id=" . $new_student_id . " AND egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "'";
                    $update_result = mysql_query($update_query);
                    if(!$update_result) {
                         $error_message = $error_message . "Unable to set assign permissions on duplicated program plan (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
