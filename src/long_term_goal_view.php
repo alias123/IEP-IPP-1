@@ -1,40 +1,30 @@
 <?php
-/** @file
- * @brief 		view, edit, add, remove long term objectives & progress in an IEP
- * @copyright 	2014 Chelsea School 
- * @copyright 	2005 Grasslands Regional Division #6
- * @copyright		This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-    You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph
- * @author		M. Nielson
- * @todo		
- * 1. Some code is commented out; determine if it serves a productive function (such as testing)
- * 2. Dangerous output from DB with inconsistent escaping. Output from DB is spell checked, but not escaped consistently.
- * 3. Where it is escaped, seems to rely on mysql_real_escape_string(). Find contemporary best practice and secure method to escape output.
- * 4. Use it to escape echoed variables appearing in HTML (bottom)
- * 5. Standardize HTML - see James' informed recommendation
- * 6. explanation of code set on line 17 is inaccurate - is not consistent with filename, which is more accurate.
- * 7. Test!
+
+//the authorization level for this page!
+$MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
+
+/**
+ * long_term_goal_view.php -- manage student guardians
+ *
+ * Copyright (c) 2005 Grasslands Regional Division #6
+ * All rights reserved
+ *
+ * Created: June 21, 2005
+ * By: M. Nielsen
+ * Modified:  September 08, 2005.
+ * Modified:  February 17,2007. M. Nielsen
+ *
  */
- 
- 
 
-
-  
-  
-//minimumum authorization level for this page (everyone; checks within document)
-$MINIMUM_AUTHORIZATION_LEVEL = 100; 
-
+/**
+ * Path for IPP required files.
+ */
 
 if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
 
-/** @brief	Path for IPP required files.*/
 define('IPP_PATH','../');
 
-/*! @brief	required files included */
+/* eGPS required files. */
 require_once(IPP_PATH . 'etc/init.php');
 require_once(IPP_PATH . 'include/db.php');
 require_once(IPP_PATH . 'include/auth.php');
@@ -42,14 +32,10 @@ require_once(IPP_PATH . 'include/log.php');
 require_once(IPP_PATH . 'include/user_functions.php');
 require_once(IPP_PATH . 'include/navbar.php');
 require_once(IPP_PATH . 'include/supporting_functions.php');
+//require_once("Numbers/Roman.php"); //require pear roman numerals class
 
+header('Pragma: no-cache'); //don't cache this page!
 
-/** @brief		don't cache this page!
- */
-header('Pragma: no-cache'); 
-
-/** @brief		Check for valid login; error if not
- */
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
         $MESSAGE = $MESSAGE . $error_message;
@@ -67,19 +53,17 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 }
 //************* SESSION active past here **************************
 
-/** @brief		Makes sure the value isn't tampered with
- */
-$student_id=""; 
+$student_id="";
 if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];
 if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
 
-/** @brief		exit if no student id */
 if($student_id=="") {
+   //we shouldn't be here without a student id.
    echo "You've entered this page without supplying a valid student id. Fatal, quitting";
    exit();
 }
 
-/** @brief check permission levels */
+//check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
     $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
@@ -87,16 +71,16 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
     require(IPP_PATH . 'src/security_error.php');
     exit();
 }
-/** @brief		If no student id, exit with message */
+
 if(!isset($_GET['student_id']) || $_GET['student_id'] == "") {
-    //ack (this is a bad situation - we can customize this message for hackers)
+    //ack
     echo "You've come to this page without a valid student ID<BR>To what end I wonder...<BR>";
     exit();
 } else {
     $student_id=$_GET['student_id'];
 }
 
-/** @brief		check permission levels to view this page - error if not adequate */
+//check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
     $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
@@ -106,18 +90,17 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 }
 
 $our_permission = getStudentPermission($student_id);
-/** @brief check for write permission */
 if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission == "ALL") {
-		$have_write_permission = true;
+    //we have write permission.
+    $have_write_permission = true;
 }  else {
-		$have_write_permission = false;
+    $have_write_permission = false;
 }
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 
-$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id); //gets all results with matching studentid
+$student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
-/** @brief	error if the mysql_query() functions comes up empty */
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
     $MESSAGE=$MESSAGE . $error_message;
@@ -126,88 +109,100 @@ if(!$student_result) {
 
 //check if we are adding...
 if(isset($_GET['next']) && $have_write_permission) {
+  //if(!isset($_GET['goal_area']) || $_GET['goal_area'] == "") {
+  //  $MESSAGE = $MESSAGE . "You must supply a goal area<BR>";
+  //} else {
      header("Location: ./add_goal_1.php?goal_area=" . $_GET['goal_area'] . "&student_id=" . $student_id);
+  //}
 }
 
 if(isset($_GET['setUncompleted']) && $have_write_permission) {
-   $update_query = "UPDATE long_term_goal SET is_complete='N' WHERE goal_id=" . mysql_real_escape_string($_GET['setUncompleted']); 
+   $update_query = "UPDATE long_term_goal SET is_complete='N' WHERE goal_id=" . AddSlashes($_GET['setUncompleted']);
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
    }
+   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
 }
-/** @brief 		under right conditions, delete on objective from the db */
+
 if(isset($_GET['deleteSTO']) && $have_write_permission) {
-   $update_query = "DELETE FROM short_term_objective WHERE uid=" . mysql_real_escape_string($_GET['deleteSTO']); 
+   $update_query = "DELETE FROM short_term_objective WHERE uid=" . AddSlashes($_GET['deleteSTO']);
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
    }
+   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
 }
-/** @brief		under right conditions, delete long term goal and associated objectives */
+
 if(isset($_GET['deleteLTG']) && $have_write_permission) {
-      $update_query = "DELETE FROM short_term_objective WHERE goal_id=" . mysql_real_escape_string($_GET['deleteLTG']); 
+   //delete the sto's
+   $update_query = "DELETE FROM short_term_objective WHERE goal_id=" . AddSlashes($_GET['deleteLTG']);
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
    }  else {
+     //delete the ltg's
      $update_query = "DELETE FROM long_term_goal WHERE goal_id=" . mysql_real_escape_string($_GET['deleteLTG']);
      $update_result = mysql_query($update_query);
      if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-     }
+     } //else { $MESSAGE = $MESSAGE . "OKIE DOKIE<BR>"; }
    }
-}
-/** @brief 		When student has reached a long term goal, can set it as completed */
-if(isset($_GET['setCompleted']) && $have_write_permission) {
-   $update_query = "UPDATE long_term_goal SET is_complete='Y' WHERE goal_id=" . mysql_real_escape_string($_GET['setCompleted']);  
-   $update_result = mysql_query($update_query);
-   if(!$update_result) {
-       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-   }
+   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
 }
 
-/** @brief		 When student has reached objective, it can be marked completed */
+if(isset($_GET['setCompleted']) && $have_write_permission) {
+   $update_query = "UPDATE long_term_goal SET is_complete='Y' WHERE goal_id=" . AddSlashes($_GET['setCompleted']);
+   $update_result = mysql_query($update_query);
+   if(!$update_result) {
+       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
+       $MESSAGE=$MESSAGE . $error_message;
+       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+   }
+   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+}
+
 if(isset($_GET['setSTOCompleted']) && $have_write_permission) {
-   $update_query = "UPDATE short_term_objective SET achieved='Y' WHERE uid=" . mysql_real_escape_string($_GET['setSTOCompleted']);   
+   $update_query = "UPDATE short_term_objective SET achieved='Y' WHERE uid=" . AddSlashes($_GET['setSTOCompleted']);
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
    }
+   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
 }
-/** @brief 		change objective from complete to incomplete */
+
 if(isset($_GET['setSTOUncompleted']) && $have_write_permission) {
-   $update_query = "UPDATE short_term_objective SET achieved='N' WHERE uid=" . mysql_real_escape_string($_GET['setSTOUncompleted']);
+   $update_query = "UPDATE short_term_objective SET achieved='N' WHERE uid=" . AddSlashes($_GET['setSTOUncompleted']);
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
    }
+   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
 }
-/** @brief			if conditions are met, delete a goal */
+
 if(isset($_GET['deleteGoal']) && $have_write_permission) {
-   $delete_query = "DELETE FROM long_term_goal WHERE goal_id=" . mysql_real_escape_string($_GET['deleteGoal']); //check capitalization
+   $delete_query = "DELETE FROM long_term_goal WHERE goal_id=" . AddSlashes($_GET['deleteGoal']);
    $delete_result = mysql_query($delete_query);
    if(!$delete_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
        $MESSAGE=$MESSAGE . $error_message;
        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
    }
+   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
 }
-/** @brief 		get all the goals for a student */
+
 $long_goal_query = "SELECT * FROM long_term_goal WHERE student_id=$student_id ORDER BY area ASC, is_complete DESC, goal ASC";
 $long_goal_result = mysql_query($long_goal_query);
 if(!$long_goal_result) {
@@ -224,7 +219,7 @@ if(!$area_type_result) {
     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 }
 
-/*************************** (JavaScript) popup chooser support function ******************/
+/*************************** popup chooser support function ******************/
 
 /*
     function createJavaScript($dataSource,$arrayName='rows'){
@@ -305,19 +300,17 @@ if(!$area_type_result) {
 */
 /************************ end popup chooser support funtion  ******************/
 
-/****************************Start Output of Data to HTML**********/
 ?> 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-    <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
+    <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
     <TITLE><?php echo $page_title; ?></TITLE>
-    <style type="text/css" media="screen"> <!-- James, is the media type correct? -->
+    <style type="text/css" media="screen">
         <!--
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
-        <!--Above import of css is commented out. Noted-->
     </style>
     <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
          -Concept and Design by Grasslands IPP Focus Group 2005
@@ -449,7 +442,7 @@ if(!$area_type_result) {
                           }
                           echo "<td valign=\"top\" width=\"15\" class=\"goal_number\">$goal_num</td>";
                           $goal_num++;
-                          echo "</td><td valign=\"top\" class=\"goal_text\" bgcolor=\"#E0E2F2\">" . checkspelling(stripslashes(($goal['goal']));
+                          echo "</td><td valign=\"top\" class=\"goal_text\" bgcolor=\"#E0E2F2\">" . checkspelling($goal['goal']);
                           //output the complete/uncomplete button...
                           if($goal['is_complete'] == 'Y') {
                             echo "&nbsp;<a href=\"" . IPP_PATH . "src/long_term_goal_view.php?student_id=" . $student_id . "&setUncompleted=" . $goal['goal_id'] . "\"";
@@ -532,7 +525,7 @@ if(!$area_type_result) {
                               }
                               echo "<td valign=\"top\" width=\"15\" class=\"goal_number\">" . $obj_num . ")&nbsp;</td>";
                               $obj_num++;
-                              echo "</td><td class=\"objective_text\">" . checkspelling(stripslashes($short_term_objective_row['description']));
+                              echo "</td><td class=\"objective_text\">" . checkspelling($short_term_objective_row['description']);
 
                               //output the complete/uncomplete button...
                               if($short_term_objective_row['achieved'] == 'Y') {
@@ -576,7 +569,7 @@ if(!$area_type_result) {
                               echo " class=\"small\">Edit</a>";
 
                               echo "<BR>";
-                              echo "<blockquote>" . checkspelling(stripslashes($short_term_objective_row['assessment_procedure'])) . "</blockquote>";
+                              echo "<blockquote>" . checkspelling($short_term_objective_row['assessment_procedure']) . "</blockquote>";
                               echo "Strategies:" ;
 
                               //output the add edit button.
@@ -586,18 +579,17 @@ if(!$area_type_result) {
                               echo " class=\"small\">Edit</a>";
 
                               echo "<BR>";
-                              echo "<blockquote>" . checkspelling(stripslashes($short_term_objective_row['strategies'])) . "</blockquote>";
+                              echo "<blockquote>" . checkspelling($short_term_objective_row['strategies']) . "</blockquote>";
                               echo "Progress Review:" ;
 
                               //output the add edit button.
-                              echo "&nbsp;<a href=\"" . IPP_PATH . "src/edit_short_term_objective.php?sto=" . $short_term_objective_row['uid'] . "&student_id=" . $student_id  . "\""; //this what the edit_short_term_objectives.php script is for. This creates an url...
-                              if (!$have_write_permission) echo "onClick=\"return noPermission();\""; //If no permission to write to db
-                              else echo "onClick=\"return changeStatusCompleted();\""; //JavaScript for form completion? Track down UPDATE to short term objective table
+                              echo "&nbsp;<a href=\"" . IPP_PATH . "src/edit_short_term_objective.php?sto=" . $short_term_objective_row['uid'] . "&student_id=" . $student_id  . "\"";
+                              if (!$have_write_permission) echo "onClick=\"return noPermission();\"";
+                              else echo "onClick=\"return changeStatusCompleted();\"";
                               echo " class=\"small\">Edit</a>";
-                              //make variable from array value, stripslashes, than output with spellcheck into the HTML table
-							 
+
                               echo "<BR>";
-                              echo "<blockquote>" . checkspelling(stripslashes($short_term_objective_row['results_and_recommendations'])) . "</blockquote>"; //output progress report without slashes (?) and with spellcheck
+                              echo "<blockquote>" . checkspelling($short_term_objective_row['results_and_recommendations']) . "</blockquote>";
                               //end output the actual data
                               echo "</td><td class=\"wrap_right\">&nbsp;</td></tr>";
                               echo "<tr><td class=\"wrap_bottom_left\">&nbsp;</td><td class=\"wrap_bottom_right\">&nbsp;</td></tr>";

@@ -15,13 +15,14 @@
  *
  *
  */
-define('IPP_PATH','./');
+//define('IPP_PATH','./');
 
-require_once(IPP_PATH . 'include/auth.php');
+//require_once(IPP_PATH . 'include/auth.php');
 
 //force logout...
-logout();
+//logout();
 //header('Location: src/login.php');
-header('Location: src/launch.php');
+//header('Location: http://192.168.2.51/IEP-IPP/src/launch.php');
 ?>
-<html></html>
+<html>
+</html>
