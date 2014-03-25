@@ -15,31 +15,43 @@
  */
  
  
-//the authorization level for this page!
+/** @var
+ *  @brief		the authorization level for this page. Integer.
+ *  @author	M. Nielson
+ *  @todo
+ * 	1. Cast as a function to be called with the auth level as a parameter
+ *  2. Call function with auth level from all code in code base
+ */
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 
-/*
- * accomodations.php  
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: Feb 24, 2006
- * By: M. Nielsen
- * Modified: March 11,2006
- * Modifice: February 17, 2007 M. Nielsen
- */
+
 
 /*   INPUTS: $_GET['student_id']
  *
  */
 
-/**
- * Path for IPP required files.
+/** @var
+ *  @brief		Makes sure the value is cleared.
+ *  @details	The purpose of this variable is unclear. But it's the only one that is secured on most pages.
+ *  @todo		call is a function...perhaps a single page init function
  */
 
 $MESSAGE = "";
 
+/** @var
+ *  @brief		constant - relative path to IEP-IPP directory
+ *  @detail		
+ * 	Provides most pages the path to IEP-IPP/ wherein all project code can be found, including src/ and include.
+ * 	
+ * 	@author		M. Nielson
+ * 	@todo		
+ * 	1. Move contents of src/ to parent directory
+ *  2. Change the definition of IPP_PATH throughout code base
+ *  3. Replace with function
+ *  4. It's a constant - reconsider whether it should be in all files
+ * 
+ */
+ 
 define('IPP_PATH','../');
 
 /* eGPS required files. */

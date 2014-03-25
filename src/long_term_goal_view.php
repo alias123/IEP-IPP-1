@@ -15,25 +15,19 @@
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
 
-/**
- * long_term_goal_view.php -- manage student guardians
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: June 21, 2005
- * By: M. Nielsen
- * Modified:  September 08, 2005.
- * Modified:  February 17,2007. M. Nielsen
- *
- */
 
-/**
- * Path for IPP required files.
- */
+
 
 if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
 
+/**@var
+ * @brief		Path for IPP required files (constant).
+ * @todo
+ * 1. move contents of src/
+ * 2. change path across all files if necessary
+ * 
+ * @author		M. Nielson
+ */
 define('IPP_PATH','../');
 
 /* eGPS required files. */

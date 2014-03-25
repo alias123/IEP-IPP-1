@@ -20,7 +20,10 @@
 define('IPP_PATH','./');
 
 //check if we are running install wizard
-if(!is_file(IPP_PATH . "etc/init.php")){require_once(IPP_PATH . 'install/index.php'); exit();}
+if(!is_file(IPP_PATH . "etc/init.php")){
+	require_once(IPP_PATH . 'install/index.php');
+	exit();
+}
 
 require_once(IPP_PATH . "etc/init.php");
 
