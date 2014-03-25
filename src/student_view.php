@@ -259,7 +259,7 @@ function get_age_by_date($yyyymmdd)
                                 ?>
                             </td>
                             <td width="100" rowspan="7" valign="center">
-                               <a href="<?php echo IPP_PATH . "src/coding.php?student_id=" . $student_row['student_id'];?>""><img src="<?php echo IPP_PATH . "images/smallbutton.php?title=Edit";?>" border="0">
+                               <a href="<?php echo IPP_PATH . "src/coding.php?student_id=" . $student_row['student_id'];?>""</a><img src="<?php echo IPP_PATH . "images/smallbutton.php?title=Edit";?>" border="0">
                             </td>
                         </tr>
                         </table>
@@ -351,7 +351,7 @@ function get_age_by_date($yyyymmdd)
                                 <?php echo $supervisor_row['egps_username'];?>
                             </td>
                             <td width="100" rowspan="7" valign="center">
-                               <a href="<?php echo IPP_PATH . "src/supervisor_view.php?student_id=" . $_GET['student_id'];?>"><img src="<?php echo IPP_PATH . "images/smallbutton.php?title=Change";?>" border="0">
+                               <a href="<?php echo IPP_PATH . "src/supervisor_view.php?student_id=" . $_GET['student_id'];?>"><img src="<?php echo IPP_PATH . "images/smallbutton.php?title=Change";?>" border="0"></a>
                             </td>
                         </tr>
                         </table>

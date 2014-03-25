@@ -481,7 +481,7 @@ $MESSAGE = $MESSAGE . "<BR>Please add short term objectives to achieve this goal
                                 } while ($goal_row = mysql_fetch_array($goal_result));
                               }
                               ?>
-                              <BR><p class="Header">Add Another Objective:
+                             
                             </td>
                             </tr>
                           </table>
@@ -489,7 +489,7 @@ $MESSAGE = $MESSAGE . "<BR>Please add short term objectives to achieve this goal
                         <BR>
 
                         <!-- BEGIN add short term objective -->
-                        <center>
+                        <center> <p class="Header">Add Another Objective:</p>
                         <form name="add_objective" enctype="multipart/form-data" action="<?php echo IPP_PATH . "src/add_objectives.php"; ?>" method="post" <?php if(!$have_write_permission) echo "onSubmit=\"return noPermission();\"" ?>>
                         <table border="0" cellspacing="0" cellpadding ="0" width="80%">
                         <tr>

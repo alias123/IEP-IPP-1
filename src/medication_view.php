@@ -339,7 +339,7 @@ if(!$medication_result) {
         <tr>
             <td class="shadow-left">&nbsp;</td>
             <td class="shadow-center">
-              <?php navbar("student_view.php?student_id=$student_id"); ?>
+              <?php navbar("student_view.php?student_id=$student_id"); ?></td>
             <td class="shadow-right">&nbsp;</td>
         </tr>
         <tr>

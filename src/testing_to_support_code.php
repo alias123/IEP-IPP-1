@@ -332,7 +332,7 @@ if(!$testing_result) {
                            </td>
                         </tr>
                         <tr>
-                           <td valign="center" bgcolor="#E0E2F2" class="row_default">Results & Recommendations:</td><td bgcolor="#E0E2F2" class="row_default"><textarea name="recommendations" tabindex="5" cols="30" rows="3" wrap="soft"><?php if(isset($_POST['recommendations'])) echo $_POST['recommendations']; ?></textarea></td>
+                           <td valign="center" bgcolor="#E0E2F2" class="row_default">Results and Recommendations:</td><td bgcolor="#E0E2F2" class="row_default"><textarea name="recommendations" tabindex="5" cols="30" rows="3" wrap="soft"><?php if(isset($_POST['recommendations'])) echo $_POST['recommendations']; ?></textarea></td>
                         </tr>
                         </table>
                         </form>

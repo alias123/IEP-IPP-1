@@ -262,7 +262,7 @@ if(isset($_POST['edit_medication']) && $have_write_permission) {
         <tr>
             <td class="shadow-left">&nbsp;</td>
             <td class="shadow-center">
-              <?php navbar("medication_view.php?student_id=$student_id"); ?>
+              <?php navbar("medication_view.php?student_id=$student_id"); ?></td>
             <td class="shadow-right">&nbsp;</td>
         </tr>
         <tr>

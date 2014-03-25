@@ -300,7 +300,7 @@ if(!$school_result) {
         <tr>
             <td class="shadow-left">&nbsp;</td>
             <td class="shadow-center">
-              <?php navbar("main.php"); ?>
+              <?php navbar("main.php"); ?></td>
             <td class="shadow-right">&nbsp;</td>
         </tr>
         <tr>

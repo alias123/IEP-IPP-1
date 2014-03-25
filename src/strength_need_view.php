@@ -285,7 +285,7 @@ $enum_options_area = mysql_enum_values("area_of_strength_or_need","area");
                         <div id="main">
                         <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
 
-                        <center><table><tr><td><center><p class="header">-Strengths & Needs (<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
+                        <center><table><tr><td><center><p class="header"> Strengths and Needs (<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>
 
                         <!-- BEGIN add supervisor -->

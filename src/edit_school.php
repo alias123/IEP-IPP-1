@@ -256,7 +256,7 @@ if(isset($_POST['edit_school'])) {
         <tr>
             <td class="shadow-left">&nbsp;</td>
             <td class="shadow-center">
-              <?php navbar("school_info.php"); ?>
+              <?php navbar("school_info.php"); ?></td>
             <td class="shadow-right">&nbsp;</td>
         </tr>
         <tr>

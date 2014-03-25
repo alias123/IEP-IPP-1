@@ -144,7 +144,7 @@ if(!$services) {
         </tr>
         <tr>
             <td class="shadow-left">&nbsp;</td>
-            <td class="shadow-center"><table border="0" width="100%"><tr><td valign="bottom" align="center">Logged in as: <?php echo $_SESSION['egps_username'];?></td></tr></table><table border="0" width="100%"><tr><td align="right"><a class="small" target="_blank" href="http://www.iep-ipp.com">Bugs & Suggestions</a></td></tr></table></td>
+            <td class="shadow-center"><table border="0" width="100%"><tr><td valign="bottom" align="center">Logged in as: <?php echo $_SESSION['egps_username'];?></td></tr></table><table border="0" width="100%"><tr><td align="right"><a class="small" target="_blank" href="http://www.iep-ipp.com">Bugs and Suggestions</a></td></tr></table></td>
             <td class="shadow-right">&nbsp;</td>
         </tr>
         <tr>

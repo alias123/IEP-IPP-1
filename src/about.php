@@ -54,7 +54,7 @@ header('Pragma: no-cache'); //don't cache this page!
         <tr>
             <td class="shadow-left"></td>
             <td class="shadow-center" valign="top">
-                <table class="frame" width=620px align=center border="0">
+               <center> <table class="frame" width=620px align=center border="0">
                     <tr align="Center">
                     <td><center><img src="<?php echo $page_logo_path; ?>"></center></td>
                     </tr>

@@ -322,7 +322,7 @@ if(isset($_POST['edit_testing']) && $have_write_permission) {
                            </td>
                         </tr>
                         <tr>
-                           <td valign="center" bgcolor="#E0E2F2" class="row_default">Results & Recommendations:</td><td bgcolor="#E0E2F2" class="row_default"><textarea name="recommendations" tabindex="6" cols="30" rows="5" wrap="soft"><?php echo $testing_row['recommendations']; ?></textarea></td>
+                           <td valign="center" bgcolor="#E0E2F2" class="row_default">Results and Recommendations:</td><td bgcolor="#E0E2F2" class="row_default"><textarea name="recommendations" tabindex="6" cols="30" rows="5" wrap="soft"><?php echo $testing_row['recommendations']; ?></textarea></td>
                         </tr>
                         </table>
                         </form>
@@ -339,7 +339,7 @@ if(isset($_POST['edit_testing']) && $have_write_permission) {
         <tr>
             <td class="shadow-left">&nbsp;</td>
             <td class="shadow-center">
-            <?php navbar("testing_to_support_code.php?student_id=$student_id"); ?>
+            <?php navbar("testing_to_support_code.php?student_id=$student_id"); ?></td>
             <td class="shadow-right">&nbsp;</td>
         </tr>
         <tr>

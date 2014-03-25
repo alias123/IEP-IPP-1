@@ -185,7 +185,7 @@ if(isset($_POST['edit_strength_or_need']) && $have_write_permission) {
                         <div id="main">
                         <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
 
-                        <center><table><tr><td><center><p class="header">-Edit Strengths & Needs(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
+                        <center><table><tr><td><center><p class="header">Edit Strengths and Needs(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>
 
                         <!-- BEGIN edit strength/need -->

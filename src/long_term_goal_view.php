@@ -415,7 +415,7 @@ if(!$area_type_result) {
                         <?php
                         //check if we have no goals...we need to end this table in this case.
                         if(mysql_num_rows($long_goal_result) == 0 ) {
-                          echo "<tr><td>&nbsp;</td></tr></table>";
+                          echo "<tr><td>&nbsp;</td></tr></table></center>";
                         }
                         $goal_num=1;
                         while($goal = mysql_fetch_array($long_goal_result)) {
@@ -604,11 +604,11 @@ if(!$area_type_result) {
                           }
                         }
                         ?>
-                        </center>
+                        
                         <!-- END  goals -->
 
-                        </div>
-                        </td>
+                        <!-- commented because can't find opening tag </div> -->
+                         
                     </tr>
                 </table></center>
             </td>

@@ -347,7 +347,7 @@ if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_usern
                            </td>
                            <td bgcolor="#E0E2F2">
                                <input type="text" name="support_area" onkeypress="return autocomplete(this,event,popuplist)">
-                               <img src="<?php echo IPP_PATH . "images/choosericon.png"; ?>" height="17" width="17" border=0 onClick="popUpChooser(this, document.all.support_area)"
+                               <img src="<?php echo IPP_PATH . "images/choosericon.png"; ?>" height="17" width="17" border=0 onClick="popUpChooser(this, document.all.support_area)" />
                            </td>
                         </tr>
                         </table>
