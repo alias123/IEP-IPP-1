@@ -11,7 +11,7 @@
 if(realpath ($_SERVER["SCRIPT_FILENAME"]) == realpath (__FILE__)) {
   $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
   IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-  require(IPP_PATH . 'src/security_error.php');
+  require(IPP_PATH . 'security_error.php');
   exit();
 }
 
@@ -42,7 +42,7 @@ function mail_notification($recipients="",$message="-unknown message-") {
        $headers["Subject"] = "IPP System ($IPP_ORGANIZATION)"; //Subject of the address
        $headers["MIME-Version"] = "1.0";
        $headers["To"] = $recipients;
-       //$headers["Content-type"] = "text/html; charset=iso-8859-1"; todo: note charset. Determine charset and standardize; this code is out - determine why
+       //$headers["Content-type"] = "text/html; charset=UTF-8"; todo: note charset. Determine charset and standardize; this code is out - determine why
 
        $mime=new Mail_mime("\r\n"); //dangerous characters escaped
        //$mime->setTxtBody("This is an HTML message only"); todo: why is this disabled (commented)?
