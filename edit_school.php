@@ -79,6 +79,14 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 }
 
 //************** validated past here ****************
+
+/** @var $school_code
+ *  @brief	set to value of escaped form data
+ *  @detail
+	Starts cleared. Existing setting could be harmful (hackers) and security. Takes the data from a form and escapes it in preparation for MySQL. Variable is used to get school information from MySQL.
+ *  @todo	rename variable $clean_school_code
+ *  @bug
+*/
 $school_code="";
 if(isset($_GET['school_code'])) $school_code= mysql_real_escape_string($_GET['school_code']);
 if(isset($_POST['school_code'])) $school_code = mysql_real_escape_string($_POST['school_code']);
@@ -96,22 +104,33 @@ if(!$school_result) {
 }
 
 if(!$school_row) {
-   //we shouldn't be here without a student id.
+   //we shouldn't be here without a school id.
    echo "You've entered this page without supplying a valid school id. Fatal, quitting";
    exit();
 }
-
+/** @fn function parse_submission()
+ *  @param 	none
+ *  @brief	check new school form submission for required info
+ *  @detail     requires school name, address...picks color if none is selected
+ *  @return 	NULL
+ *  @todo  rename something
+ *  @bug
+*/
 function parse_submission() {
     //returns null on success else returns $szError
     $regexp='/^[0-9]*$/';
+    //check for valid school number; if no match return error
     if(!preg_match($regexp, $_POST['school_code'])) return "You must supply a valid school code (numbers only)<BR>";
+    //if no school name, error
     if(!$_POST['school_name']) return "You must supply a school name<BR>";
+    //if no school address, error
     if(!$_POST['school_address']) return "You must supply a school address<BR>";
+    //if school color is wrong...set to #FFFFFF
     if(!$_POST['school_colour']) $_POST['school_colour'] = "#FFFFFF";
 
-    //check that colour is the correct pattern...
+    //check that color is the correct pattern...If color is set, check that it's hex format
     $regexp = '/^#[0-9a-fA-F]{6}$/';
-    if(!preg_match($regexp,$_POST['school_colour'])) return "Colour must be in '#RRGGBB' format<BR>";
+    if(!preg_match($regexp,$_POST['school_colour'])) return "Color must be in '#RRGGBB' format<BR>";
 
     return NULL;
 }
