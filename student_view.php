@@ -5,10 +5,10 @@
  * @copyright 	2014 Chelsea School 
  * @copyright 	2005 Grasslands Regional Division #6
  * @copyright		This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-    You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *   the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+ *   This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *   You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph
  * @author		M. Nielson
  * @todo		Filter input
@@ -24,6 +24,10 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
  * Path for IPP required files.
  */
 
+/** @var $MESSAGE
+ * @brief speculating that error messages get passed along through this var
+ * 
+ */
 if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
 
 define('IPP_PATH','./');
@@ -36,8 +40,10 @@ require_once(IPP_PATH . 'include/log.php');
 require_once(IPP_PATH . 'include/user_functions.php');
 require_once(IPP_PATH . 'include/navbar.php');
 
+
 header('Pragma: no-cache'); //don't cache this page!
 
+//@todo make authentication routine a function
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
         $MESSAGE = $MESSAGE . $error_message;
@@ -64,8 +70,9 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
     exit();
 }
 
+//This is a bad scenario that shouldn't be possible - just in case, there's an error message
+
 if(!isset($_GET['student_id'])) {
-    //ack
     echo "You've come to this page without a valid student ID<BR>To what end I wonder...<BR>";
     exit();
 }
@@ -122,11 +129,16 @@ if(!$supervisor_result) {
     $MESSAGE=$MESSAGE . $error_message;
     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 } else {
-    //there is only one row (or should be...so get it.)
+    //In theory, should be only one row - this fetches it
     $supervisor_row=mysql_fetch_array($supervisor_result);
 }
 
 $school_row="";
+/** @var $school_query
+ *  @brief		the value of a complex get request based on current school and school history
+ *
+ */
+
 $school_query = "SELECT * FROM school_history LEFT JOIN school on school_history.school_code=school.school_code WHERE end_date IS NULL AND student_id='" . $_GET['student_id'] . "'";
 $school_result = mysql_query($school_query);
 if(!$school_result) {
@@ -138,7 +150,10 @@ if(!$school_result) {
     $school_row=mysql_fetch_array($school_result);
 }
 
-
+/** @fn get_age_by_date($yyyymmdd)
+ *  @brief Assuming no errors, calculate age based on DOB and query date.
+ *  @todo Reformat date and validation.
+ */
 //make sure they entered a valid date (mm-dd-yyyy)
 function get_age_by_date($yyyymmdd)
 {
@@ -155,7 +170,12 @@ function get_age_by_date($yyyymmdd)
     }
     return "-unknown-";
 }
-//$age contains age of student.
+/** @var $age
+ *  @brief calculated age of student.
+ *  @todo
+ *  * Rename variable to something compliant
+ *  * attend to date syntax, convention, validity, consistency
+ */
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -168,12 +188,7 @@ function get_age_by_date($yyyymmdd)
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Focus Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
      <SCRIPT LANGUAGE="JavaScript">
       function notYetImplemented() {
           alert("Functionality not yet implemented"); return false;

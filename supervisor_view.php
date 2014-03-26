@@ -1,7 +1,7 @@
 <?php
 
 /** @file
- * @brief 	 show supervisors
+ * @brief 	 show supervisors, change supervisors, view history
  * @copyright 	2014 Chelsea School 
  * @copyright 	2005 Grasslands Regional Division #6
  * @copyright		This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -19,18 +19,7 @@
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 
-/**
- * supervisor_view.php -- change supervisor/view history.
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: July 18, 2005
- * By: M. Nielsen
- * Modified: January 2,2006  By: M. Nielsen
- * Modified: February 17, 2007 M. Nielsen
- *
- */
+
 
 /*   INPUTS: $_GET['student_id']
  *
@@ -39,7 +28,11 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 /**
  * Path for IPP required files.
  */
-
+/** @var $MESSAGE
+ *  @brief 		We have no idea what this is for, but it's set to nothing for security
+ *  @detail 	This variable is at the top of most pages, always set to empty value. Haven't found a purpose for it yet.
+ *  @todo 		Track down what $MESSAGE is intended to do
+ */
 $MESSAGE = "";
 
 define('IPP_PATH','./');
@@ -52,8 +45,18 @@ require_once(IPP_PATH . 'include/log.php');
 require_once(IPP_PATH . 'include/user_functions.php');
 require_once(IPP_PATH . 'include/navbar.php');
 
+/** @fn header('Pragma: no-cache')
+ *  @brief		PHP sets html header to refuse to be cached
+ *  @detail
+ *  Outputs html header to refuse cacheing - no copy of the page is to be stored on the client, which is the default.
+ *  @todo		Handle headers consistently without messing things up
+ */
 header('Pragma: no-cache'); //don't cache this page!
 
+//Bounces to login page if auth isn't valid; logs error
+/** @todo
+ *  * Change validation and authentication check to flexible function
+ */
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
         $MESSAGE = $MESSAGE . $error_message;
@@ -70,17 +73,28 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     }
 }
 //************* SESSION active past here **************************
-
+/** @var		$student_id
+ *  @brief		value is cleared and then fetched from get/post (both)
+ *  @detail		Value is plucked from an array passed via get or post
+ *  @todo		
+ *  * Make this a function
+ *  * Consider renaming based on standards/conventions
+ * 
+ */
 $student_id="";
 if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];
 if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
 
+//if no value is passed for studentid, log an error
 if($student_id=="") {
    //we shouldn't be here without a student id.
    echo "You've entered this page without supplying a valid student id. Fatal, quitting";
    exit();
 }
 
+/** @todo
+ *  Make the permission level check a function. It should flexible enough to be called from all pages with different parameters.
+*/
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
@@ -89,7 +103,12 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
     require(IPP_PATH . 'security_error.php');
     exit();
 }
-
+//more permission levels to be determined
+/** @todo
+ * 
+ * Make permission level check a function that can be used on all pages.
+ * 
+ */
 $our_permission = getStudentPermission($student_id);
 if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission == "ALL") {
     //we have write permission.
@@ -99,7 +118,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 }
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
-
+//get student by studentid; notify if error
 $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape_string($student_id);
 $student_result = mysql_query($student_query);
 if(!$student_result) {
@@ -135,7 +154,7 @@ if(isset($_GET['add']) && $have_write_permission && $_GET['supervisor'] != "SELE
    //$MESSAGE = $MESSAGE . $add_query . "<BR>";
 }
 
-//check if we are deleting some peeps...
+//if deleting supervisor, check permissions 
 if(isset($_GET['delete_x']) && $permission_level <= $IPP_MIN_DELETE_SUPERVISOR_PERMISSION && $have_write_permission ) {
     $delete_query = "DELETE FROM supervisor WHERE ";
     foreach($_GET as $key => $value) {
@@ -154,7 +173,7 @@ if(isset($_GET['delete_x']) && $permission_level <= $IPP_MIN_DELETE_SUPERVISOR_P
     //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
 }
 
-//check if we are setting some peeps no longer supervisor...
+//Demoting a supervisor
 if(isset($_GET['set_not_supervisor_x']) && $have_write_permission ) {
     $modify_query = "UPDATE supervisor SET end_date=NOW() WHERE ";
     foreach($_GET as $key => $value) {
@@ -172,7 +191,7 @@ if(isset($_GET['set_not_supervisor_x']) && $have_write_permission ) {
     }
 }
 
-//check this students existing supervisor...
+//check this student's existing supervisor...
 $supervisor_query = "SELECT * FROM supervisor WHERE student_id =" . mysql_real_escape_string($student_id) . " AND end_date IS NULL ORDER BY start_date DESC";
 $supervisor_result = mysql_query ($supervisor_query);
 if(!$supervisor_result) {
@@ -211,14 +230,6 @@ if(!$support_member_result) {
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Design Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -User Interface Design and Educational Factors by P Stoddart,
-          Grasslands Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
     <SCRIPT LANGUAGE="JavaScript">
       function confirmChecked() {
           var szGetVars = "delete_supervisor=";
@@ -365,7 +376,7 @@ if(!$support_member_result) {
                         </tr>
                         </table></center>
                         </form>
-                        <!-- end ipp history table -->
+                        <!-- end IEP history table -->
 
                         </div>
                         </td>

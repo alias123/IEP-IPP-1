@@ -25,7 +25,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 
 
 
-/*   INPUTS: $_GET['student_id']
+/** @remark page takes $_GET['student_id'] as input
  *
  */
 
@@ -48,7 +48,7 @@ require_once(IPP_PATH . 'include/supporting_functions.php');
 
 
 header('Pragma: no-cache'); //don't cache this page!
-
+//* @todo make authenication check a function with productive parameters
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
         $MESSAGE = $MESSAGE . $error_message;
@@ -65,7 +65,7 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     }
 }
 //************* SESSION active past here **************************
-
+//* @todo confirm input should be a function
 $student_id="";
 if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];
 if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
@@ -77,6 +77,7 @@ if($student_id=="") {
 }
 
 //check permission levels
+//* @todo permission level check should be a function
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
     $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
@@ -176,7 +177,10 @@ if(isset($_GET['set_current_x'])  && $have_write_permission ) {
 }
 
 
-
+/** @var $strengh_query
+ *  @brief  Gets student's documented strengths and needs from the database.
+ *  @todo 	Rename $get_student_strengths
+ */
 
 //get the strengths/needs for this student...
 $strength_query="SELECT * FROM area_of_strength_or_need WHERE student_id=$student_id ORDER BY is_valid ASC, strength_or_need ASC";
@@ -186,6 +190,15 @@ if(!$strength_result) {
         $MESSAGE= $MESSAGE . $error_message;
         IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
 }
+
+/** @fn
+ *  @brief		very unclear
+ *  @description	Why is code a function?
+ *  @todo
+ *  1. Find out what calls this function and what it is intended to do
+ *  2. Rename this function so the name is effective and productive
+ *  
+ */
 
 //get enum fields for area...
 function mysql_enum_values($tableName,$fieldName)
@@ -228,14 +241,7 @@ $enum_options_area = mysql_enum_values("area_of_strength_or_need","area");
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Design Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -User Interface Design and Educational Factors by P Stoddart,
-          Grasslands Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
     <SCRIPT LANGUAGE="JavaScript">
       function confirmChecked() {
           var szGetVars = "strengthneedslist=";
