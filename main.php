@@ -1,24 +1,13 @@
 <?php
 
-/**
- * @BRIEF 	main menu
+/**@file
+ * @brief 	main menu
  * 
  */
  
  
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;
-/**
- * main.php -- main menu
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: May 13, 2005
- * By: M. Nielsen
- * Modified: June 06, 2005
- * Modified: February 10, 2007
- */
 
 /**
  * Path for required files.
@@ -86,12 +75,6 @@ if(!$services) {
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Focus Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
 </HEAD>
     <BODY>
         <table class="shadow" border="0" cellspacing="0" cellpadding="0" align="center">  
@@ -144,7 +127,7 @@ if(!$services) {
         </tr>
         <tr>
             <td class="shadow-left">&nbsp;</td>
-            <td class="shadow-center"><table border="0" width="100%"><tr><td valign="bottom" align="center">Logged in as: <?php echo $_SESSION['egps_username'];?></td></tr></table><table border="0" width="100%"><tr><td align="right"><a class="small" target="_blank" href="http://www.iep-ipp.com">Bugs and Suggestions</a></td></tr></table></td>
+            <td class="shadow-center"><table border="0" width="100%"><tr><td valign="bottom" align="center">Logged in as: <?php echo $_SESSION['egps_username'];?></td></tr></table><table border="0" width="100%"><tr><td align="right"></td></tr></table></td>
             <td class="shadow-right">&nbsp;</td>
         </tr>
         <tr>
