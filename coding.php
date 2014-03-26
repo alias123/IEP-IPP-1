@@ -38,7 +38,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 60; //TA
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 $IPP_CODINGS = array("No Code", "Code 40","Code 50","Code 80", "ESL");   //no code is special case
 
@@ -56,15 +56,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -84,8 +84,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -106,19 +106,19 @@ if(isset($_GET['modify_coding']) && $have_write_permission ) {
     if($_GET['date']) {
         //check that date is the correct pattern...
         $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
-        if(!preg_match($regexp,$_GET['date'])) $MESSAGE = $MESSAGE .  "Date must be in YYYY-MM-DD format<BR>";
+        if(!preg_match($regexp,$_GET['date'])) $system_message = $system_message .  "Date must be in YYYY-MM-DD format<BR>";
     }
     //check to see if we are already coded this way...
     $check_query = "SELECT * FROM coding WHERE end_date IS NULL AND code='" . mysql_real_escape_string($_GET['code']) . "' AND student_id=" . mysql_real_escape_string($student_id);
-    if($_GET['code'] == "") $MESSAGE = $MESSAGE . "You must supply a code<BR>";
+    if($_GET['code'] == "") $system_message = $system_message . "You must supply a code<BR>";
     $check_result = mysql_query($check_query);
     if(!$check_result) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$check_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
     if(mysql_num_rows($check_result) > 0) {
-        $MESSAGE = $MESSAGE . "Nothing to update, student already coded '" . $_GET['code'] . "'<BR>";
+        $system_message = $system_message . "Nothing to update, student already coded '" . $_GET['code'] . "'<BR>";
     } else {
       //update existing codings...set to end NOW().
       //can only have 1 coding per student.
@@ -127,13 +127,13 @@ if(isset($_GET['modify_coding']) && $have_write_permission ) {
       } else {
           $update_query = "UPDATE coding SET end_date=now() WHERE student_id=" . mysql_real_escape_string($student_id) . " AND end_date IS NULL";
       }
-      if(!$MESSAGE) {
+      if(!$system_message) {
          $update_result = mysql_query($update_query);
       } else { $update_result = FALSE; }
-      if(!$update_result && !$MESSAGE) {
+      if(!$update_result && !$system_message) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
       } else {
         if($_GET['code'] == "No Code") {
            //special case just do nothing...
@@ -143,13 +143,13 @@ if(isset($_GET['modify_coding']) && $have_write_permission ) {
           } else {
               $modify_query = "INSERT INTO coding (student_id,code,start_date,end_date) VALUES (" . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_GET['code']) . "',NOW(),NULL)";
           }
-          if(!$MESSAGE) {
+          if(!$system_message) {
             //echo $modify_query . "<BR>";
             $modify_result = mysql_query($modify_query);
             if(!$modify_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$modify_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
             } else {
               //ok, clear the fields...
               unset($_GET['date']);
@@ -170,12 +170,12 @@ if(isset($_GET['delete_x']) && $permission_level <= $IPP_MIN_DELETE_STUDENT_CODI
     }
     //strip trailing 'or' and whitespace
     $delete_query = substr($delete_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -184,8 +184,8 @@ $code_query = "SELECT * FROM coding WHERE student_id =" . mysql_real_escape_stri
 $code_result = mysql_query ($code_query);
 if(!$code_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$code_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 $code_row= mysql_fetch_array($code_result);
 
@@ -193,8 +193,8 @@ $code_history_query = "SELECT * FROM coding WHERE student_id=" . mysql_real_esca
 $code_history_result = mysql_query ($code_history_query);
 if(!$code_history_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$code_history_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //get the valid codes...
@@ -202,8 +202,8 @@ $valid_code_query="SELECT * FROM valid_coding WHERE 1";
 $valid_code_result = mysql_query ($valid_code_query);
 if(!$valid_code_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$valid_code_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -217,12 +217,7 @@ if(!$valid_code_result) {
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Design Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
     <script language="javascript" src="<?php echo IPP_PATH . "include/popcalendar.js"; ?>"></script>
     <SCRIPT LANGUAGE="JavaScript">
       function deleteChecked() {
@@ -271,7 +266,7 @@ if(!$valid_code_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Change Student Coding-</p></center></td></tr></table></center>
                         <BR>

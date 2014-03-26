@@ -28,7 +28,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-//$MESSAGE = ""; need to accept message.
+//$system_message = ""; need to accept message.
 
 define('IPP_PATH','./');
 
@@ -46,15 +46,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -74,8 +74,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -94,8 +94,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 function asc2hex ($temp) {
@@ -127,10 +127,10 @@ if($_POST['move_out_of_district']) {
     $update_result=mysql_query($update_query);
     if(!$update_result) {
        $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE= $MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message= $system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
-       $MESSAGE = $MESSAGE . "Student moved to IPP Archives<BR>";
+       $system_message = $system_message . "Student moved to IPP Archives<BR>";
     }
   }
 
@@ -147,8 +147,8 @@ if($_POST['move_to_school']) {
     $accommodation_result = mysql_query($accommodation_query);
     if(!$accommodation_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$accommodation_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
        $accommodations="";
        while($accommodation_row = mysql_fetch_array($accommodation_result)) {
@@ -165,8 +165,8 @@ if($_POST['move_to_school']) {
        $school_result=mysql_query($school_query);
        if(!$school_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
            $school_row=mysql_fetch_array($school_result);
            //we need to set any current schools to innactive...
@@ -174,27 +174,27 @@ if($_POST['move_to_school']) {
            $update_result = mysql_query($update_query);
            if(!$update_result) {
              $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-             $MESSAGE= $MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message= $system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              //just carry on...
            }
            $insert_query="INSERT INTO school_history (student_id,start_date,end_date,school_code,school_name,school_address,ipp_present,accommodations) VALUES (" . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_POST['move_start_date']) . "',NULL,'" . mysql_real_escape_string($_POST['school_code']) . "','" . $school_row['school_name'] . "','" . $school_row['school_address'] . "','Y','$accommodations')";
            $insert_result=mysql_query($insert_query);
            if(!$insert_result) {
              $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-             $MESSAGE= $MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message= $system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
              //we need to notify the school based ipp administrator
              $ipp_admin_query="SELECT * FROM support_member WHERE school_code=" . mysql_real_escape_string($_POST['school_code']) . " and is_local_ipp_administrator='Y'";
              $ipp_admin_result=mysql_query($ipp_admin_query);
              if(!$ipp_admin_result) {
                $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$ipp_admin_query'<BR>";
-               $MESSAGE= $MESSAGE . $error_message;
-               IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+               $system_message= $system_message . $error_message;
+               IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                if(mysql_num_rows($ipp_admin_result) <= 0) {
-                 $MESSAGE = $MESSAGE . "There doesn't appear to be a school based IPP administrator for this school. The student has been moved but there was nobody at the receiving school notified (You might want to phone and let them know).<BR>";
+                 $system_message = $system_message . "There doesn't appear to be a school based IPP administrator for this school. The student has been moved but there was nobody at the receiving school notified (You might want to phone and let them know).<BR>";
                } else {
                  while($ipp_admin_row=mysql_fetch_array($ipp_admin_result)) {
                   mail_notification($ipp_admin_row['egps_username'],
@@ -202,9 +202,9 @@ if($_POST['move_to_school']) {
 
 You should update the supervisor information and add the appropriate support members for your school to this students IPP (and remove anybody who should no longer be a support member)."
 );
-                  $MESSAGE = $MESSAGE . $ipp_admin_row['egps_username'] . " ";
+                  $system_message = $system_message . $ipp_admin_row['egps_username'] . " ";
                  }
-                 $MESSAGE .= " received an emailed notification that this student's IPP was forwarded to their school<BR>";
+                 $system_message .= " received an emailed notification that this student's IPP was forwarded to their school<BR>";
                }
              }
              //take a snapshot...
@@ -215,10 +215,10 @@ You should update the supervisor information and add the appropriate support mem
              $insert_result = mysql_query($insert_query);
              if(!$insert_result) {
                $error_message = "Snapshot not taken because the database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($insert_query,0,100) . "[truncated]'<BR>";
-               $MESSAGE= $MESSAGE . $error_message;
-               IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+               $system_message= $system_message . $error_message;
+               IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
-               $MESSAGE = $MESSAGE . "<BR>A current snapshot was successfully taken of the IPP<BR>";
+               $system_message = $system_message . "<BR>A current snapshot was successfully taken of the IPP<BR>";
              }
 
              unset($_POST['move_start_date']);
@@ -233,7 +233,7 @@ if($_POST['add_school_history']) {
   $retval=parse_submission();
   if($retval != NULL) {
     //no way...
-    $MESSAGE = $MESSAGE . $retval;
+    $system_message = $system_message . $retval;
   } else {
     //we add the entry.
     $insert_query = "INSERT INTO school_history (student_id,school_name,school_address,grades,start_date,end_date,accommodations,ipp_present) VALUES (" . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_POST['school_name']) . "',";
@@ -249,8 +249,8 @@ if($_POST['add_school_history']) {
      $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      } else {
         //clear some fields
         unset($_POST['school_name']);
@@ -273,12 +273,12 @@ if($_GET['delete_x'] && $permission_level <= $IPP_MIN_DELETE_SCHOOL_HISTORY && $
     }
     //strip trailing 'or' and whitespace
     $delete_query = substr($delete_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -290,8 +290,8 @@ $history_query="SELECT * FROM school_history WHERE student_id=$student_id ORDER 
 $history_result = mysql_query($history_query);
 if(!$history_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$history_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //get enum fields for area...
@@ -332,14 +332,14 @@ $school_result=mysql_query($school_query);
 
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 /*************************** popup chooser support function ******************/
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -384,13 +384,13 @@ if(!$school_result) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $coordlist_query="SELECT DISTINCT `school_name`, COUNT(`school_name`) AS `count` FROM school_history GROUP BY `school_name` ORDER BY `count` DESC LIMIT 200";
         $coordlist_result = mysql_query($coordlist_query);
         if(!$coordlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$coordlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             echo createJavaScript($coordlist_result,"popuplist");
@@ -471,7 +471,7 @@ if(!$school_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-School History-<BR>(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)</p></center></td></tr></table></center>
                         <BR>

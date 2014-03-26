@@ -23,7 +23,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 20;  //assistant administrators
  * Path for IPP required files.
  */
 
-$MESSAGE = $MESSAGE;
+$system_message = $system_message;
 
 define('IPP_PATH','./');
 
@@ -38,15 +38,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -55,8 +55,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 
 //check permission levels
 if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -65,8 +65,8 @@ if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL
 $permission_level=getPermissionLevel($_SESSION['egps_username']);
 //check permission levels
 if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -77,8 +77,8 @@ if(isset($_GET['add'])) {
     $add_result = mysql_query($add_query);
     if(!$add_result) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -91,22 +91,22 @@ if($_GET['delete_x'] && $permission_level <= $IPP_MIN_DELETE_AREA_PERMISSION) {
     }
     //strip trailing 'or' and whitespace
     $delete_query = substr($delete_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
-    $MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    $system_message = $system_message . $delete_query . "<BR>";
 }
 
 $area_query = "SELECT * FROM area_type WHERE 1=1 ORDER BY type";
 $area_result = mysql_query($area_query);
 if(!$area_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$area_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 
@@ -173,7 +173,7 @@ if(!$area_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Add Global Program Area</p></center></td></tr></table></center>
                         <BR>

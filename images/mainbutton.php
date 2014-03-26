@@ -1,16 +1,5 @@
 <?php
-/**
- * button.php -- eGPS main page button w/ text overlay
- *
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: May 25, 2005
- * By: M. Nielsen
- * Modified: May 25, 2005
- *
- */
+
   define('EGPS_PATH','../');
 
   //dl('gd.so');

@@ -44,7 +44,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 60; //TA
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -60,15 +60,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -88,8 +88,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -97,8 +97,8 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 $our_permission = getStudentPermission($student_id);
 if($our_permission != "WRITE" && $our_permission != "ASSIGN" && $our_permission != "ALL") {
     //we don't have write permission...shouldn't be on this page...
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -116,8 +116,8 @@ function parse_submission() {
     //check duplicate prov ed number...
     if(!connectIPPDB()) {
           $error_message = $error_message;  //just to remember we need this
-          $MESSAGE = $error_message;
-          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+          $system_message = $error_message;
+          IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      }
      if($_POST['prov_ed_num'] != "") {
        $duplicate_query = "SELECT * FROM student WHERE prov_ed_num='" . mysql_real_escape_string($_POST['prov_ed_num']) . "' AND student_id !=" . $_POST['student_id'];
@@ -137,21 +137,21 @@ if(isset($_POST['modify_student'])) {
 
      if(!connectIPPDB()) {
           $error_message = $error_message;  //just to remember we need this
-          $MESSAGE = $error_message;
-          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+          $system_message = $error_message;
+          IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      }
 
      //do some error checking on data submission...
      $retval = parse_submission();
      if($retval != NULL) {
-         $MESSAGE = $MESSAGE . $retval;
+         $system_message = $system_message . $retval;
      } else {
        $update_query="UPDATE student SET first_name='" . mysql_real_escape_string($_POST['first_name']) . "',last_name='" .  mysql_real_escape_string($_POST['last_name']) ."',birthday='" . mysql_real_escape_string($_POST['birthday']) . "',prov_ed_num='" .  mysql_real_escape_string($_POST['prov_ed_num']) . "',current_grade='" . mysql_real_escape_string($_POST['current_grade']) . "',gender='" . mysql_real_escape_string($_POST['gender']) . "' WHERE student_id=" . $_POST['student_id'];
        $update_result=mysql_query($update_query);
        if(!$update_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-            $MESSAGE=$MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message=$system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        } else {
            //log this action...
            IPP_LOG("Update General Information",$_SESSION['egps_username'],'INFORMATIONAL',$_POST['student_id']);
@@ -167,15 +167,15 @@ if(isset($_POST['modify_student'])) {
 
 if(!connectUserDB()) {
         $error_message = $error_message;  //just to remember we need this
-        $MESSAGE = $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //find all of the available schools..
 if(!connectIPPDB()) {
    $error_message = $error_message;  //just to remember we need this
-   $MESSAGE = $error_message;
-   IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+   $system_message = $error_message;
+   IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $school_query="SELECT * FROM school WHERE 1=1";
@@ -183,8 +183,8 @@ $school_result=mysql_query($school_query);
 
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //find this students general information...
@@ -193,8 +193,8 @@ $student_query="Select * FROM student WHERE student_id='$student_id'";
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
    //there should be only one row...so
    $student_row = mysql_fetch_array($student_result);
@@ -243,7 +243,7 @@ if(!$student_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- Edit General Information-</p></center></td></tr></table></center>
                         <BR>

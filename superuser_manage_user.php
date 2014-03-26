@@ -23,7 +23,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 20;
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE ="";
+if(isset($system_message)) $system_message = $system_message; else $system_message ="";
 if(isset($szBackGetVars)) $szBackGetVars = $szBackGetVars; else $szBackGetVars= "";
 
 define('IPP_PATH','./');
@@ -39,15 +39,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -56,8 +56,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 
 //check permission levels
 if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL && !(isLocalAdministrator($_SESSION['egps_username']))) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -76,8 +76,8 @@ if(isLocalAdministrator($_SESSION['egps_username']) && getPermissionLevel($_SESS
   $user_result = mysql_query($user_query);
   if(!$user_result) {
     $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$user_query'<BR>";
-    $MESSAGE= $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message= $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {
     if(mysql_num_rows($user_result) <= 0) "IPP Member not found<BR>Query=$user_query";
     $user_row=mysql_fetch_array($user_result);
@@ -87,16 +87,16 @@ if(isLocalAdministrator($_SESSION['egps_username']) && getPermissionLevel($_SESS
   $us_result = mysql_query($us_query);
   if(!$us_result) {
     $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$us_query'<BR>";
-    $MESSAGE= $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message= $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {
-    if(mysql_num_rows($us_result) <= 0) $MESSAGE .= "IPP Member not found<BR>Query=$us_query";
+    if(mysql_num_rows($us_result) <= 0) $system_message .= "IPP Member not found<BR>Query=$us_query";
     $us_row=mysql_fetch_array($us_result);
   }
 
   if($user_row['school_code'] != $us_row['school_code']) {
-     $MESSAGE = $MESSAGE . "You do not have permission to view this page. You must be in the same school as this person to edit their information. (" . $user_row['school_code'] . "!=" . $us_row['school_code'] . ")";
-     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+     $system_message = $system_message . "You do not have permission to view this page. You must be in the same school as this person to edit their information. (" . $user_row['school_code'] . "!=" . $us_row['school_code'] . ")";
+     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      require(IPP_PATH . 'security_error.php');
      exit();
   }
@@ -115,7 +115,7 @@ if(isset($_POST['Update'])) {
       if(($_POST['permission_level'] > 20 && (isLocalAdministrator($_SESSION['egps_username']))) || $permission_level==0) {
          $update_query .= " permission_level=" . mysql_real_escape_string($_POST['permission_level']) . ",";
       } else {
-         $MESSAGE .= "You do not have permission to make this modification to this IPP members permission level<BR>";
+         $system_message .= "You do not have permission to make this modification to this IPP members permission level<BR>";
       }
       if($permission_level==0) {
         $update_query .= " school_code=" . mysql_real_escape_string($_POST['school_code']) . ",";
@@ -130,30 +130,30 @@ if(isset($_POST['Update'])) {
       $update_query .= " WHERE egps_username='$ippuserid'";
       if($permission_level != 0) $update_query .= " AND permission_level > 20";
       $update_query .= " LIMIT 1";
-      //$MESSAGE .= $update_query . "<BR>";
+      //$system_message .= $update_query . "<BR>";
       $update_result = mysql_query($update_query);
       if(!$update_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-           $MESSAGE=$MESSAGE . $error_message;
-           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+           $system_message=$system_message . $error_message;
+           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
       } else {
          //redirect back to the staff list...
       }
    } else {
-      $MESSAGE .= "You don't have the permission level necessary to do this<BR>";
+      $system_message .= "You don't have the permission level necessary to do this<BR>";
    }
 
-   //$MESSAGE .= "-->" . $_POST['is_local_ipp_administrator'] . "<--";
+   //$system_message .= "-->" . $_POST['is_local_ipp_administrator'] . "<--";
 }
 
 $user_query= "SELECT * FROM support_member WHERE egps_username='$ippuserid'";
 $user_result = mysql_query($user_query);
 if(!$user_result) {
     $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$user_query'<BR>";
-    $MESSAGE= $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message= $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
-  if(mysql_num_rows($user_result) <= 0) $MESSAGE .= "IPP Member not found<BR>";
+  if(mysql_num_rows($user_result) <= 0) $system_message .= "IPP Member not found<BR>";
   $user_row=mysql_fetch_array($user_result);
 }
 
@@ -162,16 +162,16 @@ $school_result=mysql_query($school_query);
 
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $permission_query = "SELECT * FROM permission_levels WHERE 1=1 ORDER BY level DESC ";
 $permission_result = mysql_query($permission_query);
 if(!$permission_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$permission_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -211,7 +211,7 @@ if(!$permission_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- Manage Member -</p></center></td></tr></table></center>
 

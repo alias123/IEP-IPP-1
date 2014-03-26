@@ -29,7 +29,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -45,15 +45,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -68,8 +68,8 @@ $info_query="SELECT * FROM background_info WHERE uid=" . mysql_real_escape_strin
 $info_result = mysql_query($info_query);
 if(!$info_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$info_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
    $info_row = mysql_fetch_array($info_result);
 }
@@ -85,8 +85,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -105,28 +105,28 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 //check if we are adding...
 if(isset($_POST['edit_info']) && $have_write_permission) {
    //minimal testing of input...
-     if($_POST['type'] == "") $MESSAGE = $MESSAGE . "You must choose a type<BR>";
+     if($_POST['type'] == "") $system_message = $system_message . "You must choose a type<BR>";
      else {
          $edit_query = "UPDATE background_info SET type='" . mysql_real_escape_string($_POST['type']) . "',description='" . mysql_real_escape_string($_POST['description']) . "' WHERE uid=" . mysql_real_escape_string($_POST['uid']) . " LIMIT 1";
          $edit_result = mysql_query($edit_query);
          if(!$edit_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$edit_query'<BR>";
-           $MESSAGE=$MESSAGE . $error_message;
-           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+           $system_message=$system_message . $error_message;
+           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          } else {
            //redirect here...
            header("Location: " . IPP_PATH . "background_information.php?student_id=" . $student_id);
          }
      }
 
-   //$MESSAGE = $MESSAGE . $add_query . "<BR>";
+   //$system_message = $system_message . $add_query . "<BR>";
 }
 
 //get enum fields for area...
@@ -173,12 +173,7 @@ $enum_options_type = mysql_enum_values("background_info","type");
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Design Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
     <SCRIPT LANGUAGE="JavaScript">
       function noPermission() {
           alert("You don't have the permission level necessary"); return false;
@@ -205,7 +200,7 @@ $enum_options_type = mysql_enum_values("background_info","type");
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Edit Background Information(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

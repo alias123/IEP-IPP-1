@@ -9,27 +9,27 @@
 
 //make sure we aren't accessing this file directly...todo: check function syntax on 11
 if(realpath ($_SERVER["SCRIPT_FILENAME"]) == realpath (__FILE__)) {
-  $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+  $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   require(IPP_PATH . 'security_error.php');
   exit();
 }
 
 function mail_notification($recipients="",$message="-unknown message-") {
        //Recipients currently only one!(separated by , ) todo: how do we implement ability for more than one mail recipient?
-       global $MESSAGE,$enable_email_notification,$mail_host,$append_to_username,$email_reply_address,$IPP_ORGANIZATION;
+       global $system_message,$enable_email_notification,$mail_host,$append_to_username,$email_reply_address,$IPP_ORGANIZATION;
 
        if(!$enable_email_notification) return;
        if(!@include_once("Mail.php")) {
-          $MESSAGE = "Your administrator does not have the Pear Mail Class installed<BR>No email notification has been sent<BR>"; //todo: add netSMTP to installation requirements
+          $system_message = "Your administrator does not have the Pear Mail Class installed<BR>No email notification has been sent<BR>"; //todo: add netSMTP to installation requirements
           return 0;
        }; //pear mail module.
        if(!@include_once("Mail/mime.php")) {
-          $MESSAGE = "You do not have the Pear Mail Class installed<BR>No email notification sent<BR>";
+          $system_message = "You do not have the Pear Mail Class installed<BR>No email notification sent<BR>";
           return 0;
        }; //mime class
        if(!@include_once("Net/SMTP.php")) {
-          $MESSAGE = "Your administrator does not have the Net/SMTP Pear Class installed<BR>No email notification has been sent<BR>";
+          $system_message = "Your administrator does not have the Net/SMTP Pear Class installed<BR>No email notification has been sent<BR>";
           return 0;
        }
 

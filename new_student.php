@@ -30,7 +30,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 50;
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -45,15 +45,15 @@ require_once(IPP_PATH . 'include/user_functions.php');
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -63,8 +63,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -89,8 +89,8 @@ function parse_submission() {
     //check duplicate prov ed number...
     if(!connectIPPDB()) {
           $error_message = $error_message;  //just to remember we need this
-          $MESSAGE = $error_message;
-          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+          $system_message = $error_message;
+          IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      }
      if($_POST['prov_ed_num'] != "") {
        $duplicate_query = "SELECT * FROM student WHERE prov_ed_num='" . mysql_real_escape_string($_POST['prov_ed_num']) ."'";
@@ -110,21 +110,21 @@ if(isset($_POST['add_student'])) {
 
      if(!connectIPPDB()) {
           $error_message = $error_message;  //just to remember we need this
-          $MESSAGE = $error_message;
-          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+          $system_message = $error_message;
+          IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      }
 
      //do some error checking on data submission...
      $retval = parse_submission();
      if($retval != NULL) {
-         $MESSAGE = $MESSAGE . $retval;
+         $system_message = $system_message . $retval;
      } else {
        $add_query="INSERT INTO student (first_name,last_name,birthday,prov_ed_num,current_grade,gender) values ('" . mysql_real_escape_string($_POST['first_name']) . "','" .  mysql_real_escape_string($_POST['last_name']) ."','" . mysql_real_escape_string($_POST['birthday']) . "','" .  mysql_real_escape_string($_POST['prov_ed_num']) . "','" . mysql_real_escape_string($_POST['current_grade']) . "','" . mysql_real_escape_string($_POST['gender']) . "')";
        $add_result=mysql_query($add_query);
        if(!$add_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-           $MESSAGE=$MESSAGE . $error_message;
-           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+           $system_message=$system_message . $error_message;
+           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        } else {
            //get the school information to create a history for this student...
            $school_history_query="SELECT * FROM school WHERE school_code='" . mysql_real_escape_string($_POST['school_code']) . "'";
@@ -132,8 +132,8 @@ if(isset($_POST['add_student'])) {
            $school_history_row="";
            if(!$school_history_result) {
                $error_message = $error_message . "You might need to enter or change some of the school history information for this student. The system  wasunable to automatically determine this information because the database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-               $MESSAGE=$MESSAGE . $error_message;
-               IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+               $system_message=$system_message . $error_message;
+               IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
               $school_history_row=mysql_fetch_array($school_history_result);
            }
@@ -169,16 +169,16 @@ if(isset($_POST['add_student'])) {
 
 if(!connectUserDB()) {
         $error_message = $error_message;  //just to remember we need this
-        $MESSAGE = $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 
 //find all of the available schools..
 if(!connectIPPDB()) {
    $error_message = $error_message;  //just to remember we need this
-   $MESSAGE = $error_message;
-   IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+   $system_message = $error_message;
+   IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $school_query="SELECT * FROM school WHERE 1=1";
@@ -186,8 +186,8 @@ $school_result=mysql_query($school_query);
 
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -227,7 +227,7 @@ if(!$school_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Add Student-</p></center></td></tr></table></center>
                         <BR>

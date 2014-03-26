@@ -24,7 +24,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;
  */
 error_reporting(1);
 
-$MESSAGE = "";
+$system_message = "";
 
 /* eGPS required files. */
 //require_once(IPP_PATH . 'etc/init.php');
@@ -39,7 +39,7 @@ header('Pragma: no-cache'); //don't cache this page!
 if(isset($_POST['update'])) {
   //we need to update the config file
   $file=file("../etc/init.php");
-               if(!$file) $MESSAGE .= "Cannot open init.php configuration file. You will need to manually edit this file<BR>";
+               if(!$file) $system_message .= "Cannot open init.php configuration file. You will need to manually edit this file<BR>";
                else {
                  $updated_file = "";
                  foreach($file as $line) {
@@ -102,7 +102,7 @@ if(isset($_POST['update'])) {
                     <tr>
                         <td valign="top">
                         <div id="main">
- <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+ <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- Installation Configuration -</p></center></td></tr></table></center>
         <BR><center><table width="80%" border="0"><tr><td>

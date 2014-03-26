@@ -24,7 +24,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 0;
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
+if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 if(isset($szBackGetVars)) $szBackGetVars = $szBackGetVars; else $szBackGetVars="";
 
 define('IPP_PATH','./');
@@ -41,15 +41,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -59,8 +59,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL && !(isLocalAdministrator($_SESSION['egps_username']))) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -73,58 +73,58 @@ if(isset($_GET['szBackGetVars'])) $szBackGetVars = $_GET['szBackGetVars'];
 if(isset($_POST['szBackGetVars'])) $szBackGetVars = $_POST['szBackGetVars'];
 
 if(isset($_GET['add_user']) && !$_GET['add_username']) {
-  $MESSAGE = $MESSAGE . "You must choose a username to add<BR>";
+  $system_message = $system_message . "You must choose a username to add<BR>";
 }
 
 if(isset($_GET['add_username'])) {
     if(!connectIPPDB()) {
        $error_message = $error_message;  //just to remember we need this
-       $MESSAGE = $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message = $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 
    //check to make sure passwords match.
    $regexp='/^[a-zA-Z0-9]*$/';
    if(mysql_real_escape_string($_GET['pwd1']) != mysql_real_escape_string($_GET['pwd2'])) {
-     $MESSAGE .= "Passwords do not match<BR>";
+     $system_message .= "Passwords do not match<BR>";
    } elseif (!preg_match($regexp, $_GET['add_username'])) {
-     $MESSAGE .= "Username must be a combination letters and numbers only (no spaces or punctuation)<BR>";
+     $system_message .= "Username must be a combination letters and numbers only (no spaces or punctuation)<BR>";
    } else {
     //do a quick check for existing username to prevent an ugly error msg...
     $duplicate_query = "SELECT * FROM support_member WHERE egps_username='" . $_GET['add_username'] . "'";
     $duplicate_result = mysql_query($duplicate_query);
     if(!$duplicate_result) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 
     $pwd = str_replace("$mysql_user_append_to_login","",mysql_real_escape_string($_GET['pwd1']));
 
     if(mysql_num_rows($duplicate_result) > 0) {
-        $MESSAGE = $MESSAGE . "User already exists in database<BR>";
+        $system_message = $system_message . "User already exists in database<BR>";
     } else {
        if($permission_level != 0 && $_GET['permission_level'] <= 20) {
-         $MESSAGE = $MESSAGE . "You can't add this level of permission<BR>";
+         $system_message = $system_message . "You can't add this level of permission<BR>";
        } else {
         if($permission_level != 0 && ($_GET['school_code'] != getUserSchoolCode($_SESSION['egps_username']))) {
-          $MESSAGE = $MESSAGE . "You are limited to adding persons to your school<BR>"; // . $_GET['school_code'] ." != " . getUserSchoolCode($_SESSION['egps_username']) . "<BR>";
+          $system_message = $system_message . "You are limited to adding persons to your school<BR>"; // . $_GET['school_code'] ." != " . getUserSchoolCode($_SESSION['egps_username']) . "<BR>";
         } else {
           //we need to add this user...
           $update_query = "INSERT INTO support_member (egps_username,permission_level,first_name,last_name,email,school_code) VALUES ('" . mysql_real_escape_string($_GET['add_username']) . "'," . mysql_real_escape_string($_GET['permission_level']) . ",'" . mysql_real_escape_string($_GET['first_name']) . "','" . mysql_real_escape_string($_GET['last_name']) . "','" . mysql_real_escape_string($_GET['email']) . "'," . mysql_real_escape_string($_GET['school_code']) . ")";
           $update_result = mysql_query($update_query);
           if(!$update_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
           } else {
               //we need to update or add into the users table...
               $update_users_query = "UPDATE users SET unencrypted_password='" . mysql_real_escape_string($pwd) . "', encrypted_password=PASSWORD('" . mysql_real_escape_string($pwd) . "') WHERE login_name=concat('" . mysql_real_escape_string($_GET['add_username']) ."','$mysql_user_append_to_login') LIMIT 1";
               $update_users_result = mysql_query($update_users_query);
               if(!$update_users_result) {
                  $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_users_query'<BR>";
-                 $MESSAGE=$MESSAGE . $error_message;
-                 IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                 $system_message=$system_message . $error_message;
+                 IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                 }  else {
                  //if we don't have this user already in the users database then add them
                  if(!mysql_affected_rows()) {
@@ -132,8 +132,8 @@ if(isset($_GET['add_username'])) {
                   $insert_users_result = mysql_query($insert_users_query);
                   if(!$insert_users_result) {
                     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_users_query'<BR>";
-                    $MESSAGE=$MESSAGE . $error_message;
-                    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                    $system_message=$system_message . $error_message;
+                    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                   }
                  }
                }
@@ -152,29 +152,29 @@ if(isset($_GET['add_username'])) {
 //connect to the user database to search for names..
 //if(!connectUserDB()) {
 //        $error_message = $error_message;  //just to remember we need this
-//        $MESSAGE = $error_message;
-//        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+//        $system_message = $error_message;
+//        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 //}
 
 //$egps_username_query="SELECT login_name FROM users WHERE  login_name LIKE '%" . $_GET['egps_username'] . "%' AND aliased_name IS NULL";
 //$egps_username_result = mysql_query($egps_username_query);
 //if(!$egps_username_result) {
 //    $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$egps_username_query'<BR>";
-//    $MESSAGE=$MESSAGE . $error_message;
-//    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+//    $system_message=$system_message . $error_message;
+//    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 //}
 
 //$iNumResults = mysql_num_rows($egps_username_result);
 //if($iNumResults > 50) {
-//    $MESSAGE = "";
-//    $MESSAGE = "Your selection yielded $iNumResults names. Please try to refine your search";
+//    $system_message = "";
+//    $system_message = "Your selection yielded $iNumResults names. Please try to refine your search";
  //   require (IPP_PATH . "superuser_new_member.php");
  //   exit();
 //}
 
 //if($iNumResults <= 0) {
-//    $MESSAGE = "";
-//    $MESSAGE = "Your selection yielded $iNumResults names.";
+//    $system_message = "";
+//    $system_message = "Your selection yielded $iNumResults names.";
 //    require (IPP_PATH . "superuser_new_member.php");
 //    exit();
 //}
@@ -182,16 +182,16 @@ if(isset($_GET['add_username'])) {
 //get the permission levels from db
 if(!connectIPPDB()) {
    $error_message = $error_message;  //just to remember we need this
-   $MESSAGE = $error_message;
-   IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+   $system_message = $error_message;
+   IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $permission_query = "SELECT * FROM permission_levels WHERE 1=1 ORDER BY level DESC ";
 $permission_result = mysql_query($permission_query);
 if(!$permission_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$permission_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $school_query="SELECT * FROM school WHERE 1=1";
@@ -199,8 +199,8 @@ $school_result=mysql_query($school_query);
 
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -264,7 +264,7 @@ if(!$school_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Add Member-</p></center></td></tr></table></center>
                         <BR>

@@ -36,7 +36,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -52,15 +52,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -77,8 +77,8 @@ $coord_query="SELECT * FROM coordination_of_services WHERE uid=$uid";
 $coord_result = mysql_query($coord_query);
 if(!$coord_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$coord_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
    $coord_row=mysql_fetch_array($coord_result);
 }
@@ -93,8 +93,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -113,8 +113,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 function asc2hex ($temp) {
@@ -196,7 +196,7 @@ if(isset($_POST['edit_coordination_of_services'])) {
   $retval=parse_submission();
   if($retval != NULL) {
     //no way...
-    $MESSAGE = $MESSAGE . $retval;
+    $system_message = $system_message . $retval;
   } else {
     //we add the entry.
     $insert_query = "UPDATE coordination_of_services SET agency='" . mysql_real_escape_string($_POST['agency']) . "',date='" . mysql_real_escape_string($_POST['date']) . "',description='" . mysql_real_escape_string($_POST['description']) . "'";
@@ -208,8 +208,8 @@ if(isset($_POST['edit_coordination_of_services'])) {
      $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($coord_query,0,40) . "[truncated]'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      } else {
        //redirect back
        header("Location: " . IPP_PATH . "coordination_of_services.php?student_id=" . $student_id);
@@ -221,7 +221,7 @@ if(isset($_POST['edit_coordination_of_services'])) {
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -266,13 +266,13 @@ if(isset($_POST['edit_coordination_of_services'])) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $coordlist_query="SELECT DISTINCT `agency`, COUNT(`agency`) AS `count` FROM coordination_of_services GROUP BY `agency` ORDER BY `count` DESC LIMIT 200";
         $coordlist_result = mysql_query($coordlist_query);
         if(!$coordlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$coordlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             echo createJavaScript($coordlist_result,"popuplist");
@@ -353,7 +353,7 @@ if(isset($_POST['edit_coordination_of_services'])) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Edit Coordination of Services<BR> (<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

@@ -34,7 +34,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 60;    //Teaching staff and up
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
+if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 
 define('IPP_PATH','./');
 
@@ -50,15 +50,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -68,8 +68,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -99,15 +99,15 @@ $our_permission = getStudentPermission($student_id);
 
 if($our_permission != "WRITE" && $our_permission != "ASSIGN" && $our_permission != "ALL") {
   //we don't have permission...
-  $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+  $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   require(IPP_PATH . 'security_error.php');
   exit();
 }
 
 //see if we need to update some permission values or delete somebody...
 function update_permissions() {
-    global $MESSAGE,$our_permission,$student_id;
+    global $system_message,$our_permission,$student_id;
 
     //get a list of all affected
     $user_list="";
@@ -121,30 +121,30 @@ function update_permissions() {
     $query="UPDATE support_list SET ";
         if(isset($_POST['SET_ALL_x']))
         {
-           if($our_permission != "ALL") {$MESSAGE = $MESSAGE . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
+           if($our_permission != "ALL") {$system_message = $system_message . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
            $query = $query . "permission='ALL' WHERE student_id=$student_id AND " . $user_list;
         }
         if(isset($_POST['DELETE_x']))  {
-           if($our_permission != "ASSIGN" && $our_permission !="ALL") {$MESSAGE = $MESSAGE . "You do not have sufficient permission to delete users<BR>"; return FALSE; }
+           if($our_permission != "ASSIGN" && $our_permission !="ALL") {$system_message = $system_message . "You do not have sufficient permission to delete users<BR>"; return FALSE; }
            $query = "DELETE FROM support_list WHERE $user_list AND student_id=$student_id";
         }
         if(isset($_POST['SET_READ_x'])) {
-           if($our_permission != "ASSIGN" && $our_permission != "ALL") {$MESSAGE = $MESSAGE . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
+           if($our_permission != "ASSIGN" && $our_permission != "ALL") {$system_message = $system_message . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
            $query = $query . "permission='READ' WHERE student_id=$student_id AND " . $user_list;
         }
         if(isset($_POST['SET_WRITE_x'])) {
-           if($our_permission != "ASSIGN" && $our_permission != "ALL") {$MESSAGE = $MESSAGE . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
+           if($our_permission != "ASSIGN" && $our_permission != "ALL") {$system_message = $system_message . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
            $query = $query . "permission='WRITE' WHERE student_id=$student_id AND " . $user_list;
         }
         if(isset($_POST['SET_ASSIGN_x'])) {
-           if($our_permission != "ASSIGN" && $our_permission != "ALL") {$MESSAGE = $MESSAGE . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
+           if($our_permission != "ASSIGN" && $our_permission != "ALL") {$system_message = $system_message . "You do not have sufficient permission to set this permission<BR>"; return FALSE; }
            $query = $query . "permission='ASSIGN' WHERE student_id=$student_id AND " . $user_list;
         }
 
     $result = mysql_query($query);
     if(!$result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$query'<BR>";
-        $MESSAGE = $MESSAGE . $error_message;
+        $system_message = $system_message . $error_message;
     }
 }
 if(isset($_POST['SET_ASSIGN_x']) || isset($_POST['SET_WRITE_x']) || isset($_POST['SET_READ_x']) || isset($_POST['SET_ALL_x']) || isset($_POST['DELETE_x'])) {
@@ -158,8 +158,8 @@ $student_query = "select * from student where student.student_id=" . $student_id
 $student_result = mysql_query($student_query);
 if(!$student_query) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $student_row=mysql_fetch_array($student_result);
@@ -169,8 +169,8 @@ $student_row=mysql_fetch_array($student_result);
 function getSupportMembers() {
     global $error_message,$iLimit,$iCur,$student_id;
     if(!connectIPPDB()) {
-        $MESSAGE = $MESSAGE . $error_message;  //just to remember we need this
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;  //just to remember we need this
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
     // LEFT JOIN area_list ON support_list.uid=area_list.support_list_uid LEFT JOIN area_type ON area_list.area_type_id=area_type.area_type_id
     // original $query = "SELECT * FROM support_list where student_id=" . $student_id . " ORDER BY egps_username ASC LIMIT $iCur,$iLimit";
@@ -186,8 +186,8 @@ function getSupportMembers() {
 
 $sqlSupportMembers=getSupportMembers();
 if(!$sqlSupportMembers) {
-    $MESSAGE = $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //find a total num support members for nav bar...
@@ -271,7 +271,7 @@ $total_support_members = mysql_num_rows($total_result);
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">-Manage Support Members-</p></center></td></tr><tr><td><center><p class="header"> <?php echo $student_row['first_name'] . " " . $student_row['last_name']?></p></center></td></tr></table></center>
                         <BR>

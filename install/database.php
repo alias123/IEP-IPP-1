@@ -32,22 +32,22 @@ error_reporting(1);
 //require_once(IPP_PATH . 'include/log.php');
 //require_once(IPP_PATH . 'include/navbar.php');
 
-$MESSAGE="";
+$system_message="";
 
 header('Pragma: no-cache'); //don't cache this page!
 if(isset($_POST['db_host'])) {
   //we are creating the datase
   $link = mysql_connect($_POST['db_host'],$_POST['db_username'],$_POST['db_password']);
   if($link == FALSE) {
-    $MESSAGE = "Could not connect to database: for the following reason: '" . mysql_error() . "'<BR>\n";
+    $system_message = "Could not connect to database: for the following reason: '" . mysql_error() . "'<BR>\n";
     } else {
         $db_user = mysql_select_db($_POST['db_name']);
         if(!$db_user) {
-           $MESSAGE = "Could not select database: '" . $mysql_user_database . "' for the following reason: '" . mysql_error() . "'</BR>\n";
+           $system_message = "Could not select database: '" . $mysql_user_database . "' for the following reason: '" . mysql_error() . "'</BR>\n";
         } else {
             //we are good to go ahead...
             if(isset($_POST['db_populate']) && $_POST['db_populate']=="on") {
-              // $MESSAGE .= "Populating<BR>";
+              // $system_message .= "Populating<BR>";
              
                $file_content = file("default.sql");
                $sql="";
@@ -58,7 +58,7 @@ if(isset($_POST['db_host'])) {
                    $sql .= $sql_line;
                    if(preg_match("/;[\040]*\$/", $sql_line)){
                      $result = mysql_query($sql) or die(mysql_error());
-                    // if(!$result) { $MESSAGE .= "Cannot populate the database: " . mysql_error() . "<BR>"; $FAIL=TRUE; }
+                    // if(!$result) { $system_message .= "Cannot populate the database: " . mysql_error() . "<BR>"; $FAIL=TRUE; }
                      $sql = "";
                    }
                  }
@@ -66,7 +66,7 @@ if(isset($_POST['db_host'])) {
 
                //we need to update the configuration file...
                $file=file("../etc/init.php");
-               if(!$file) $MESSAGE .= "Cannot open init.php configuration file. You will need to manually edit this file<BR>";
+               if(!$file) $system_message .= "Cannot open init.php configuration file. You will need to manually edit this file<BR>";
                else {
                  $updated_file = "";
                  foreach($file as $line) {
@@ -91,10 +91,10 @@ if(isset($_POST['db_host'])) {
                   header("Location: config.php");
                }
              } else { 
-              //$MESSAGE .= "NOT POPULATED<BR>" . $_POST['db_populate'];
+              //$system_message .= "NOT POPULATED<BR>" . $_POST['db_populate'];
               //we need to update the configuration file...
                $file=file("../etc/init.php");
-               if(!$file) $MESSAGE .= "Cannot open init.php configuration file. You will need to manually edit this file<BR>";
+               if(!$file) $system_message .= "Cannot open init.php configuration file. You will need to manually edit this file<BR>";
                else {
                  $updated_file = "";
                  foreach($file as $line) {
@@ -160,7 +160,7 @@ if(isset($_POST['db_host'])) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                         <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                         <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
                         <center><table><tr><td><center><p class="header">- Installation Database Configuration -</p></center></td></tr></table></center>
         <BR><center><table width="80%" border="0"><tr><td>
                 

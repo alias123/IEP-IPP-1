@@ -24,7 +24,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 20;    //assistant_admin
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
+if(isset($system_message)) $system_message = $system_message; else $system_message="";
 
 define('IPP_PATH','./');
 
@@ -39,15 +39,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -57,8 +57,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -71,10 +71,10 @@ if(isset($_GET['delete_area'])) {
          $delete_result = mysql_query($delete_query);
          if(!$delete_result) {
              $error_message = $error_message . "Delete query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-             $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          }
-         //$MESSAGE=$MESSAGE . "delete query=$delete_query<BR>";
+         //$system_message=$system_message . "delete query=$delete_query<BR>";
 }
 
 //check if we are deleting a long term goal...
@@ -83,10 +83,10 @@ if(isset($_GET['delete_ltg'])) {
          $delete_result = mysql_query($delete_query);
          if(!$delete_result) {
              $error_message = $error_message . "Delete query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-             $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          }
-         //$MESSAGE=$MESSAGE . "delete query=$delete_query<BR>";
+         //$system_message=$system_message . "delete query=$delete_query<BR>";
 }
 
 //check if we are deleting a long term goal...
@@ -95,10 +95,10 @@ if(isset($_GET['delete_stg'])) {
          $delete_result = mysql_query($delete_query);
          if(!$delete_result) {
              $error_message = $error_message . "Delete query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-             $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          }
-         //$MESSAGE=$MESSAGE . "delete query=$delete_query<BR>";
+         //$system_message=$system_message . "delete query=$delete_query<BR>";
 }
 
 //check if we are adding a long term goal...
@@ -111,11 +111,11 @@ if(isset($_GET['ltg_name'])) {
          $insert_result = mysql_query($insert_query);
          if(!$insert_result) {
              $error_message = $error_message . "Insert query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-             $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          } else {; /*dangling else??*/ }
     } else {
-         $MESSAGE = $MESSAGE . "Unable to add goal most likely because the value already exists<BR>";
+         $system_message = $system_message . "Unable to add goal most likely because the value already exists<BR>";
     }
 }
 
@@ -129,11 +129,11 @@ if(isset($_GET['category_name'])) {
          $insert_result = mysql_query($insert_query);
          if(!$insert_result) {
              $error_message = $error_message . "Insert query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-             $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          } else {; /*dangling else??*/ }
     } else {
-         $MESSAGE = $MESSAGE . "Unable to add category most likely because the value already exists<BR>";
+         $system_message = $system_message . "Unable to add category most likely because the value already exists<BR>";
     }
 }
 
@@ -147,11 +147,11 @@ if(isset($_GET['stg_name'])) {
          $insert_result = mysql_query($insert_query);
          if(!$insert_result) {
              $error_message = $error_message . "Insert query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-             $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          } else {; /*dangling else??*/ }
     } else {
-         $MESSAGE = $MESSAGE . "Unable to add objective most likely because the value already exists<BR>";
+         $system_message = $system_message . "Unable to add objective most likely because the value already exists<BR>";
     }
 }
 
@@ -160,11 +160,11 @@ $ltg_query = "SELECT typical_long_term_goal_category.cid AS uid,typical_long_ter
 $ltg_result = mysql_query($ltg_query);
 if(!$ltg_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$ltg_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
-//$MESSAGE=$MESSAGE . "returned rows: " . mysql_num_rows($ltg_result) . "<BR>";
+//$system_message=$system_message . "returned rows: " . mysql_num_rows($ltg_result) . "<BR>";
 
 ?> 
 
@@ -212,7 +212,7 @@ if(!$ltg_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">-Goals Database-</p></center></td></tr></table></center>
                         <BR>

@@ -38,7 +38,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -59,15 +59,15 @@ if (strstr($_SERVER['HTTP_USER_AGENT'],"MSIE 5.5")) { // had to make it MSIE 5.5
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -87,8 +87,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -107,8 +107,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 //get the goals...
@@ -116,9 +116,9 @@ $long_goal_query = "SELECT * FROM long_term_goal WHERE student_id=$student_id  O
 $long_goal_result = mysql_query($long_goal_query);
 if(!$long_goal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$long_goal_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-    echo $MESSAGE;
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+    echo $system_message;
     exit();
 }
 
@@ -128,9 +128,9 @@ $supervisor_query = "SELECT * FROM supervisor WHERE student_id=$student_id";
 $supervisor_result = mysql_query($supervisor_query);
 if(!$supervisor_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-    echo $MESSAGE;
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+    echo $system_message;
     exit();
     //just carry on
 } else {
@@ -253,8 +253,8 @@ class year_end_review extends FPDF  //all this and OO too weeeeeeee
          $objective_result = mysql_query($objective_query);
          if(!$objective_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objective_query'<BR>";
-            $MESSAGE=$MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message=$system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          }
          $pdf->SetFont('Arial','',8);
          $pdf->SetFillColor(204,255,255);
@@ -318,8 +318,8 @@ class year_end_review extends FPDF  //all this and OO too weeeeeeee
          $objective_result = mysql_query($objective_query);
          if(!$objective_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objective_query'<BR>";
-            $MESSAGE=$MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message=$system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          }
          $pdf->SetFont('Arial','',10);
          $pdf->SetFillColor(204,255,255);

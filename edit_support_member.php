@@ -37,7 +37,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -54,15 +54,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -84,8 +84,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -104,8 +104,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 //get the support list for this student...
@@ -114,8 +114,8 @@ $support_query="SELECT * FROM support_list LEFT JOIN support_member ON support_l
 $support_result = mysql_query($support_query);
 if(!$support_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$support_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
     $support_row = mysql_fetch_array($support_result);
 }
@@ -124,18 +124,18 @@ if(!$support_result) {
 if($have_write_permission && isset($_GET['modify'])) {
     //check if we are trying to update the permission but don't have the rights...
     if($_GET['permission'] != $support_row['permission'] && !($our_permission == "ALL" || $our_permission == "ASSIGN")) {
-        $MESSAGE = $MESSAGE . "You don't have the permission level necessary to modify permission levels<BR>";
+        $system_message = $system_message . "You don't have the permission level necessary to modify permission levels<BR>";
     } else {
        if(($_GET['permission'] == "ALL" || $_GET['permission'] == "ASSIGN") && !($our_permission == "ALL")) {
-         $MESSAGE = $MESSAGE . "You must be set with 'ALL' level permission to grant 'ASSIGN' permissions and higher";
+         $system_message = $system_message . "You must be set with 'ALL' level permission to grant 'ASSIGN' permissions and higher";
        } else {
          //we need to update the information here...
          $update_query = "UPDATE support_list SET support_area='" . mysql_real_escape_string($_GET['support_area']) . "', permission='" . mysql_real_escape_string($_GET['permission']) . "' WHERE student_id=$student_id AND egps_username='" . mysql_real_escape_string($_GET['username']) . "'";
          $update_result = mysql_query($update_query);
          if(!$update_result) {
               $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-              $MESSAGE= $MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message= $system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          } else {
             if(isset($_GET['mail_notification'])) {
               mail_notification(mysql_real_escape_string($_GET['username']),"This email has been sent to you to notify you that your permission levels for " . $student_row['first_name'] . " " . $student_row['last_name'] . "'s IPP on the $IPP_ORGANIZATION online individual program plan system have been changed to " . mysql_real_escape_string($_GET['permission']) . " access.");
@@ -154,8 +154,8 @@ $support_query="SELECT * FROM support_list LEFT JOIN support_member ON support_l
 $support_result = mysql_query($support_query);
 if(!$support_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$support_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
     $support_row = mysql_fetch_array($support_result);
 }
@@ -164,7 +164,7 @@ if(!$support_result) {
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -209,14 +209,14 @@ if(!$support_result) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE,$student_id;
+        global $system_message,$student_id;
         //get a list of all available goal categories...
         $catlist_query="SELECT name FROM typical_long_term_goal_category WHERE is_deleted='N' ORDER BY name ASC";
         $catlist_result=mysql_query($catlist_query);
         if(!$catlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$catlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
             return;
         } else {
              //call the function to create the javascript array...
@@ -294,7 +294,7 @@ if(!$support_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Edit Permissions(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

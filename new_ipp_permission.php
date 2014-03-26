@@ -26,7 +26,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 60;  //TA
 /**
  * Path for IPP required files.
  */
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
+if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 
 define('IPP_PATH','./');
 
@@ -43,15 +43,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -61,8 +61,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -88,8 +88,8 @@ $our_permission = getStudentPermission($student_id);
 
 if($our_permission != "ASSIGN" && $our_permission != "ALL") {
   //we don't have permission...
-  $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+  $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   require(IPP_PATH . 'security_error.php');
   exit();
 }
@@ -100,8 +100,8 @@ $student_result = mysql_query($student_query);
 $student_row="";
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 $username="";
@@ -113,8 +113,8 @@ $ipp_username_query="SELECT * FROM support_member WHERE egps_username LIKE '%" .
 $ipp_username_result = mysql_query($ipp_username_query);
 if(!$ipp_username_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$ipp_username_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //get our permissions for this student...
@@ -123,14 +123,14 @@ $our_permission = getStudentPermission($student_id);
 if($our_permission != "ASSIGN" && $our_permission != "ALL") {
    //shouldn't be here...
    //we don't have permission...
-  $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+  $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   require(IPP_PATH . 'security_error.php');
   exit();
 }
 
 //check if we are adding...
-if(isset($_POST['ACTION']) && $_POST['ACTION'] == "Add"   && !isset($_POST['add_username'])) $MESSAGE = $MESSAGE . "You must choose a person<BR>";
+if(isset($_POST['ACTION']) && $_POST['ACTION'] == "Add"   && !isset($_POST['add_username'])) $system_message = $system_message . "You must choose a person<BR>";
 if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_username'])) {
 
    //make sure we don't have a duplicate...
@@ -138,14 +138,14 @@ if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_usern
    $duplicate_result = mysql_query($duplicate_query);
    if(mysql_num_rows($duplicate_result) > 0 ) {
       //already have this person as a support member for this student...
-      $MESSAGE = $MESSAGE . "This person already appears to be a support member for this student<BR>";
+      $system_message = $system_message . "This person already appears to be a support member for this student<BR>";
    } else {
        $insert_query = "INSERT INTO support_list (egps_username,student_id,permission,support_area) VALUES ('" . mysql_real_escape_string($_POST['add_username']) . "'," . mysql_real_escape_string($_POST['student_id']) . ",'" . mysql_real_escape_string($_POST['permission_level']) . "','" . mysql_real_escape_string($_POST['support_area']) . "')";
        $insert_result = mysql_query($insert_query);
        if(!$insert_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-           $MESSAGE=$MESSAGE . $error_message;
-           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+           $system_message=$system_message . $error_message;
+           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        } else{
           //get the support list UID before we do another query...
           $support_list_uid = mysql_insert_id();
@@ -170,7 +170,7 @@ if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_usern
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -215,14 +215,14 @@ if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_usern
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE,$student_id;
+        global $system_message,$student_id;
         //get a list of program areas...
         $area_query = "SELECT name FROM typical_long_term_goal_category WHERE is_deleted='N' ORDER BY name ASC";
         $area_result = mysql_query($area_query);
         if(!$area_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$area_query'<BR>";
-           $MESSAGE=$MESSAGE . $error_message;
-           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+           $system_message=$system_message . $error_message;
+           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         }  else {
            if(mysql_num_rows($area_result)) {
              //call the function to create the javascript array...
@@ -276,7 +276,7 @@ if(isset($_POST['ACTION']) && $_POST['ACTION']=="Add" && isset($_POST['add_usern
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">-Add Support Member to Permissions-</p></center></td></tr><tr><td><center><p class="header"> <?php echo $student_row['first_name'] . " " . $student_row['last_name']?></p></center></td></tr></table></center>
                         <BR>

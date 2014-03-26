@@ -37,7 +37,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -53,15 +53,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -78,8 +78,8 @@ $asst_tech_query="SELECT * FROM assistive_technology WHERE uid=$uid";
 $asst_tech_result = mysql_query($asst_tech_query);
 if(!$asst_tech_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$asst_tech_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
    $asst_tech_row=mysql_fetch_array($asst_tech_result);
 }
@@ -94,8 +94,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -114,8 +114,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 
@@ -123,7 +123,7 @@ if(!$student_result) {
 //check if we are modifying a student...
 if(isset($_POST['edit_asst_tech']) && $have_write_permission) {
   if($_POST['technology'] == '') {
-    $MESSAGE = $MESSAGE . "You must supply information on the techology<BR>";
+    $system_message = $system_message . "You must supply information on the techology<BR>";
   } else {
     //we add the entry.
     $update_query = "UPDATE assistive_technology SET technology='" . mysql_real_escape_string($_POST['technology']) . "'";
@@ -131,13 +131,13 @@ if(isset($_POST['edit_asst_tech']) && $have_write_permission) {
     $update_result = mysql_query($update_query);
      if(!$update_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($update_query,0,300) . "[truncated]'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      } else {
        //redirect
        header("Location: " . IPP_PATH . "assistive_technology.php?student_id=" . $student_id);
      }
-     //$MESSAGE = $MESSAGE . $insert_query . "<BR>";
+     //$system_message = $system_message . $insert_query . "<BR>";
   }
 }
 
@@ -145,7 +145,7 @@ if(isset($_POST['edit_asst_tech']) && $have_write_permission) {
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -191,13 +191,13 @@ if(isset($_POST['edit_asst_tech']) && $have_write_permission) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $techlist_query="SELECT DISTINCT `technology`, COUNT(`technology`) AS `count` FROM assistive_technology GROUP BY `technology` ORDER BY `count` DESC LIMIT 200";
         $techlist_result = mysql_query($techlist_query);
         if(!$techlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$techlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             echo createJavaScript($techlist_result,"popuplist");
@@ -280,7 +280,7 @@ if(isset($_POST['edit_asst_tech']) && $have_write_permission) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Edit Assistive Technology (<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

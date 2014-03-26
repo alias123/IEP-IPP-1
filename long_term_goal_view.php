@@ -18,7 +18,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
 
 
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
+if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 
 /**@var
  * @brief		Path for IPP required files (constant).
@@ -44,15 +44,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -72,8 +72,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -89,8 +89,8 @@ if(!isset($_GET['student_id']) || $_GET['student_id'] == "") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -109,14 +109,14 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 //check if we are adding...
 if(isset($_GET['next']) && $have_write_permission) {
   //if(!isset($_GET['goal_area']) || $_GET['goal_area'] == "") {
-  //  $MESSAGE = $MESSAGE . "You must supply a goal area<BR>";
+  //  $system_message = $system_message . "You must supply a goal area<BR>";
   //} else {
      header("Location: ./add_goal_1.php?goal_area=" . $_GET['goal_area'] . "&student_id=" . $student_id);
   //}
@@ -127,10 +127,10 @@ if(isset($_GET['setUncompleted']) && $have_write_permission) {
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    }
-   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+   //else $system_message = $system_message . "Goal Deleted: $delete_query<BR>";
 }
 
 if(isset($_GET['deleteSTO']) && $have_write_permission) {
@@ -138,10 +138,10 @@ if(isset($_GET['deleteSTO']) && $have_write_permission) {
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    }
-   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+   //else $system_message = $system_message . "Goal Deleted: $delete_query<BR>";
 }
 
 if(isset($_GET['deleteLTG']) && $have_write_permission) {
@@ -150,19 +150,19 @@ if(isset($_GET['deleteLTG']) && $have_write_permission) {
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    }  else {
      //delete the ltg's
      $update_query = "DELETE FROM long_term_goal WHERE goal_id=" . mysql_real_escape_string($_GET['deleteLTG']);
      $update_result = mysql_query($update_query);
      if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-     } //else { $MESSAGE = $MESSAGE . "OKIE DOKIE<BR>"; }
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+     } //else { $system_message = $system_message . "OKIE DOKIE<BR>"; }
    }
-   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+   //else $system_message = $system_message . "Goal Deleted: $delete_query<BR>";
 }
 
 if(isset($_GET['setCompleted']) && $have_write_permission) {
@@ -170,10 +170,10 @@ if(isset($_GET['setCompleted']) && $have_write_permission) {
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    }
-   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+   //else $system_message = $system_message . "Goal Deleted: $delete_query<BR>";
 }
 
 if(isset($_GET['setSTOCompleted']) && $have_write_permission) {
@@ -181,10 +181,10 @@ if(isset($_GET['setSTOCompleted']) && $have_write_permission) {
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    }
-   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+   //else $system_message = $system_message . "Goal Deleted: $delete_query<BR>";
 }
 
 if(isset($_GET['setSTOUncompleted']) && $have_write_permission) {
@@ -192,10 +192,10 @@ if(isset($_GET['setSTOUncompleted']) && $have_write_permission) {
    $update_result = mysql_query($update_query);
    if(!$update_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    }
-   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+   //else $system_message = $system_message . "Goal Deleted: $delete_query<BR>";
 }
 
 if(isset($_GET['deleteGoal']) && $have_write_permission) {
@@ -203,26 +203,26 @@ if(isset($_GET['deleteGoal']) && $have_write_permission) {
    $delete_result = mysql_query($delete_query);
    if(!$delete_result) {
        $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-       $MESSAGE=$MESSAGE . $error_message;
-       IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+       $system_message=$system_message . $error_message;
+       IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    }
-   //else $MESSAGE = $MESSAGE . "Goal Deleted: $delete_query<BR>";
+   //else $system_message = $system_message . "Goal Deleted: $delete_query<BR>";
 }
 
 $long_goal_query = "SELECT * FROM long_term_goal WHERE student_id=$student_id ORDER BY area ASC, is_complete DESC, goal ASC";
 $long_goal_result = mysql_query($long_goal_query);
 if(!$long_goal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$long_goal_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $area_type_query = "SELECT  * from  typical_long_term_goal_category WHERE is_deleted='N'";
 $area_type_result = mysql_query($area_type_query);
 if(!$area_type_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$area_type_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 /*************************** popup chooser support function ******************/
@@ -231,7 +231,7 @@ if(!$area_type_result) {
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -278,14 +278,14 @@ if(!$area_type_result) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         //get a list of all available goal categories...
         $catlist_query="SELECT * FROM typical_long_term_goal_category where is_deleted='N' ORDER BY name ASC";
         $catlist_result=mysql_query($catlist_query);
         if(!$catlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$catlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
             return;
         }
 
@@ -294,8 +294,8 @@ if(!$area_type_result) {
            $objlist_result = mysql_query($objlist_query);
            if(!$objlist_result) {
              $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objlist_query'<BR>";
-             $MESSAGE= $MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message= $system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
              //call the function to create the javascript array...
              echo createJavaScript($objlist_result,$catlist['name']);
@@ -367,7 +367,7 @@ if(!$area_type_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">- Goals -</p></center></td></tr><tr><td><center><p class="bold_text"> <?php echo $student_row['first_name'] . " " . $student_row['last_name'] .  ", Permission: " . $our_permission;?></p></center></td></tr></table></center>
                         <BR>
@@ -489,9 +489,9 @@ if(!$area_type_result) {
                           //check for error
                           if(!$short_term_objective_result) {
                             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$short_term_objective_query'<BR>";
-                            $MESSAGE=$MESSAGE . $error_message;
-                            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-                            echo $MESSAGE;
+                            $system_message=$system_message . $error_message;
+                            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+                            echo $system_message;
                           } else {
                             //output this note...
                             //check if we have no notes

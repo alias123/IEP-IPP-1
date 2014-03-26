@@ -28,7 +28,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -44,15 +44,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -68,8 +68,8 @@ $accomodation_query = "SELECT * FROM accomodation WHERE uid=" . mysql_real_escap
 $accomodation_result = mysql_query($accomodation_query);
 if(!$accomodation_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$accomodation_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
   $accomodation_row=mysql_fetch_array($accomodation_result);
 }
@@ -84,8 +84,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -104,16 +104,16 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 if(isset($_POST['edit_accomodation']) && $have_write_permission) {
 
      $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
-     if(!preg_match($regexp,$_POST['start_date'])) { $MESSAGE = $MESSAGE . "Start Date must be in YYYY-MM-DD format<BR>"; }
+     if(!preg_match($regexp,$_POST['start_date'])) { $system_message = $system_message . "Start Date must be in YYYY-MM-DD format<BR>"; }
      else {
-       if(!($_POST['end_date'] == ""  || preg_match($regexp,$_POST['end_date']))) { $MESSAGE = $MESSAGE . "End Date must be in YYYY-MM-DD format<BR>"; }
+       if(!($_POST['end_date'] == ""  || preg_match($regexp,$_POST['end_date']))) { $system_message = $system_message . "End Date must be in YYYY-MM-DD format<BR>"; }
        else {
            $update_query = "UPDATE accomodation SET accomodation='" . mysql_real_escape_string($_POST['accomodation']) . "',start_date='" . mysql_real_escape_string($_POST['start_date']) . "',subject='" . mysql_real_escape_string($_POST['subject']) . "'";
            if($_POST['end_date'] == "") $update_query .= ",end_date=NULL";   //set no end date.
@@ -122,22 +122,22 @@ if(isset($_POST['edit_accomodation']) && $have_write_permission) {
            $update_result = mysql_query($update_query);
            if(!$update_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
              //redirect
              header("Location: " . IPP_PATH . "accomodations.php?student_id=" . $student_id);
            }
        }
     }
-   //$MESSAGE = $MESSAGE . $add_query . "<BR>";
+   //$system_message = $system_message . $add_query . "<BR>";
 }
 
 /******************** popup chooser support function ******************/
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -182,13 +182,13 @@ if(isset($_POST['edit_accomodation']) && $have_write_permission) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $acclist_query="SELECT accomodation FROM typical_accomodation WHERE 1 ORDER BY accomodation ASC LIMIT 200";
         $acclist_result = mysql_query($acclist_query);
         if(!$acclist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$acclist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             if(mysql_num_rows($acclist_result)) echo createJavaScript($acclist_result,"popuplist");
@@ -269,7 +269,7 @@ if(isset($_POST['edit_accomodation']) && $have_write_permission) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Edit Accommodation<BR>(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

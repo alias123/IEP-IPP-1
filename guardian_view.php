@@ -24,7 +24,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
+if(isset($system_message)) $system_message = $system_message; else $system_message="";
 
 define('IPP_PATH','./');
 
@@ -40,15 +40,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -58,8 +58,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -76,8 +76,8 @@ $student_query = "select * from student where student.student_id=" . $_GET['stud
 $student_result = mysql_query($student_query);
 if(!$student_query) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $student_row=mysql_fetch_array($student_result);
@@ -92,8 +92,8 @@ if(isset($_GET['setGuardian']) && ($current_student_permission == "ALL" || $curr
     $update_result = mysql_query($update_query);
     if(!$update_query) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -104,8 +104,8 @@ if(isset($_GET['setNotGuardian']) && ($current_student_permission == "ALL" || $c
     $update_result = mysql_query($update_query);
     if(!$update_query) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -116,8 +116,8 @@ if(isset($_GET['deleteGuardian']) && ($current_student_permission == "ALL" || $c
     $update_result = mysql_query($update_query);
     if(!$update_query) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -126,8 +126,8 @@ $guardians_query = "SELECT * FROM guardians LEFT JOIN guardian ON guardians.guar
 $guardians_result = mysql_query($guardians_query);
 if(!$guardians_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$guardians_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //find previous guardians...
@@ -135,8 +135,8 @@ $previous_guardians_query = "SELECT * FROM guardians LEFT JOIN guardian ON guard
 $previous_guardians_result = mysql_query($previous_guardians_query);
 if(!$previous_guardians_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$previous_guardians_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 
@@ -145,8 +145,8 @@ $our_permission = getStudentPermission($_GET['student_id']);
 
 if($our_permission != "READ" && $our_permission != "WRITE" && $our_permission != "ASSIGN" && $our_permission != "ALL") {
   //we don't have permission...
-  $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+  $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   require(IPP_PATH . 'security_error.php');
   exit();
 }
@@ -234,7 +234,7 @@ if($our_permission != "WRITE" && $our_permission != "ASSIGN" && $our_permission 
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">- IPP Guardian View-</p></center></td></tr><tr><td><center><p class="bold_text"> <?php echo $student_row['first_name'] . " " . $student_row['last_name'] .  ", Permission: " . $our_permission;?></p></center></td></tr></table></center>
                         <BR>
@@ -301,9 +301,9 @@ if($our_permission != "WRITE" && $our_permission != "ASSIGN" && $our_permission 
                             //check for error
                             if(!$guardian_note_result) {
                                 $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$guardian_note_query'<BR>";
-                                $MESSAGE=$MESSAGE . $error_message;
-                                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-                                echo $MESSAGE;
+                                $system_message=$system_message . $error_message;
+                                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+                                echo $system_message;
                             } else {
                                //output this note...
                                //check if we have no notes
@@ -396,9 +396,9 @@ if($our_permission != "WRITE" && $our_permission != "ASSIGN" && $our_permission 
                             //check for error
                             if(!$guardian_note_result) {
                                 $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$guardian_note_query'<BR>";
-                                $MESSAGE=$MESSAGE . $error_message;
-                                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-                                echo $MESSAGE;
+                                $system_message=$system_message . $error_message;
+                                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+                                echo $system_message;
                             } else {
                                //output this note...
                                //check if we have no notes

@@ -29,7 +29,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -46,15 +46,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -71,8 +71,8 @@ $history_query="SELECT * FROM school_history WHERE uid=$uid";
 $history_result = mysql_query($history_query);
 if(!$history_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$history_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
    $history_row=mysql_fetch_array($history_result);
 }
@@ -88,8 +88,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -108,8 +108,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 function parse_submission() {
@@ -128,7 +128,7 @@ if(isset($_POST['update_school_history'])) {
   $retval=parse_submission();
   if($retval != NULL) {
     //no way...
-    $MESSAGE = $MESSAGE . $retval;
+    $system_message = $system_message . $retval;
   } else {
            if($_POST['end_date']=="") $end_date = "NULL";
            else $end_date = "'" . mysql_real_escape_string($_POST['end_date']) . "'";
@@ -140,8 +140,8 @@ if(isset($_POST['update_school_history'])) {
               $end_result=mysql_query($end_query);
               if(!$end_result) {
                  $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$end_query'<BR>";
-                 $MESSAGE=$MESSAGE . $error_message;
-                 IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                 $system_message=$system_message . $error_message;
+                 IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
               }
            }
            $update_query="UPDATE school_history SET start_date='" . mysql_real_escape_string($_POST['start_date']) . "', end_date=$end_date,school_name='" . mysql_real_escape_string($_POST['school_name']) . "', school_address='" . mysql_real_escape_string($_POST['school_address']) . "', ipp_present='" . mysql_real_escape_string($_POST['ipp_present']) . "',accommodations='" . mysql_real_escape_string($_POST['accommodations']) . "'";
@@ -153,12 +153,12 @@ if(isset($_POST['update_school_history'])) {
            $update_result=mysql_query($update_query);
            if(!$update_result) {
              $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-             $MESSAGE= $MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message= $system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
-             if($history_row['end_date'] == "" && $_POST['end_date'] != "") $MESSAGE .= "Student IPP has been moved to the IPP Archives<BR>";
+             if($history_row['end_date'] == "" && $_POST['end_date'] != "") $system_message .= "Student IPP has been moved to the IPP Archives<BR>";
              //redirect...
-             header("Location: " . IPP_PATH . "school_history.php?MESSAGE=$MESSAGE&student_id=" . $student_id);
+             header("Location: " . IPP_PATH . "school_history.php?MESSAGE=$system_message&student_id=" . $student_id);
            }
 
   }
@@ -202,7 +202,7 @@ $enum_options_type = mysql_enum_values("school_history","ipp_present");
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -247,13 +247,13 @@ $enum_options_type = mysql_enum_values("school_history","ipp_present");
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $coordlist_query="SELECT DISTINCT `school_name`, COUNT(`school_name`) AS `count` FROM school_history GROUP BY `school_name` ORDER BY `count` DESC LIMIT 200";
         $coordlist_result = mysql_query($coordlist_query);
         if(!$coordlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$coordlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             echo createJavaScript($coordlist_result,"popuplist");
@@ -348,7 +348,7 @@ $enum_options_type = mysql_enum_values("school_history","ipp_present");
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Edit School History-<BR>(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)</p></center></td></tr></table></center>
                         <BR>

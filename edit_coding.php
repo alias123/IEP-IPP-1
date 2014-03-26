@@ -35,7 +35,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 50; //Teaching Staff
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 //$IPP_CODINGS = array("No Code", "Code 40","Code 50","Code 80", "ESL");   //no code is special case
 
@@ -53,15 +53,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -78,8 +78,8 @@ $code_query = "SELECT * FROM coding WHERE uid=$uid";
 $code_result = mysql_query ($code_query);
 if(!$code_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$code_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
    $code_row= mysql_fetch_array($code_result);
 }
@@ -95,8 +95,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -114,9 +114,9 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 //check if we are updating this coding...we already have permission if we are here.
 if(isset($_POST['modify_coding']) =="1" && $have_write_permission ) {
     $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
-     if(!preg_match($regexp,$_POST['start_date'])) { $MESSAGE = $MESSAGE . "Start Date must be in YYYY-MM-DD format<BR>"; }
+     if(!preg_match($regexp,$_POST['start_date'])) { $system_message = $system_message . "Start Date must be in YYYY-MM-DD format<BR>"; }
      else {
-       if(!($_POST['end_date'] == ""  || preg_match($regexp,$_POST['end_date']))) { $MESSAGE = $MESSAGE . "End Date must be in YYYY-MM-DD format<BR>"; }
+       if(!($_POST['end_date'] == ""  || preg_match($regexp,$_POST['end_date']))) { $system_message = $system_message . "End Date must be in YYYY-MM-DD format<BR>"; }
        else {
            $update_query = "UPDATE coding SET code='" . mysql_real_escape_string($_POST['code']) . "',start_date='" . mysql_real_escape_string($_POST['start_date']) . "'";
            if($_POST['end_date'] == "") $update_query .= ",end_date=NULL";   //set no end date.
@@ -125,11 +125,11 @@ if(isset($_POST['modify_coding']) =="1" && $have_write_permission ) {
            $update_result = mysql_query($update_query);
            if(!$update_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
              //redirect
-             //$MESSAGE = $update_query . "<BR>";
+             //$system_message = $update_query . "<BR>";
              header("Location: " . IPP_PATH . "coding.php?student_id=" . $student_id);
            }
        }
@@ -141,8 +141,8 @@ $valid_code_query="SELECT * FROM valid_coding WHERE 1";
 $valid_code_result = mysql_query ($valid_code_query);
 if(!$valid_code_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$valid_code_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -156,12 +156,7 @@ if(!$valid_code_result) {
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Design Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
     <script language="javascript" src="<?php echo IPP_PATH . "include/popcalendar.js"; ?>"></script>
     <SCRIPT LANGUAGE="JavaScript">
       function deleteChecked() {
@@ -210,7 +205,7 @@ if(!$valid_code_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Edit Student Code-</p></center></td></tr></table></center>
                         <BR>

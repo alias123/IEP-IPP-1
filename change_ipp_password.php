@@ -33,7 +33,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;  //don't rely on this on this page.
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -48,15 +48,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -66,8 +66,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 if(isset($ippuserid)) $ippuserid=$ippuserid; else $ippuserid="";
 if(($_SESSION['egps_username'] != $ippuserid ) && (getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL && !(isLocalAdministrator($_SESSION['egps_username'])))) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -86,8 +86,8 @@ if(($_SESSION['egps_username'] != $ippuserid ) && (isLocalAdministrator($_SESSIO
   $user_result = mysql_query($user_query);
   if(!$user_result) {
     $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$user_query'<BR>";
-    $MESSAGE= $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message= $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {
     if(mysql_num_rows($user_result) <= 0) "IPP Member not found<BR>Query=$user_query";
     $user_row=mysql_fetch_array($user_result);
@@ -97,16 +97,16 @@ if(($_SESSION['egps_username'] != $ippuserid ) && (isLocalAdministrator($_SESSIO
   $us_result = mysql_query($us_query);
   if(!$us_result) {
     $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$us_query'<BR>";
-    $MESSAGE= $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message= $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {
-    if(mysql_num_rows($us_result) <= 0) $MESSAGE .= "IPP Member not found<BR>Query=$us_query";
+    if(mysql_num_rows($us_result) <= 0) $system_message .= "IPP Member not found<BR>Query=$us_query";
     $us_row=mysql_fetch_array($us_result);
   }
 
   if($user_row['school_code'] != $us_row['school_code']) {
-     $MESSAGE = $MESSAGE . "You do not have permission to view this page. You must be in the same school as this person to edit their information. (" . $user_row['school_code'] . "!=" . $us_row['school_code'] . ")";
-     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+     $system_message = $system_message . "You do not have permission to view this page. You must be in the same school as this person to edit their information. (" . $user_row['school_code'] . "!=" . $us_row['school_code'] . ")";
+     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      require(IPP_PATH . 'security_error.php');
      exit();
   }
@@ -121,19 +121,19 @@ if(($_SESSION['egps_username'] != $ippuserid ) && (isLocalAdministrator($_SESSIO
 if(isset($_POST['Update'])) {
    //check for blanks passwords...
    if(mysql_real_escape_string($_POST['pwd1']) == mysql_real_escape_string($_POST['pwd2']) && mysql_real_escape_string($_POST['pwd2']) == "") {
-       $MESSAGE .= "Passwords cannot be blank, try again<BR>";
+       $system_message .= "Passwords cannot be blank, try again<BR>";
    } {
      if(mysql_real_escape_string($_POST['pwd1']) != mysql_real_escape_string($_POST['pwd2'])) {
-       $MESSAGE .= "Passwords do not match, try again<BR>";
+       $system_message .= "Passwords do not match, try again<BR>";
      } else {
        $pwd = mysql_real_escape_string($_POST['pwd1']);
        $update_query = "UPDATE users SET unencrypted_password='" . mysql_real_escape_string($pwd) . "', encrypted_password=PASSWORD('" . mysql_real_escape_string($pwd) . "') WHERE login_name=concat('" . $ippuserid ."','$mysql_user_append_to_login') LIMIT 1";
           $update_result = mysql_query($update_query);
-          //$MESSAGE .= $update_query . "<BR>";
+          //$system_message .= $update_query . "<BR>";
           if(!$update_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
           } else {
              //success...
              if(($_SESSION['egps_username'] != $ippuserid )) {
@@ -148,7 +148,7 @@ if(isset($_POST['Update'])) {
           }
      }
    }
-  //$MESSAGE .= "-->" . $_POST['is_local_ipp_administrator'] . "<--";
+  //$system_message .= "-->" . $_POST['is_local_ipp_administrator'] . "<--";
 }
 
 
@@ -156,10 +156,10 @@ $user_query= "SELECT * FROM support_member WHERE egps_username='$ippuserid'";
 $user_result = mysql_query($user_query);
 if(!$user_result) {
     $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$user_query'<BR>";
-    $MESSAGE= $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message= $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
-  if(mysql_num_rows($user_result) <= 0) $MESSAGE .= "IPP Member not found<BR>";
+  if(mysql_num_rows($user_result) <= 0) $system_message .= "IPP Member not found<BR>";
   $user_row=mysql_fetch_array($user_result);
 }
 
@@ -168,16 +168,16 @@ $school_result=mysql_query($school_query);
 
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $permission_query = "SELECT * FROM permission_levels WHERE 1=1 ORDER BY level DESC ";
 $permission_result = mysql_query($permission_query);
 if(!$permission_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$permission_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -215,7 +215,7 @@ if(!$permission_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- Change Password-</p></center></td></tr></table></center>
 

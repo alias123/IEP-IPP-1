@@ -28,7 +28,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody check within
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -43,15 +43,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -67,8 +67,8 @@ $long_term_goal_query="SELECT * FROM long_term_goal WHERE goal_id=" . mysql_real
 $long_term_goal_result=mysql_query($long_term_goal_query);
 if(!$long_term_goal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$long_term_goal_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 $long_term_goal_row=mysql_fetch_array($long_term_goal_result);
 $student_id=$long_term_goal_row['student_id'];
@@ -83,8 +83,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -109,22 +109,22 @@ if(isset($_GET['add_objective']) && $have_write_permission) {
   //check if we have this objective already...
   $check_query="SELECT * FROM short_term_objective WHERE DESCRIPTION='$description' AND goal_id=" . $long_term_goal_row['goal_id'];
   $check_result=mysql_query($check_query);
-  if(mysql_num_rows($check_result) > 0) { $MESSAGE = $MESSAGE . "This objective is already added<BR>"; }
+  if(mysql_num_rows($check_result) > 0) { $system_message = $system_message . "This objective is already added<BR>"; }
   else {
      $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
      //regular expression to filter date input
      //if it doesn't match the pattern, error
-     if(!preg_match($regexp,$_GET['review_date'])) { $MESSAGE = $MESSAGE . "Date must be in YYYY-MM-DD format<BR>"; }
+     if(!preg_match($regexp,$_GET['review_date'])) { $system_message = $system_message . "Date must be in YYYY-MM-DD format<BR>"; }
      else {
-      if($_GET['description']=="") { $MESSAGE = $MESSAGE . "You must supply a description"; } else
+      if($_GET['description']=="") { $system_message = $system_message . "You must supply a description"; } else
       {
        //puts new info into database.. there is not reporting at this point, so nothing is put that field
        $insert_query = "INSERT INTO short_term_objective (goal_id,description,review_date) VALUES (" . $long_term_goal_row['goal_id'] . ",'$description','" . mysql_real_escape_string($_GET['review_date']) . "')";
        $insert_result = mysql_query($insert_query);
        if(!$insert_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-           $MESSAGE=$MESSAGE . $error_message;
-           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+           $system_message=$system_message . $error_message;
+           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        } else {
            unset($_GET['review_date']);
           unset($_GET['description']);
@@ -142,10 +142,10 @@ if($have_write_permission && $_GET['delete']) {
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-      $MESSAGE=$MESSAGE . $error_message;
-      IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+      $system_message=$system_message . $error_message;
+      IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
-      $MESSAGE = $MESSAGE . "Deleted short term objective<BR>";
+      $system_message = $system_message . "Deleted short term objective<BR>";
     }
 }
 //updates db when student achieves an objective
@@ -154,10 +154,10 @@ if($have_write_permission && $_GET['set_achieved']) {
     $achieved_result = mysql_query($achieved_query);
     if(!$achieved_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$achieved_query'<BR>";
-      $MESSAGE=$MESSAGE . $error_message;
-      IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+      $system_message=$system_message . $error_message;
+      IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
-      $MESSAGE = $MESSAGE . "Set short term objective achieved<BR>";
+      $system_message = $system_message . "Set short term objective achieved<BR>";
     }
 }
 //change achieved objective to not achieved
@@ -166,10 +166,10 @@ if($have_write_permission && $_GET['set_not_achieved']) {
     $achieved_result = mysql_query($achieved_query);
     if(!$achieved_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$achieved_query'<BR>";
-      $MESSAGE=$MESSAGE . $error_message;
-      IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+      $system_message=$system_message . $error_message;
+      IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
-      $MESSAGE = $MESSAGE . "Set short term objective not achieved<BR>";
+      $system_message = $system_message . "Set short term objective not achieved<BR>";
     }
 }
 //try to get all objectives attached to a student in the db
@@ -177,31 +177,31 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 //try to get all objectives attached to a certain goal
 $objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . mysql_real_escape_string($long_term_goal_row['goal_id']) . " and achieved='Y'";
 $objectives_result=mysql_query($objectives_query);
 if(!$objectives_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objectives_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 //if conditions are met, find all objectives not completed
 $completed_objectives_query="SELECT * FROM short_term_objective WHERE goal_id=" . mysql_real_escape_string($long_term_goal_row['goal_id']) . " and achieved='N'";
 $completed_objectives_result=mysql_query($completed_objectives_query);
 if(!$completed_objectives_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$completed_objectives_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 /*************************** popup chooser support function ******************/
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -226,8 +226,8 @@ if(!$completed_objectives_result) {
         // check if we have a valid result set
         if(!$numRows=mysql_num_rows($dataSource)){
           $error_message = "PopupChooser: Bad Data Source (" . __FILE__ . ":" . __LINE__ . ")<BR>";
-          $MESSAGE= $MESSAGE . $error_message;
-          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+          $system_message= $system_message . $error_message;
+          IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         }
         for($i=0;$i<$numRows;$i++){
           // build JavaScript array from result set
@@ -248,17 +248,17 @@ if(!$completed_objectives_result) {
     }
 //interesting. Makes a function available that makes a very long query. we can check in phpmyadmin
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         //get a list of all available goal categories...
         $catlist_query="SELECT typical_short_term_objective.goal FROM long_term_goal RIGHT JOIN typical_long_term_goal ON long_term_goal.goal LIKE typical_long_term_goal.goal RIGHT JOIN typical_short_term_objective ON typical_long_term_goal.ltg_id=typical_short_term_objective.ltg_id WHERE long_term_goal.goal_id=" . mysql_real_escape_string($_GET['goal_id']) . " AND student_id=" . mysql_real_escape_string($_GET['student_id']);
         $catlist_result=mysql_query($catlist_query);
         if(!$catlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$catlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
             return;
         } else {
-            //$MESSAGE = $MESSAGE . "Rows returned=" . mysql_num_rows($catlist_result) . " Query=$catlist_query<BR><BR>";
+            //$system_message = $system_message . "Rows returned=" . mysql_num_rows($catlist_result) . " Query=$catlist_query<BR><BR>";
             echo createJavaScript($catlist_result,"popuplist");
         }
 
@@ -269,8 +269,8 @@ if(!$completed_objectives_result) {
            //$objlist_result = mysql_query($objlist_query);
            //if(!$objlist_result) {
             // $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objlist_query'<BR>";
-            // $MESSAGE= $MESSAGE . $error_message;
-           //  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            // $system_message= $system_message . $error_message;
+           //  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            //} else {
              //call the function to create the javascript array...
            //  echo createJavaScript($objlist_result,$catlist['name']);
@@ -348,7 +348,7 @@ if(!$completed_objectives_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center>
                           <table>

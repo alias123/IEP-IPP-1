@@ -2,7 +2,7 @@
 
  //set the config file flag to prevent security problems with this install directory.
 $file=file("../etc/init.php");
-               if(!$file) $MESSAGE .= "Cannot open init.php configuration file. You will need to manually set IPP_IS_CONFIGURED to true<BR>";
+               if(!$file) $system_message .= "Cannot open init.php configuration file. You will need to manually set IPP_IS_CONFIGURED to true<BR>";
                else {
                  $updated_file = "";
                  foreach($file as $line) {
@@ -36,7 +36,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;
  */
 error_reporting(0);
 
-$MESSAGE = "";
+$system_message = "";
 
 /* eGPS required files. */
 require_once('../etc/init.php');
@@ -86,7 +86,7 @@ header('Pragma: no-cache'); //don't cache this page!
                     <tr>
                         <td valign="top">
                         <div id="main">
- <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+ <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- Installation Cleanup -</p></center></td></tr></table></center>
         <BR><center><table width="80%" border="0"><tr><td>

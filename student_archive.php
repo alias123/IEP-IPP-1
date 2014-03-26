@@ -36,7 +36,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;  //all, decide in the page
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
+if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 
 define('IPP_PATH','./');
 
@@ -52,15 +52,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -69,8 +69,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 
 //check permission levels
 if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -79,8 +79,8 @@ if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL
 $permission_level=getPermissionLevel($_SESSION['egps_username']);
 //check permission levels
 if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -90,8 +90,8 @@ if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL
 
 if(isset($_POST['delete_x'])) {
     if(!connectIPPDB()) {
-        $MESSAGE = $MESSAGE . $error_message;  //just to remember we need this
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;  //just to remember we need this
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 
     $delete_query = "DELETE FROM student WHERE ";
@@ -102,12 +102,12 @@ if(isset($_POST['delete_x'])) {
     //strip trailing 'or' and whitespace
     $delete_query = substr($delete_query, 0, -4);
     //echo $delete_query . "<-><BR>";
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -130,10 +130,10 @@ if(isset($_POST['delete_x'])) {
 
 $szTotal=0;
 function getStudents() {
-    global$error_message,$permission_level,$MESSAGE,$IPP_MIN_VIEW_LIST_ALL_LOCAL_STUDENTS,$IPP_MIN_VIEW_LIST_ALL_STUDENTS,$iLimit,$iCur,$szSchool,$szTotalStudents;
+    global$error_message,$permission_level,$system_message,$IPP_MIN_VIEW_LIST_ALL_LOCAL_STUDENTS,$IPP_MIN_VIEW_LIST_ALL_STUDENTS,$iLimit,$iCur,$szSchool,$szTotalStudents;
     if(!connectIPPDB()) {
-        $MESSAGE = $MESSAGE . $error_message;  //just to remember we need this
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;  //just to remember we need this
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 
     //do a subquery to find our school code...easier than messing with the ugly
@@ -162,8 +162,8 @@ function getStudents() {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query_limit'<BR>";
         return NULL;
     }
-    //$MESSAGE = $MESSAGE . "rows returned: " . mysql_num_rows($student_result_limit) . "<BR>";
-    //$MESSAGE = $MESSAGE . $student_query_limit . "<BR>";
+    //$system_message = $system_message . "rows returned: " . mysql_num_rows($student_result_limit) . "<BR>";
+    //$system_message = $system_message . $student_query_limit . "<BR>";
 
     //find the totals...
     $student_result_total = mysql_query($student_query);
@@ -172,9 +172,9 @@ function getStudents() {
         return NULL;
     }
     $szTotalStudents =  mysql_num_rows($student_result_total);
-    $MESSAGE = $MESSAGE . "Number of archived students: $szTotalStudents<BR>";
-    $MESSAGE = $MESSAGE . "(Showing: " . mysql_num_rows($student_result_limit) . ")<BR>";
-    //$MESSAGE = $MESSAGE . "<BR>$student_query<BR><BR>";
+    $system_message = $system_message . "Number of archived students: $szTotalStudents<BR>";
+    $system_message = $system_message . "(Showing: " . mysql_num_rows($student_result_limit) . ")<BR>";
+    //$system_message = $system_message . "<BR>$student_query<BR><BR>";
     return $student_result_limit;
 }
 
@@ -186,8 +186,8 @@ $sqlStudents=getStudents(); //$szTotalStudents contains total number of stdnts.
 //get totals...
 
 if(!$sqlStudents) {
-    $MESSAGE = $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 
@@ -268,7 +268,7 @@ $szBackGetVars = substr($szBackGetVars, 0, -1);
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Archive-</p></center></td></tr></table></center>
                         <HR>

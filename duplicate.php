@@ -24,7 +24,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 50;
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -39,15 +39,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -66,8 +66,8 @@ if($student_id=="") {
 $our_permission = getStudentPermission($student_id);
 if(!($our_permission == "READ" || $our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission == "ALL")) {
     //we don't have any permission to this IPP...
-    $MESSAGE = $MESSAGE . "You do not have the sufficient permissions to duplicate this program plan (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have the sufficient permissions to duplicate this program plan (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -77,8 +77,8 @@ if(!($our_permission == "READ" || $our_permission == "WRITE" || $our_permission 
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -94,8 +94,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 function parse_submission() {
@@ -111,8 +111,8 @@ function parse_submission() {
     //check duplicate prov ed number...
     if(!connectIPPDB()) {
           $error_message = $error_message;  //just to remember we need this
-          $MESSAGE = $error_message;
-          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+          $system_message = $error_message;
+          IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      }
      if($_POST['prov_ed_num'] != "") {
        $duplicate_query = "SELECT * FROM student WHERE prov_ed_num='" . mysql_real_escape_string($_POST['prov_ed_num']) ."'";
@@ -132,21 +132,21 @@ if(isset($_POST['add_student'])) {
 
      if(!connectIPPDB()) {
           $error_message = $error_message;  //just to remember we need this
-          $MESSAGE = $error_message;
-          IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+          $system_message = $error_message;
+          IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      }
 
      //do some error checking on data submission...
      $retval = parse_submission();
      if($retval != NULL) {
-         $MESSAGE = $MESSAGE . $retval;
+         $system_message = $system_message . $retval;
      } else {
        $add_query="INSERT INTO student (first_name,last_name,birthday,prov_ed_num,current_grade,gender) values ('" . mysql_real_escape_string($_POST['first_name']) . "','" .  mysql_real_escape_string($_POST['last_name']) ."','" . mysql_real_escape_string($_POST['birthday']) . "','" .  mysql_real_escape_string($_POST['prov_ed_num']) . "','" . mysql_real_escape_string($_POST['current_grade']) . "','" . mysql_real_escape_string($_POST['gender']) . "')";
        $add_result=mysql_query($add_query);
        if(!$add_result) {
            $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-           $MESSAGE=$MESSAGE . $error_message;
-           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+           $system_message=$system_message . $error_message;
+           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        } else {
            //get the school information to create a history for this student...
            $school_history_query="SELECT * FROM school WHERE school_code='" . mysql_real_escape_string($_POST['school_code']) . "'";
@@ -154,8 +154,8 @@ if(isset($_POST['add_student'])) {
            $school_history_row="";
            if(!$school_history_result) {
                $error_message = $error_message . "You might need to enter or change some of the school history information for this student. The system  wasunable to automatically determine this information because the database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-               $MESSAGE=$MESSAGE . $error_message;
-               IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+               $system_message=$system_message . $error_message;
+               IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
               $school_history_row=mysql_fetch_array($school_history_result);
            }
@@ -181,8 +181,8 @@ if(isset($_POST['add_student'])) {
              $supervisor_result= mysql_query($supervisor_query); //get
              if(!$supervisor_result) {
                 $error_message = $error_message . "Unable to duplicate supervisors (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                 while($row=mysql_fetch_array($supervisor_result)) {
                     $update_query="INSERT INTO supervisor ( egps_username, position, start_date, end_date, student_id) values ('" . $row['egps_username'] . "','" . $row['position'] . "','" . $row['start_date'] . "',";
@@ -191,8 +191,8 @@ if(isset($_POST['add_student'])) {
                     $update_result = mysql_query($update_query);
                     if(!$update_result) {
                         $error_message = $error_message . "Unable to duplicate supervisors (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                        $MESSAGE=$MESSAGE . $error_message;
-                        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                        $system_message=$system_message . $error_message;
+                        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                     }
                 }
              }
@@ -203,24 +203,24 @@ if(isset($_POST['add_student'])) {
              $support_result= mysql_query($support_query); //get
              if(!$support_result) {
                 $error_message = $error_message . "Unable to duplicate support members (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                 while($row=mysql_fetch_array($support_result)) {
                    $update_query = "INSERT INTO support_list (egps_username,student_id,permission,support_area) VALUES ('" . $row['egps_username'] . "'," . $new_student_id . ",'" . $row['permission'] . "','" . $row['support_area'] . "')";
                    $update_result = mysql_query($update_query);
                    if(!$update_result) {
                         $error_message = $error_message . "Unable to duplicate support members (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                        $MESSAGE=$MESSAGE . $error_message;
-                        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                        $system_message=$system_message . $error_message;
+                        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                    }
                    //we need to set this person to assign...
                    $update_query = "UPDATE support_list SET permission='ASSIGN' WHERE  student_id=" . $new_student_id . " AND egps_username='" . mysql_real_escape_string($_SESSION['egps_username']) . "'";
                    $update_result = mysql_query($update_query);
                    if(!$update_result) {
                         $error_message = $error_message . "Unable to set assign permissions on duplicated program plan (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                        $MESSAGE=$MESSAGE . $error_message;
-                        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                        $system_message=$system_message . $error_message;
+                        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                    }
                 }
              }
@@ -231,16 +231,16 @@ if(isset($_POST['add_student'])) {
              $code_result= mysql_query($code_query); //get
              if(!$code_result) {
                 $error_message = $error_message . "Unable to duplicate coding (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$code_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                while($row=mysql_fetch_array($code_result)) {
                   $update_query = "INSERT INTO coding (student_id,code,start_date,end_date) values (" . $new_student_id . "," . $row['code'] . ",NOW(),NULL)";
                   $update_result = mysql_query($update_query);
                   if(!$update_result) {
                         $error_message = $error_message . "Unable to duplicate code (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                        $MESSAGE=$MESSAGE . $error_message;
-                        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                        $system_message=$system_message . $error_message;
+                        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                   }
                }
              }
@@ -251,16 +251,16 @@ if(isset($_POST['add_student'])) {
              $transition_result= mysql_query($transition_query); //get
              if(!$transition_result) {
                 $error_message = $error_message . "Unable to duplicate transition plans (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$transition_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                   while($row=mysql_fetch_array($transition_result)) {
                   $update_query = "INSERT INTO transition_plan (student_id,plan,date) values (" . $new_student_id . ",'" . $row['plan'] . "','" . $row['date'] . "')";
                   $update_result = mysql_query($update_query);
                   if(!$update_result) {
                         $error_message = $error_message . "Unable to duplicate transition plans (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                        $MESSAGE=$MESSAGE . $error_message;
-                        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                        $system_message=$system_message . $error_message;
+                        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                   }
                }
              }
@@ -271,16 +271,16 @@ if(isset($_POST['add_student'])) {
              $asst_result= mysql_query($asst_query); //get
              if(!$asst_result) {
                 $error_message = $error_message . "Unable to duplicate assistive technology (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$asst_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                   while($row=mysql_fetch_array($asst_result)) {
                   $update_query = "INSERT INTO assistive_technology (student_id,technology) values (" . $new_student_id . ",'"  . $row['technology'] . "')";
                   $update_result = mysql_query($update_query);
                   if(!$update_result) {
                         $error_message = $error_message . "Unable to duplicate assistive technology (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                        $MESSAGE=$MESSAGE . $error_message;
-                        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                        $system_message=$system_message . $error_message;
+                        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                   }
                }
 
@@ -292,8 +292,8 @@ if(isset($_POST['add_student'])) {
              $accommodation_result= mysql_query($accommodation_query); //get
              if(!$accommodation_result) {
                 $error_message = $error_message . "Unable to duplicate accommodations (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$accommodation_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                 while($row=mysql_fetch_array($accommodation_result)) {
                   $update_query = "INSERT INTO accomodation(accomodation, subject, student_id,start_date,end_date) values ('" . $row['accomodation'] . "','" . $row['subject'] . "'," . $new_student_id . ",'"  . $row['start_date'] . "',";
@@ -302,8 +302,8 @@ if(isset($_POST['add_student'])) {
                   $update_result = mysql_query($update_query);
                   if(!$update_result) {
                         $error_message = $error_message . "Unable to duplicate accommodations (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                        $MESSAGE=$MESSAGE . $error_message;
-                        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                        $system_message=$system_message . $error_message;
+                        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                   }
                }
 
@@ -316,8 +316,8 @@ if(isset($_POST['add_student'])) {
              $goal_result= mysql_query($goal_query); //get
              if(!$goal_result) {
                 $error_message = $error_message . "Unable to duplicate goals (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
              } else {
                 while($row=mysql_fetch_array($goal_result)) {
                   $update_query = "INSERT INTO long_term_goal (student_id,review_date,goal,is_complete,area) values (" . $new_student_id . ",";
@@ -326,8 +326,8 @@ if(isset($_POST['add_student'])) {
                   $update_result = mysql_query($update_query);
                   if(!$update_result) {
                      $error_message = $error_message . "Unable to duplicate some goals (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                     $MESSAGE=$MESSAGE . $error_message;
-                     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                     $system_message=$system_message . $error_message;
+                     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                   } else {
                     //goal added okay so we need to also tie the objectives to this goal!
                     $goal_id = $row['goal_id'];
@@ -335,8 +335,8 @@ if(isset($_POST['add_student'])) {
                     $objective_result = mysql_query($objective_query);
                     if(!$objective_result) {
                       $error_message = $error_message . "Unable to duplicate objective (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objective_query'<BR>";
-                      $MESSAGE=$MESSAGE . $error_message;
-                      IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                      $system_message=$system_message . $error_message;
+                      IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                     } else {
                       //get the last insert id...
                       $new_goal_id = mysql_insert_id();
@@ -349,8 +349,8 @@ if(isset($_POST['add_student'])) {
                         $update_result = mysql_query($update_query);
                         if(!$update_result) {
                            $error_message = $error_message . "Unable to duplicate some objectives (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-                           $MESSAGE=$MESSAGE . $error_message;
-                           IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                           $system_message=$system_message . $error_message;
+                           IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                         }
                       }
                     }
@@ -360,11 +360,11 @@ if(isset($_POST['add_student'])) {
            }
 
            //successful, maybe, so direct to...
-           if(!$MESSAGE) {
+           if(!$system_message) {
              header("Location: manage_student.php");
              exit();
            } else {
-             $MESSAGE = "The student has been partially copied. Some errors have occured:<BR>" . $MESSAGE;
+             $system_message = "The student has been partially copied. Some errors have occured:<BR>" . $system_message;
            }
        }
      }
@@ -374,16 +374,16 @@ if(isset($_POST['add_student'])) {
 
 if(!connectUserDB()) {
         $error_message = $error_message;  //just to remember we need this
-        $MESSAGE = $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 
 //find all of the available schools..
 if(!connectIPPDB()) {
    $error_message = $error_message;  //just to remember we need this
-   $MESSAGE = $error_message;
-   IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+   $system_message = $error_message;
+   IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $school_query="SELECT * FROM school WHERE 1=1";
@@ -391,8 +391,8 @@ $school_result=mysql_query($school_query);
 
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -432,7 +432,7 @@ if(!$school_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Duplicate <?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>-</p></center></td></tr></table></center>
                         <BR>

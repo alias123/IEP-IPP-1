@@ -23,7 +23,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 0; //Super admin only (note: exception is local a
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE = "";
+if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 
 if(!defined('IPP_PATH')) define('IPP_PATH','./');
 
@@ -39,15 +39,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -56,8 +56,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 
 //check permission levels
 if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL && !(isLocalAdministrator($_SESSION['egps_username']))) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -66,8 +66,8 @@ if(getPermissionLevel($_SESSION['egps_username']) > $MINIMUM_AUTHORIZATION_LEVEL
 $permission_level=getPermissionLevel($_SESSION['egps_username']);
 //check permission levels
 if($permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -76,8 +76,8 @@ if($permission_level == NULL) {
 if(isset($_GET['delete_users']) || isset($_GET['delete_users_x'])) {
 
     if(!connectIPPDB()) {
-        $MESSAGE = $MESSAGE . $error_message;  //just to remember we need this
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;  //just to remember we need this
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
     $delete_query="";
     if($permission_level == 0) {
@@ -96,18 +96,18 @@ if(isset($_GET['delete_users']) || isset($_GET['delete_users_x'])) {
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
-    //$MESSAGE = $delete_query;
+    //$system_message = $delete_query;
 }
 
 //check if we are deleting some people
 if((isset($_GET['set_local_admin_users']) || isset($_GET['set_local_admin_users_x'])) && $permission_level==0 ) {  //only super admins
 
     if(!connectIPPDB()) {
-        $MESSAGE = $MESSAGE . $error_message;  //just to remember we need this
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;  //just to remember we need this
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 
     $update_query = "UPDATE support_member SET is_local_ipp_administrator='Y' WHERE ";
@@ -122,8 +122,8 @@ if((isset($_GET['set_local_admin_users']) || isset($_GET['set_local_admin_users_
     $update_result = mysql_query($update_query);
     if(!$update_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
       //send a notification to the people set as site based ipp admin.
       foreach($_POST as $key => $value) {
@@ -135,15 +135,15 @@ This means you have full access to all of the IPP's at your school to move and a
 ");
       }
     }
-    //$MESSAGE = $delete_query;
+    //$system_message = $delete_query;
 }
 
 //check if we are deleting some people
 if((isset($_GET['unset_local_admin_users']) || isset($_GET['unset_local_admin_users_x'])) && $permission_level==0) { //only super admins
-    //$MESSAGE .= "Debug Msg: unsetting local admin<BR>";
+    //$system_message .= "Debug Msg: unsetting local admin<BR>";
     if(!connectIPPDB()) {
-        $MESSAGE = $MESSAGE . $error_message;  //just to remember we need this
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;  //just to remember we need this
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 
     $update_query = "UPDATE support_member SET is_local_ipp_administrator='N' WHERE ";
@@ -158,10 +158,10 @@ if((isset($_GET['unset_local_admin_users']) || isset($_GET['unset_local_admin_us
     $update_result = mysql_query($update_query);
     if(!$update_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
-    //$MESSAGE = $delete_query;
+    //$system_message = $delete_query;
 }
 
 
@@ -169,16 +169,16 @@ if((isset($_GET['unset_local_admin_users']) || isset($_GET['unset_local_admin_us
 $iNumSupportMembers = getNumUsers();
 if($iNumSupportMembers == NULL) {
     //throw an error
-    $MESSAGE = $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //find number of support_members online
 $iNumSupportMembersOnline = getNumUsersOnline();
 if($iNumSupportMembersOnline == NULL) {
     //throw an error
-    $MESSAGE = $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //get the list of all users...
@@ -187,10 +187,10 @@ if(!isset($_GET['iLimit'])) $iLimit = 10; else $iLimit = $_GET['iLimit'];
 if(!isset($_GET['iCur'])) $iCur = 0; else $iCur = $_GET['iCur'];
 if(isset($_POST['iCur']) && $_POST['iCur'] != "" ) $iCur=$_POST['iCur'];
 function getUsers() {
-    global $error_message,$iLimit,$iCur,$bShowNav,$MESSAGE;
+    global $error_message,$iLimit,$iCur,$bShowNav,$system_message;
     if(!connectIPPDB()) {
-        $MESSAGE = $MESSAGE . $error_message;  //just to remember we need this
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;  //just to remember we need this
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
     if(!isset($_GET['username'])) {
         if(isset($_GET['showall'])) {
@@ -210,7 +210,7 @@ function getUsers() {
       $get_index_query="SELECT * FROM support_member LEFT JOIN school on support_member.school_code=school.school_code WHERE ASCII(LOWER(egps_username)) < ASCII('" . mysql_real_escape_string($_GET['index']) . "')";
       $get_index_result=mysql_query($get_index_query);
       if($get_index_result) $iCur=mysql_num_rows($get_index_result);
-      else $MESSAGE .= "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$get_index_query'<BR>";
+      else $system_message .= "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$get_index_query'<BR>";
     }
     $result = mysql_query($query);
     if(!$result) {
@@ -222,8 +222,8 @@ function getUsers() {
 
 $sqlUsers=getUsers();
 if(!$sqlUsers) {
-    $MESSAGE = $MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //set back vars...
@@ -297,7 +297,7 @@ $szBackGetVars = substr($szBackGetVars, 0, -1);
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Manage Users-</p></center></td></tr></table></center>
                         <center><table width="80%" border="0"><tr>
@@ -401,8 +401,8 @@ $szBackGetVars = substr($szBackGetVars, 0, -1);
                             $level_query = "SELECT * FROM permission_levels WHERE level=" . $users_row['permission_level'];
                             $level_result = mysql_query($level_query);
                             if(!$level_result) {
-                                $MESSAGE = $MESSAGE . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$level_query'<BR>";
-                                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                                $system_message = $system_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$level_query'<BR>";
+                                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                             }
                             $level_row = mysql_fetch_array($level_result);
                             //if we have a local admin colour row red...

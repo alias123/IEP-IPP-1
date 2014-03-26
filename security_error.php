@@ -23,7 +23,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;    //anybody
  * Path for IPP required files.
  */
 
-$MESSAGE = $MESSAGE;
+$system_message = $system_message;
 error_reporting(1);
 
 define('IPP_PATH','./');
@@ -66,7 +66,7 @@ header('Pragma: no-cache'); //don't cache this page!
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">- Insufficient Permissions -</p></center></td></tr><tr><td><center><p class="header"> <?php echo $student_row['first_name'] . " " . $student_row['last_name']?></p></center></td></tr></table></center>
                         <BR>

@@ -21,7 +21,7 @@ include_once(IPP_PATH . 'include/db.php');
 
 header('Pragma: no-cache'); //don't cache this page!
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
+if(isset($system_message)) $system_message = $system_message; else $system_message="";
 if(isset($LOGIN_NAME)) $LOGIN_NAME = $LOGIN_NAME; else $LOGIN_NAME="";
 
 ?> 
@@ -54,7 +54,7 @@ if(isset($LOGIN_NAME)) $LOGIN_NAME = $LOGIN_NAME; else $LOGIN_NAME="";
                     <tr>
                         <td valign="top">
                         <div id="main">
-                                <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                                <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 <BR><BR>
                         <center><table><tr><td><center><p class="header">MyIEP Login -</p></center></td></tr></table></center>
                         <form enctype="multipart/form-data" action="<?php echo IPP_PATH . 'main.php'; ?>" method="post">

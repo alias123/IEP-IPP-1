@@ -36,7 +36,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -52,15 +52,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -80,8 +80,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -100,16 +100,16 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 //check if we are adding...
 if(isset($_GET['add_grade_repeated']) && $have_write_permission) {
    //minimal testing of input...
-   if($_GET['grade'] == "") $MESSAGE = $MESSAGE . "You must input a grade<BR>";
+   if($_GET['grade'] == "") $system_message = $system_message . "You must input a grade<BR>";
    else {
-     if($_GET['year'] == "") $MESSAGE = $MESSAGE . "You must enter a year<BR>";
+     if($_GET['year'] == "") $system_message = $system_message . "You must enter a year<BR>";
      else {
        $add_query = "INSERT INTO grades_repeated (student_id, grade, year,ipp_present) VALUES (" . mysql_real_escape_string($student_id) . "," . mysql_real_escape_string($_GET['grade']) . "," . mysql_real_escape_string($_GET['year']) . ",";
        if($_GET['ipp_present']) $add_query = $add_query . "'Y')";
@@ -117,17 +117,17 @@ if(isset($_GET['add_grade_repeated']) && $have_write_permission) {
        $add_result = mysql_query($add_query);
        if(!$add_result) {
          $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-         $MESSAGE=$MESSAGE . $error_message;
-         IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+         $system_message=$system_message . $error_message;
+         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        }
-       //$MESSAGE = $MESSAGE . $add_query . "<BR>";
+       //$system_message = $system_message . $add_query . "<BR>";
        //reset the variables...
        $_GET['grade'] = "";
        $_GET['year'] = "";
        unset($_GET['ipp_present']);
      }
    }
-   //$MESSAGE = $MESSAGE . $add_query . "<BR>";
+   //$system_message = $system_message . $add_query . "<BR>";
 }
 
 //check if we are deleting some entries...
@@ -139,12 +139,12 @@ if($_GET['delete_x'] && $permission_level <= $IPP_MIN_DELETE_GRADES_REPEATED_PER
     }
     //strip trailing 'or' and whitespace
     $delete_query = substr($delete_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -153,8 +153,8 @@ $grades_repeated_query="SELECT * FROM grades_repeated WHERE student_id=$student_
 $grades_repeated_result = mysql_query($grades_repeated_query);
 if(!$grades_repeated_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$grades_repeated_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 ?> 
@@ -223,7 +223,7 @@ if(!$grades_repeated_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Grades Repeated(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

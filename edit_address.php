@@ -28,7 +28,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
  * Path for IPP required files.
  */
 
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
+if(isset($system_message)) $system_message = $system_message; else $system_message="";
 
 define('IPP_PATH','./');
 
@@ -44,15 +44,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -62,8 +62,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -88,8 +88,8 @@ function runQuery() {
     switch($_GET['target']) {
         case "guardian":
             if(!isset($_GET['guardian_id'])) {
-               $MESSAGE = $MESSAGE . "You have arrived at this page without supplying a valid guardian_id (" . __FILE__ . ":" . __LINE__ . ")<BR>";
-               IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+               $system_message = $system_message . "You have arrived at this page without supplying a valid guardian_id (" . __FILE__ . ":" . __LINE__ . ")<BR>";
+               IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
             } else {
                $target_query="SELECT guardian.*,guardian.first_name as guardian_first_name,guardian.last_name as guardian_last_name,guardians.*,student.first_name,student.last_name,address.* FROM guardian LEFT JOIN guardians ON guardian.guardian_id=guardians.guardian_id LEFT JOIN student ON guardians.student_id=student.student_id LEFT JOIN address ON guardian.address_id=address.address_id WHERE guardian.guardian_id=" . $_GET['guardian_id'];
             }
@@ -98,8 +98,8 @@ function runQuery() {
     $target_result=mysql_query($target_query);
     if(!$target_result) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$target_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
   }
 }
@@ -123,8 +123,8 @@ switch($_GET['target']) {
 }
 
 if(!$have_write_permission) {
-            $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
             require(IPP_PATH . 'security_error.php');
             exit();
 }
@@ -143,16 +143,16 @@ if(isset($_GET['update'])) {
         $create_address_result = mysql_query($create_address_query);
         if(!$create_address_result) {
              $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$create_address_query'<BR>";
-             $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+             $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             $address_id = mysql_insert_id();
             $update_guardian_query = "UPDATE guardian SET address_id = " . $address_id . " WHERE guardian_id=" . $target_row['guardian_id'];
             $update_guardian_result = mysql_query($update_guardian_query);
             if(!$update_guardian_result) {
                  $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_guardian_query'<BR>";
-                 $MESSAGE=$MESSAGE . $error_message;
-                 IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                 $system_message=$system_message . $error_message;
+                 IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
             }
 
         }
@@ -161,12 +161,12 @@ if(isset($_GET['update'])) {
     $update_result = mysql_query($update_query);
     if(!$update_result) {
         $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-        $MESSAGE=$MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message=$system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
         //add a log entry
         //TO BE DONE!!
-        //$MESSAGE=$MESSAGE . "query: '$update_query'<BR>";
+        //$system_message=$system_message . "query: '$update_query'<BR>";
         //redirect to relevant location...
         switch($_GET['target']) {
             case "guardian":
@@ -175,13 +175,13 @@ if(isset($_GET['update'])) {
                 $update2_result = mysql_query($update2_query);
                 if(!$update2_result) {
                   $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update2_query'<BR>";
-                  $MESSAGE=$MESSAGE . $error_message;
-                  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                  $system_message=$system_message . $error_message;
+                  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                 } else {
                  header("Location: guardian_view.php?student_id=" . $_GET['student_id']);
                  //exit();
-                 //$MESSAGE=$MESSAGE . "query1: '$update_query'<BR><BR>";
-                 //$MESSAGE=$MESSAGE . "query2: '$update2_query'<BR>";
+                 //$system_message=$system_message . "query1: '$update_query'<BR><BR>";
+                 //$system_message=$system_message . "query2: '$update2_query'<BR>";
                 }
             break;
         }
@@ -238,7 +238,7 @@ mysql_data_seek($target_result,0);
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center>
                         <table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">- Edit Address -</p></center></td></tr><tr><td><center><p class="bold_text">

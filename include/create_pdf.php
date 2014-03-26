@@ -30,7 +30,7 @@ error_reporting(0); //no errors/warnings for this page!
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 //define('IPP_PATH','../');
 
@@ -52,15 +52,15 @@ require_once(IPP_PATH . 'include/fpdf/fpdf.php');
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'login.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'login.php');
         exit();
     }
@@ -80,8 +80,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -95,8 +95,8 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 }
 
 if($our_permission == "NONE") {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -104,14 +104,14 @@ if($our_permission == "NONE") {
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 function create_pdf($student_id) {
 
-  global $MESSAGE,$student_row;
+  global $system_message,$student_row;
 
   $student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
   $student_result = mysql_query($student_query);
   if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {$student_row= mysql_fetch_array($student_result);}
 
   //get the goals...
@@ -119,9 +119,9 @@ function create_pdf($student_id) {
   $long_goal_result = mysql_query($long_goal_query);
   if(!$long_goal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$long_goal_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-    echo $MESSAGE;
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+    echo $system_message;
     exit();
   }
 
@@ -131,9 +131,9 @@ function create_pdf($student_id) {
   $supervisor_result = mysql_query($supervisor_query);
   if(!$supervisor_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-    //echo $MESSAGE;
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+    //echo $system_message;
     //exit();
     //just carry on
   } else {
@@ -146,8 +146,8 @@ function create_pdf($student_id) {
   $school_result = mysql_query($school_query);
   if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {
     $school_row = mysql_fetch_array($school_result);
   }
@@ -158,8 +158,8 @@ function create_pdf($student_id) {
   $school_history_result = mysql_query($school_history_query);
   if(!$school_history_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_history_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -171,8 +171,8 @@ function create_pdf($student_id) {
   $code_result = mysql_query($code_query);
   if(!$code_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$code_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   } else {
    if(mysql_num_rows($code_result)) {
@@ -195,8 +195,8 @@ function create_pdf($student_id) {
   $guardian_result = mysql_query($guardian_query);
   if(!$guardian_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$guardian_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -206,8 +206,8 @@ function create_pdf($student_id) {
   $supervisor_result = mysql_query($supervisor_query);
   if(!$supervisor_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   } else {
    if(mysql_num_rows($supervisor_result)) {
@@ -225,8 +225,8 @@ function create_pdf($student_id) {
   $support_team_result = mysql_query($support_team_query);
   if(!$support_team_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$support_team_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   } else {
    if(mysql_num_rows($support_team_result)) {
@@ -245,8 +245,8 @@ function create_pdf($student_id) {
   $strength_result = mysql_query($strength_query);
   if(!$strength_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$strength_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     $strengths = "-error-";
     //just carry on
   } else {
@@ -268,8 +268,8 @@ function create_pdf($student_id) {
   $needs_result = mysql_query($needs_query);
   if(!$needs_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$needs_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     $needs = "-error-";
     //just carry on
   } else {
@@ -290,8 +290,8 @@ function create_pdf($student_id) {
   $medical_result = mysql_query($medical_query);
   if(!$medical_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$medical_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -300,8 +300,8 @@ function create_pdf($student_id) {
   $medication_result = mysql_query($medication_query);
   if(!$medication_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$medication_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -310,8 +310,8 @@ function create_pdf($student_id) {
   $testing_result = mysql_query($testing_query);
   if(!$testing_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$testing_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -320,8 +320,8 @@ function create_pdf($student_id) {
   $background_result = mysql_query($background_query);
   if(!$background_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$background_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -330,8 +330,8 @@ function create_pdf($student_id) {
   $cla_result = mysql_query($cla_query);
   if(!$cla_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$cla_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -340,8 +340,8 @@ function create_pdf($student_id) {
   $services_result = mysql_query($services_query);
   if(!$services_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$services_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -350,8 +350,8 @@ function create_pdf($student_id) {
   $accommodations_result = mysql_query($accommodations_query);
   if(!$accommodations_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$accommodations_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -360,8 +360,8 @@ function create_pdf($student_id) {
   $transition_result = mysql_query($transition_query);
   if(!$transition_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$transition_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -370,8 +370,8 @@ function create_pdf($student_id) {
   $at_result = mysql_query($at_query);
   if(!$at_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$at_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   }
 
@@ -424,7 +424,7 @@ function create_pdf($student_id) {
          $this->SetTextColor(153,153,153);  //greyish
          $this->SetFillColor(255,255,255);
          $this->Ln(1);
-         $this->MultiCell(0,5,"IEP-IPP System ©2005-2007 Grasslands Public Schools and licensed under the Gnu Public License (www.iep-ipp.com)",'T','C',1);
+         $this->MultiCell(0,5,"IEP-IPP System ï¿½2005-2007 Grasslands Public Schools and licensed under the Gnu Public License (www.iep-ipp.com)",'T','C',1);
 
          //Set colour back
          $this->SetTextColor(0,0,0);  // Well, I'm back in black, yes I'm back in black!
@@ -526,7 +526,7 @@ function create_pdf($student_id) {
    //find the age
    function get_age_by_date($yyyymmdd)
    {
-    global $MESSAGE;
+    global $system_message;
     $bdate = explode("-", $yyyymmdd);
     $dob_month=$bdate[1]; $dob_day=$bdate[2]; $dob_year=$bdate[0];
     if (checkdate($dob_month, $dob_day, $dob_year)) {
@@ -1041,8 +1041,8 @@ function create_pdf($student_id) {
          $objective_result = mysql_query($objective_query);
          if(!$objective_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objective_query'<BR>";
-            $MESSAGE=$MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message=$system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          }
          $pdf->SetFont('Arial','',8);
          $pdf->SetFillColor(204,255,255);
@@ -1103,8 +1103,8 @@ function create_pdf($student_id) {
          $objective_result = mysql_query($objective_query);
          if(!$objective_result) {
             $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$objective_query'<BR>";
-            $MESSAGE=$MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message=$system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
          }
          $pdf->SetFont('Arial','',12);
          $pdf->SetDrawColor(220,220,220);

@@ -27,7 +27,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -43,15 +43,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -71,8 +71,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -91,8 +91,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 //get the list of areas...
@@ -100,8 +100,8 @@ if(!$student_result) {
 //$area_result=mysql_query($area_query);
 //if(!$area_result) {
 //    $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$area_query'<BR>";
-//    $MESSAGE=$MESSAGE . $error_message;
-//    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+//    $system_message=$system_message . $error_message;
+//    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 //}
 
 if(isset($_GET['add_area']) && $have_write_permission) {
@@ -111,23 +111,23 @@ if(isset($_GET['add_area']) && $have_write_permission) {
    $check_result = mysql_query($check_query);
    if(!$check_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$check_query'<BR>";
-      $MESSAGE=$MESSAGE . $error_message;
-      IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+      $system_message=$system_message . $error_message;
+      IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    } else {
        if(mysql_num_rows($check_result) > 0) {
            $check_row = mysql_fetch_array($check_result);
-           $MESSAGE = $MESSAGE . "That is already a program area of this student<BR>";
+           $system_message = $system_message . "That is already a program area of this student<BR>";
        } else {
            $add_query = "INSERT INTO program_area (student_id,area,start_date,end_date) VALUES (" . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_GET['program_area']) . "',NOW(),NULL)";
            $add_result = mysql_query($add_query);
            if(!$add_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            }
        }
     }
-   //$MESSAGE = $MESSAGE . $add_query . "<BR>";
+   //$system_message = $system_message . $add_query . "<BR>";
 }
 
 //check if we are deleting some areas...
@@ -139,14 +139,14 @@ if($_GET['delete_x'] && $permission_level <= $IPP_MIN_DELETE_PROGRAM_AREA && $ha
     }
     //strip trailing 'or' and whitespace
     $delete_query = substr($delete_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
 }
 
 //check if we are setting some no longer active...
@@ -158,12 +158,12 @@ if($_GET['set_not_active'] && $have_write_permission ) {
     }
     //strip trailing 'or' and whitespace
     $modify_query = substr($modify_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $modify_query . "<BR>";
+    //$system_message = $system_message . $modify_query . "<BR>";
     $modify_result = mysql_query($modify_query);
     if(!$modify_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$modify_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -176,12 +176,12 @@ if($_GET['set_continue'] && $have_write_permission ) {
     }
     //strip trailing 'or' and whitespace
     $modify_query = substr($modify_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $modify_query . "<BR>";
+    //$system_message = $system_message . $modify_query . "<BR>";
     $modify_result = mysql_query($modify_query);
     if(!$modify_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$modify_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -189,15 +189,15 @@ $program_area_query = "SELECT * FROM program_area WHERE student_id=" . mysql_rea
 $program_area_result = mysql_query($program_area_query);
 if(!$program_area_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$program_area_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 /******************** popup chooser support function ******************/
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -242,13 +242,13 @@ if(!$program_area_result) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $coordlist_query="SELECT DISTINCT `name`, COUNT(`name`) AS `count` FROM typical_long_term_goal_category WHERE is_deleted='N' GROUP BY `name` ORDER BY `name` DESC LIMIT 200";
         $coordlist_result = mysql_query($coordlist_query);
         if(!$coordlist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$coordlist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             echo createJavaScript($coordlist_result,"popuplist");
@@ -328,7 +328,7 @@ if(!$program_area_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Program Area(<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

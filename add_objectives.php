@@ -18,17 +18,7 @@
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody check within
 
-/**
- * add_objectives.php
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: March 02, 2005
- * By: M. Nielsen
- * Modified: April 19,2006
- *
- */
+
 
 /*   INPUTS:
  *           $_POST['student_id']
@@ -38,7 +28,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody check within
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -54,15 +44,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -72,8 +62,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -105,8 +95,8 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 if(isset($_POST['add_goal']) && $have_write_permission) {
 
     if(!isset($_POST['description']) || $_POST['description'] == "") {
-        $MESSAGE = $MESSAGE . "You must supply a description of this goal<BR>";
-        header("Location: add_goal_1.php?student_id=$student_id&MESSAGE=$MESSAGE");
+        $system_message = $system_message . "You must supply a description of this goal<BR>";
+        header("Location: add_goal_1.php?student_id=$student_id&MESSAGE=$system_message");
         exit();
     }  else {
       $description=strip_tags($_POST['description']);
@@ -117,15 +107,15 @@ if(isset($_POST['add_goal']) && $have_write_permission) {
       $check_query="SELECT * FROM long_term_goal WHERE student_id=" . mysql_real_escape_string($student_id) . " AND goal='" . mysql_real_escape_string($description) . "'";
       $check_result=mysql_query($check_query);
       if(mysql_num_rows($check_result) > 0) {
-          $MESSAGE = $MESSAGE . "This is already set as a goal for this student (you might have hit reload)<BR>";
+          $system_message = $system_message . "This is already set as a goal for this student (you might have hit reload)<BR>";
           $check_row=mysql_fetch_array($check_result);
           $goal_id=$check_row['goal_id'];
       } else {
         //check that date is the correct pattern...
         $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
         if(!preg_match($regexp,$_POST['review_date'])) {
-          $MESSAGE = $MESSAGE . "Date must be in YYYY-MM-DD format<BR>";
-          header("Location: " . IPP_PATH . "add_goal_1.php?goal_area=" . $_POST['goal_area'] . "&review_date=" . $_POST['review_date'] . "&description=" .  $_POST['description'] . "&MESSAGE=" . $MESSAGE . "&student_id=" . $student_id);
+          $system_message = $system_message . "Date must be in YYYY-MM-DD format<BR>";
+          header("Location: " . IPP_PATH . "add_goal_1.php?goal_area=" . $_POST['goal_area'] . "&review_date=" . $_POST['review_date'] . "&description=" .  $_POST['description'] . "&MESSAGE=" . $system_message . "&student_id=" . $student_id);
         }
         else {
             $area="";
@@ -142,9 +132,9 @@ if(isset($_POST['add_goal']) && $have_write_permission) {
             $insert_goal_result = mysql_query($insert_goal_query);
             if(!$insert_goal_result) {
                 $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_goal_query'<BR>";
-                $MESSAGE=$MESSAGE . $error_message;
-                IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-                header("Location: " . IPP_PATH . "add_goal_1.php?MESSAGE=" . $MESSAGE . "&student_id=" . $student_id);
+                $system_message=$system_message . $error_message;
+                IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+                header("Location: " . IPP_PATH . "add_goal_1.php?MESSAGE=" . $system_message . "&student_id=" . $student_id);
             }  else {
                 $goal_id=mysql_insert_id();
                 unset($_POST['description']);
@@ -155,7 +145,7 @@ if(isset($_POST['add_goal']) && $have_write_permission) {
 }
 
 if($goal_id == "" && (!isset($goal_id) || $goal_id=="") ) {
-   $MESSAGE = $MESSAGE . "An error occured: you have arrived here without a valid goal id number, perhaps you don't have permission levels necessary.<BR>";
+   $system_message = $system_message . "An error occured: you have arrived here without a valid goal id number, perhaps you don't have permission levels necessary.<BR>";
 } else {
    if($goal_id == "") { $goal_id=$goal_id; }
    //find the student owner of this objective...
@@ -163,8 +153,8 @@ if($goal_id == "" && (!isset($goal_id) || $goal_id=="") ) {
    $goal_result=mysql_query($goal_query);
    if(!$goal_result) {
      $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
-     $MESSAGE=$MESSAGE . $error_message;
-     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+     $system_message=$system_message . $error_message;
+     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    } else {
       $goal_row=mysql_fetch_array($goal_result);
       $student_id=$goal_row['student_id'];
@@ -183,7 +173,7 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 
 //check if we are updating the goal text...
 if(isset($_POST['update_goal']) && $have_write_permission) {
-   if($_POST['goal_text'] == "") $MESSAGE = $MESSAGE . "You must supply goal text<BR>";
+   if($_POST['goal_text'] == "") $system_message = $system_message . "You must supply goal text<BR>";
    else {
       $update_query="UPDATE long_term_goal SET area=";
       $update_query .= "'" . mysql_real_escape_string($_POST['goal_area']) . "'";
@@ -191,16 +181,16 @@ if(isset($_POST['update_goal']) && $have_write_permission) {
       $update_result = mysql_query($update_query);
       if(!$update_result) {
          $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-         $MESSAGE=$MESSAGE . $error_message;
-         IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+         $system_message=$system_message . $error_message;
+         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
       }
     //rerun the queries
     $goal_query="SELECT long_term_goal.*,short_term_objective.*,long_term_goal.review_date AS goal_review_date FROM long_term_goal LEFT JOIN short_term_objective ON long_term_goal.goal_id=short_term_objective.goal_id WHERE long_term_goal.goal_id=" . mysql_real_escape_string($goal_id);
     $goal_result=mysql_query($goal_query);
     if(!$goal_result) {
      $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
-     $MESSAGE=$MESSAGE . $error_message;
-     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+     $system_message=$system_message . $error_message;
+     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     } else {
       $goal_row=mysql_fetch_array($goal_result);
       $student_id=$goal_row['student_id'];
@@ -213,12 +203,12 @@ if(isset($_POST['update_goal']) && $have_write_permission) {
 //check if we are adding an objective...
 if(isset($_POST['add_objective']) && $have_write_permission) {
    if($_POST['description'] == "")  {
-      $MESSAGE = $MESSAGE . "You must supply a short term objective<BR>";
+      $system_message = $system_message . "You must supply a short term objective<BR>";
    }  else {
      //check that date is the correct pattern...
      $regexp = '/^\d\d\d\d-\d\d?-\d\d?$/';
      if(!preg_match($regexp,$_POST['review_date'])) {
-          $MESSAGE = $MESSAGE . "Date must be in YYYY-MM-DD format<BR>";
+          $system_message = $system_message . "Date must be in YYYY-MM-DD format<BR>";
      } else {
        $insert_query = "INSERT INTO short_term_objective (goal_id,description,review_date,results_and_recommendations,strategies,assessment_procedure) values (";
        $insert_query = $insert_query . mysql_real_escape_string($goal_id) . ",";
@@ -245,8 +235,8 @@ if(isset($_POST['add_objective']) && $have_write_permission) {
        $insert_result = mysql_query($insert_query);
        if(!$insert_result) {
          $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$insert_query'<BR>";
-         $MESSAGE=$MESSAGE . $error_message;
-         IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+         $system_message=$system_message . $error_message;
+         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        } else {
          unset($_POST['description']);
          unset($_POST['review_date']);
@@ -260,7 +250,7 @@ if(isset($_POST['add_objective']) && $have_write_permission) {
 
 //rerun the query...ok, lazy...should be reworked
 if($goal_id == "" && (!isset($goal_id) || $goal_id=="") ) {
-   $MESSAGE = $MESSAGE . "An error occured: you have arrived here without a valid goal id number, perhaps you don't have permission levels necessary. lto='$goal_id'<BR>";
+   $system_message = $system_message . "An error occured: you have arrived here without a valid goal id number, perhaps you don't have permission levels necessary. lto='$goal_id'<BR>";
 } else {
    if($goal_id == "") { $goal_id=$goal_id; }
    //find the student owner of this objective...
@@ -268,8 +258,8 @@ if($goal_id == "" && (!isset($goal_id) || $goal_id=="") ) {
    $goal_result=mysql_query($goal_query);
    if(!$goal_result) {
      $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$goal_query'<BR>";
-     $MESSAGE=$MESSAGE . $error_message;
-     IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+     $system_message=$system_message . $error_message;
+     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    } else {
       $goal_row=mysql_fetch_array($goal_result);
       $student_id=$goal_row['student_id'];
@@ -285,20 +275,20 @@ if($student_id) {
   $student_result = mysql_query($student_query);
   if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {$student_row= mysql_fetch_array($student_result);}
 }
 
 //last thing...add an instructional note:
 
-$MESSAGE = $MESSAGE . "<BR>Please add short term objectives to achieve this goal.<BR>Click the done button when done adding goals<BR>";
+$system_message = $system_message . "<BR>Please add short term objectives to achieve this goal.<BR>Click the done button when done adding goals<BR>";
 
 /*************************** popup chooser support function ******************/
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -344,13 +334,13 @@ $MESSAGE = $MESSAGE . "<BR>Please add short term objectives to achieve this goal
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $asslist_query="SELECT DISTINCT `assessment_procedure`, COUNT(`assessment_procedure`) AS `count` FROM short_term_objective GROUP BY `assessment_procedure` ORDER BY `count` DESC LIMIT 200";
         $asslist_result = mysql_query($asslist_query);
         if(!$asslist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$asslist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             if(mysql_num_rows($asslist_result)) echo createJavaScript($asslist_result,"popuplist");
@@ -368,12 +358,7 @@ $MESSAGE = $MESSAGE . "<BR>Please add short term objectives to achieve this goal
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Design Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
     <script language="javascript" src="<?php echo IPP_PATH . "include/popcalendar.js"; ?>"></script>
     <script language="javascript" src="<?php echo IPP_PATH . "include/popupchooser.js"; ?>"></script>
     <?php
@@ -428,7 +413,7 @@ $MESSAGE = $MESSAGE . "<BR>Please add short term objectives to achieve this goal
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center>
                           <table>

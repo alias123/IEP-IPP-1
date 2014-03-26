@@ -1,19 +1,12 @@
 <?php
-
+/** @todo
+ *  1. Rewrite the credits on this page.
+ *  2. add file information (comment header)
+ */
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;    //anybody
 
-/**
- * about.php information about the program
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: January 21,2007
- * By: M. Nielsen
- * Modified:
- *
- */
+
 
 /**
  * Path for IPP required files.
@@ -37,12 +30,7 @@ header('Pragma: no-cache'); //don't cache this page!
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Focus Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
 </HEAD>
     <BODY>
         <table class="shadow" border="0" cellspacing="0" cellpadding="0" align="center">  
@@ -61,7 +49,7 @@ header('Pragma: no-cache'); //don't cache this page!
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if (isset($MESSAGE)) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if (isset($system_message)) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">- About -</p></center></td></tr></table></center>
                         <BR>

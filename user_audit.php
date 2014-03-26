@@ -23,7 +23,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 0; //super admin only currently
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -39,15 +39,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -62,8 +62,8 @@ if(isset($_POST['user_id'])) $user_id = $_POST['student_id'];
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -76,29 +76,29 @@ if(isset($_POST['username'])) {
   $user_result = mysql_query($user_query);
   if(!$user_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$user_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } 
 }
 
 if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
   $retval=parse_submission();
     if($retval != null ) {
-        $MESSAGE .= $retval . "<BR>";
+        $system_message .= $retval . "<BR>";
     } else { 
            $add_query = "INSERT INTO accomodation (student_id,accomodation,start_date,end_date,subject,file,filename) VALUES (" . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_POST['accomodation']) . "',NOW(),NULL,'" . mysql_real_escape_string($_POST['subject']) . "','$content','$fileName')";
            $add_result = mysql_query($add_query);
            if(!$add_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-             IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+             IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            } else {
              unset($_POST['accomodation']);
              unset($_POST['subject']);
            }
     //   }
     }
-   $MESSAGE = $MESSAGE . $add_query . "<BR>";
+   $system_message = $system_message . $add_query . "<BR>";
 }
 
 
@@ -106,7 +106,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
     function createJavaScript($dataSource,$arrayName='rows'){
       // validate variable name
       if(!is_string($arrayName)){
-        $MESSAGE = $MESSAGE . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
+        $system_message = $system_message . "Error in popup chooser support function name supplied not a valid string  (" . __FILE__ . ":" . __LINE__ . ")";
         return FALSE;
       }
 
@@ -151,13 +151,13 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
     }
 
     function echoJSServicesArray() {
-        global $MESSAGE;
+        global $system_message;
         $acclist_query="SELECT DISTINCT egps_username FROM support_list WHERE 1 ORDER BY egps_username ASC";
         $acclist_result = mysql_query($acclist_query);
         if(!$acclist_result) {
             $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$acclist_query'<BR>";
-            $MESSAGE= $MESSAGE . $error_message;
-            IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+            $system_message= $system_message . $error_message;
+            IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         } else {
             //call the function to create the javascript array...
             echo createJavaScript($acclist_result,"popuplist");
@@ -176,12 +176,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Design Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+    
     <script language="javascript" src="<?php echo IPP_PATH . "include/popupchooser.js"; ?>"></script>
     <script language="javascript" src="<?php echo IPP_PATH . "include/autocomplete.js"; ?>"></script>
     <script language="javascript" src="<?php echo IPP_PATH . "include/autocomplete.js"; ?>"></script>
@@ -236,7 +231,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%"><tr><td><center><p class="header">- Audit User (<?php if(mysql_real_escape_string($_POST['username']) != "" )echo mysql_real_escape_string($_POST['username']); else echo "nobody choosen yet"; ?>)-</p></center></td></tr></table></center>
                         <BR>
@@ -281,7 +276,7 @@ if(1==0 && isset($_POST['add_accomodation']) && $have_write_permission) {
                             if(!$school_result) {
                                  $school_row =  array("school_name" => "error");
                                  $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-                                 IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+                                 IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
                             } else {if(!mysql_num_rows($school_result)) $school_row=array("school_name" => "-archived student-"); else $school_row=mysql_fetch_array($school_result);}
 
                             echo "<tr>\n";

@@ -24,11 +24,11 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
  * Path for IPP required files.
  */
 
-/** @var $MESSAGE
+/** @var $system_message
  * @brief speculating that error messages get passed along through this var
  * 
  */
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
+if(isset($system_message)) $system_message = $system_message; else $system_message="";
 
 define('IPP_PATH','./');
 
@@ -46,15 +46,15 @@ header('Pragma: no-cache'); //don't cache this page!
 //@todo make authentication routine a function
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -64,8 +64,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -81,8 +81,8 @@ $student_query = "select * from student where student.student_id=" . $_GET['stud
 $student_result = mysql_query($student_query);
 if(!$student_query) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 $student_row=mysql_fetch_array($student_result);
@@ -93,8 +93,8 @@ $support_member_query = "SELECT * FROM support_list WHERE student_id=" . $_GET['
 $support_member_result = mysql_query($support_member_query);
 if(!$support_member_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$support_member_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 
@@ -103,8 +103,8 @@ $coding_query = "SELECT * FROM coding WHERE student_id=" . $_GET['student_id'] .
 $coding_result = mysql_query($coding_query);
 if(!$coding_query) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$coding_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 $coding_row=mysql_fetch_array($coding_result);
 
@@ -115,8 +115,8 @@ $our_permission = getStudentPermission($_GET['student_id']);
 
 if($our_permission != "READ" && $our_permission != "WRITE" && $our_permission != "ASSIGN" && $our_permission != "ALL") {
   //we don't have permission...
-  $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-  IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+  $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+  IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   require(IPP_PATH . 'security_error.php');
   exit();
 }
@@ -126,8 +126,8 @@ $supervisor_query = "SELECT * FROM supervisor WHERE student_id=" . mysql_real_es
 $supervisor_result = mysql_query($supervisor_query);
 if(!$supervisor_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
     //In theory, should be only one row - this fetches it
     $supervisor_row=mysql_fetch_array($supervisor_result);
@@ -143,8 +143,8 @@ $school_query = "SELECT * FROM school_history LEFT JOIN school on school_history
 $school_result = mysql_query($school_query);
 if(!$school_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$school_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
     //there is only one row (or should be...so get it.)
     $school_row=mysql_fetch_array($school_result);
@@ -157,7 +157,7 @@ if(!$school_result) {
 //make sure they entered a valid date (mm-dd-yyyy)
 function get_age_by_date($yyyymmdd)
 {
-    global $MESSAGE;
+    global $system_message;
     $bdate = explode("-", $yyyymmdd);
     $dob_month=$bdate[1]; $dob_day=$bdate[2]; $dob_year=$bdate[0];
     if (checkdate($dob_month, $dob_day, $dob_year)) {
@@ -219,7 +219,7 @@ function get_age_by_date($yyyymmdd)
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table width="80%" cellspacing="0" cellpadding="0"><tr><td><center><p class="header">-Student View-</p></center></td></tr>
                                                                                    <tr><td><center><p class="bold_text"> <?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?></p></center></td></tr>

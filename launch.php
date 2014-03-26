@@ -40,7 +40,7 @@ define('IPP_PATH','./');
 require_once(IPP_PATH . 'etc/init.php');
 
 header('Pragma: no-cache'); //don't cache this page!
-if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
+if(isset($system_message)) $system_message = $system_message; else $system_message="";
 
 ?> 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -88,7 +88,7 @@ if(isset($MESSAGE)) $MESSAGE = $MESSAGE; else $MESSAGE="";
                     <tr>
                         <td valign="top">
                         <div id="main">
-                                <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                                <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- <?php echo $IPP_ORGANIZATION; ?> -<BR></p></center></td></tr></table></center>
                         <form enctype="multipart/form-data" action="<?php echo IPP_PATH . 'launch.php'; ?>" method="post" onSubmit="Start('<?php echo IPP_PATH . "index.php";?>')")>

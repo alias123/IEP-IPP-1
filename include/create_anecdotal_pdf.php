@@ -25,7 +25,7 @@
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 //define('IPP_PATH','../');
 
@@ -43,15 +43,15 @@ require_once(IPP_PATH . 'include/fpdf/fpdf.php');
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'login.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'login.php');
         exit();
     }
@@ -71,8 +71,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -86,8 +86,8 @@ if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission 
 }
 
 if($our_permission == "NONE") {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -95,14 +95,14 @@ if($our_permission == "NONE") {
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
 function create_anecdotals($student_id) {
 
-  global $MESSAGE,$student_row;
+  global $system_message,$student_row;
 
   $student_query = "SELECT * FROM student WHERE student_id = " . addslashes($student_id);
   $student_result = mysql_query($student_query);
   if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
   } else {$student_row= mysql_fetch_array($student_result);}
 
   //get the goals...
@@ -110,9 +110,9 @@ function create_anecdotals($student_id) {
   $anecdotal_result = mysql_query($anecdotal_query);
   if(!$anecdotal_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$anecdotal_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR'); //todo investigate and expand logging; implement email alerts on certain log key words
-    echo $MESSAGE;
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR'); //todo investigate and expand logging; implement email alerts on certain log key words
+    echo $system_message;
     exit();
   }
 
@@ -127,8 +127,8 @@ function create_anecdotals($student_id) {
   $code_result = mysql_query($code_query);
   if(!$code_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$code_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     //just carry on
   } else {
     if(mysql_num_rows($code_result)) {
@@ -187,7 +187,7 @@ function create_anecdotals($student_id) {
          $this->SetTextColor(153,153,153);  //greyish
          $this->SetFillColor(255,255,255);
          $this->Ln(1);
-         $this->MultiCell(0,5,"Grasslands Individual Program Plan System (©2005-2006 Grasslands Public Schools)",'T','C',1); //todo: this should be a variable controlled on admin console
+         $this->MultiCell(0,5,"Grasslands Individual Program Plan System (ï¿½2005-2006 Grasslands Public Schools)",'T','C',1); //todo: this should be a variable controlled on admin console
 
          //Set colour back
          $this->SetTextColor(0,0,0);  // Well, I'm back in black, yes I'm back in black!  Todo: note the dev listened to ACDC
@@ -291,7 +291,7 @@ function create_anecdotals($student_id) {
    //find the age
    function get_age_by_date($yyyymmdd)
    {
-    global $MESSAGE;
+    global $system_message;
     $bdate = explode("-", $yyyymmdd);
     $dob_month=$bdate[1]; $dob_day=$bdate[2]; $dob_year=$bdate[0];
     if (checkdate($dob_month, $dob_day, $dob_year)) {

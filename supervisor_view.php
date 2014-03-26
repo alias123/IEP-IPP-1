@@ -28,12 +28,12 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 /**
  * Path for IPP required files.
  */
-/** @var $MESSAGE
+/** @var $system_message
  *  @brief 		We have no idea what this is for, but it's set to nothing for security
  *  @detail 	This variable is at the top of most pages, always set to empty value. Haven't found a purpose for it yet.
- *  @todo 		Track down what $MESSAGE is intended to do
+ *  @todo 		Track down what $system_message is intended to do
  */
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -59,15 +59,15 @@ header('Pragma: no-cache'); //don't cache this page!
  */
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -98,8 +98,8 @@ if($student_id=="") {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -123,8 +123,8 @@ $student_query = "SELECT * FROM student WHERE student_id = " . mysql_real_escape
 $student_result = mysql_query($student_query);
 if(!$student_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$student_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {$student_row= mysql_fetch_array($student_result);}
 
 //check if we are adding...
@@ -135,23 +135,23 @@ if(isset($_GET['add']) && $have_write_permission && $_GET['supervisor'] != "SELE
    $check_result = mysql_query($check_query);
    if(!$check_result) {
       $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$check_query'<BR>";
-      $MESSAGE=$MESSAGE . $error_message;
-      IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+      $system_message=$system_message . $error_message;
+      IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
    } else {
        if(mysql_num_rows($check_result) > 0) {
            $check_row = mysql_fetch_array($check_result);
-           $MESSAGE = $MESSAGE . "'" . $check_row['egps_username'] . "' is already a supervisor<BR>";
+           $system_message = $system_message . "'" . $check_row['egps_username'] . "' is already a supervisor<BR>";
        } else {
            $add_query = "INSERT INTO supervisor (egps_username,student_id,position,start_date,end_date) VALUES ('" . mysql_real_escape_string($_GET['supervisor']) . "'," . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_GET['position']) . "',NOW(),NULL)";
            $add_result = mysql_query($add_query);
            if(!$add_result) {
               $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$add_query'<BR>";
-              $MESSAGE=$MESSAGE . $error_message;
-              IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+              $system_message=$system_message . $error_message;
+              IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
            }
        }
     }
-   //$MESSAGE = $MESSAGE . $add_query . "<BR>";
+   //$system_message = $system_message . $add_query . "<BR>";
 }
 
 //if deleting supervisor, check permissions 
@@ -163,14 +163,14 @@ if(isset($_GET['delete_x']) && $permission_level <= $IPP_MIN_DELETE_SUPERVISOR_P
     }
     //strip trailing 'or' and whitespace
     $delete_query = substr($delete_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
     $delete_result = mysql_query($delete_query);
     if(!$delete_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$delete_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
-    //$MESSAGE = $MESSAGE . $delete_query . "<BR>";
+    //$system_message = $system_message . $delete_query . "<BR>";
 }
 
 //Demoting a supervisor
@@ -182,12 +182,12 @@ if(isset($_GET['set_not_supervisor_x']) && $have_write_permission ) {
     }
     //strip trailing 'or' and whitespace
     $modify_query = substr($modify_query, 0, -4);
-    //$MESSAGE = $MESSAGE . $modify_query . "<BR>";
+    //$system_message = $system_message . $modify_query . "<BR>";
     $modify_result = mysql_query($modify_query);
     if(!$modify_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$modify_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     }
 }
 
@@ -196,8 +196,8 @@ $supervisor_query = "SELECT * FROM supervisor WHERE student_id =" . mysql_real_e
 $supervisor_result = mysql_query ($supervisor_query);
 if(!$supervisor_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //get a history...
@@ -205,8 +205,8 @@ $supervisor_history_query = "SELECT * FROM supervisor WHERE student_id=" . mysql
 $supervisor_history_result = mysql_query ($supervisor_history_query);
 if(!$supervisor_history_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$supervisor_history_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 //get a list of all support members to build supervisor list...
@@ -214,8 +214,8 @@ $support_member_query = "SELECT * FROM support_list WHERE student_id=" . mysql_r
 $support_member_result = mysql_query($support_member_query);
 if(!$support_member_result) {
     $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$support_member_query'<BR>";
-    $MESSAGE=$MESSAGE . $error_message;
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message=$system_message . $error_message;
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 }
 
 
@@ -277,7 +277,7 @@ if(!$support_member_result) {
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">-Manage Supervisors (<?php echo $student_row['first_name'] . " " . $student_row['last_name']; ?>)-</p></center></td></tr></table></center>
                         <BR>

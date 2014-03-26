@@ -35,7 +35,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 60; //teaching assistants and up
  * Path for IPP required files.
  */
 
-$MESSAGE = "";
+$system_message = "";
 
 define('IPP_PATH','./');
 
@@ -51,15 +51,15 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'index.php');
         exit();
     }
@@ -69,8 +69,8 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
 if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $MESSAGE = $MESSAGE . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
     exit();
 }
@@ -84,8 +84,8 @@ $bug_query="SELECT * FROM bugs WHERE uid=" . mysql_real_escape_string($uid);
 $bug_result = mysql_query($bug_query);
 if(!$bug_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$bug_query'<BR>";
-        $MESSAGE= $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message= $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
 } else {
    $bug_row = mysql_fetch_array($bug_result);
 }
@@ -95,13 +95,13 @@ if(!$bug_result) {
 if($permission_level <= $IPP_MIN_EDIT_BUG_PERMISSION || $bug_row['username'] == $_SESSION['egps_username']) $have_write_permission = TRUE;
 else $have_write_permission = FALSE;
 
-//if($permission_level <= $IPP_MIN_EDIT_BUG_PERMISSION) $MESSAGE = $MESSAGE . "Have write permission<BR>";
+//if($permission_level <= $IPP_MIN_EDIT_BUG_PERMISSION) $system_message = $system_message . "Have write permission<BR>";
 //check if we are adding...
 if(isset($_POST['edit_bug_report'])) {
    //minimal testing of input...
-   if($_POST['bug'] == "") { $MESSAGE=$MESSAGE . "You must supply a bug/feature description<BR>"; }
+   if($_POST['bug'] == "") { $system_message=$system_message . "You must supply a bug/feature description<BR>"; }
    else {
-     if(!$have_write_permission) { $MESSAGE = $MESSAGE . "You don't have permission<BR>"; }
+     if(!$have_write_permission) { $system_message = $system_message . "You don't have permission<BR>"; }
      else {
        $update_query = "UPDATE bugs set bug='" . mysql_real_escape_string($_POST['bug']) . "'";
        if($permission_level <= $IPP_MIN_EDIT_BUG_PERMISSION) {
@@ -111,15 +111,15 @@ if(isset($_POST['edit_bug_report'])) {
        $update_result = mysql_query($update_query);
        if(!$update_result) {
          $error_message = $error_message . "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$update_query'<BR>";
-         $MESSAGE=$MESSAGE . $error_message;
-         IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+         $system_message=$system_message . $error_message;
+         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
        } else {
          //redirect back...
          header("Location: " . IPP_PATH . "bug_report.php");
        }
      }
    }
-   //$MESSAGE = $MESSAGE . $add_query . "<BR>";
+   //$system_message = $system_message . $add_query . "<BR>";
 }
 
 
@@ -222,7 +222,7 @@ $enum_options_type = mysql_enum_values("bugs","status");
                     <tr>
                         <td valign="top">
                         <div id="main">
-                        <?php if ($MESSAGE) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $MESSAGE . "</p></td></tr></table></center>";} ?>
+                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
                         <center><table><tr><td><center><p class="header">- IPP Bug Tracking/Feature Request<BR></p></center></td></tr></table></center>
                         <BR>
