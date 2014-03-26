@@ -252,7 +252,13 @@
 
 
     }
-
+/** @fn	get_services($PERMISSION_LEVEL=100)
+ *  @brief	sets permissions for lowest authentication level
+ *  @details	
+ *  @todo 	untangle this mess. Refactor as necessary.
+ *  @bug
+ *  
+*/
     function get_services($PERMISSION_LEVEL=100) {
 
         global $error_message;
