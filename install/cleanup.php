@@ -53,7 +53,7 @@ header('Pragma: no-cache'); //don't cache this page!
 <HTML>
 <HEAD>
     <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-    <TITLE>IEP-IPP Installation</TITLE>
+    <TITLE>MyIEP Installation</TITLE>
     <style type="text/css" media="screen">
         <!--
             @import "../layout/greenborders.css";
