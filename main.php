@@ -141,7 +141,7 @@ header('Pragma: no-cache'); //don't cache this page!
         <div class="col-md-4">
           <h2>View Logs</h2>
           <p>Access system history..</p>
-          <p><a class="btn btn-default" href="log.php" role="button">View Logs &raquo;</a></p>
+          <p><a class="btn btn-default" href="superuser_view_logs.php" role="button">View Logs &raquo;</a></p>
        </div>
         <div class="col-md-4">
           <h2>Manage Accounts</h2>
