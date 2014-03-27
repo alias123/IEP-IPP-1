@@ -3,13 +3,6 @@
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;
 
-//check if we are running install wizard
-if(!is_file(IPP_PATH . "etc/init.php")){
-	require_once(IPP_PATH . 'install/index.php');
-	exit();
-	
-
-
 if(isset($system_message)) $system_message = $system_message;
 else $system_message = "";
 
