@@ -65,7 +65,7 @@ require_once(IPP_PATH . 'include/supporting_functions.php');
 
 no_cash(); //don't cache this page!
 
-confirm_valid_session()
+confirm_valid_session();
 
 //************* SESSION active past here **************************
 
