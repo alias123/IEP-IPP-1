@@ -76,7 +76,7 @@ if(!$services) {
     <meta name="author" content="Rik Goldman" >
     <link rel="shortcut icon" href="./assets/ico/favicon.ico">
 
-    <title>Jumbotron Template for Bootstrap</title>
+    <title>MyIEP</title>
 
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -105,9 +105,9 @@ if(!$services) {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">MyIEP</a>
         </div>
-        <div class="navbar-collapse collapse">
+        <!--<div class="navbar-collapse collapse">
           <form class="navbar-form navbar-right" role="form">
             <div class="form-group">
               <input type="text" placeholder="Email" class="form-control">
@@ -117,7 +117,7 @@ if(!$services) {
             </div>
             <button type="submit" class="btn btn-success">Sign in</button>
           </form>
-        </div><!--/.navbar-collapse -->
+        </div><!--/.navbar-collapse --> -->
       </div>
     </div>
 
