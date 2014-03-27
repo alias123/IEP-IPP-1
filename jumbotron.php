@@ -7,7 +7,7 @@
  
  
 //the authorization level for this page!
-$MINIMUM_AUTHORIZATION_LEVEL = 100;
+//$MINIMUM_AUTHORIZATION_LEVEL = 100;
 
 //check if we are running install wizard
 if(!is_file(IPP_PATH . "etc/init.php")){
