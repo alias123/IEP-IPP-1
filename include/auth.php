@@ -19,18 +19,7 @@
  */
 
 
-/**
- * auth.php -- security and authentication
- *             related files
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: May 13, 2005
- * By: M. Nielsen
- * Modified: June 26,2006
- *
- */
+
     if(!defined('IPP_PATH')) define('IPP_PATH','../');
     if(!isset($is_local_student)) $is_local_student=FALSE;
 

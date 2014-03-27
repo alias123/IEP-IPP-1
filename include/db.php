@@ -1,16 +1,22 @@
 <?php
-//todo: track db plain text credential file reference; if we change the location in the interest of security, do we know where to change the code?
-/**
- * db.php -- IEP-IPP database utilities - todo: note it is simply two functions handling database connection
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: May 13, 2005
- * By: M. Nielsen
- * Modified: May 25, 2005
- *
+
+//* @todo: track db plain text credential file reference (init.php); if we change the location in the interest of security, do we know where to change the code?
+
+/* @file
+ * @brief  Two database handling utilities
+ * @copyright 	2014 Chelsea School 
+ * @copyright 	2005 Grasslands Regional Division #6
+ * @copyright		This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph
+ * @author		M. Nielson
+ * @todo		1. Check for credential handling - where is encryption set up?
+ * 				2. Contrast two functions in this script. On first glance they look redundant.
  */
+
     function connectUserDB() {
         //connects to the USER DB as specified in the config file.
         //inputs: none

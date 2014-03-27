@@ -10,27 +10,33 @@
     You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph, Sean
  * @author		M. Nielson
- * @todo		Filter input
+ * @todo		
+ * 1. Filter input
+ * 2. Make sure the duplicate in include/ can be safely removed
  */
-//the authorization level for this page!
-$MINIMUM_AUTHORIZATION_LEVEL = 100;    //everybody (do checks within document)
+
+/** @var $MINIMUM_AUTHORIZATION_LEVEL = 100
+ *  @brief The authorization level for this page (everybody)
+ *  @todo  1. change to lowercase throughout the code (standardization and consistency (all caps is reserved for constants, globals)
+ *  	   2. Should probably be recase as parameter for a function
+ *  @bugs  none
+ */
+$MINIMUM_AUTHORIZATION_LEVEL = 100;
 
 
 
 
 if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 
-/**@var
+/**@var define('IPP_PATH','./')
  * @brief		Path for IPP required files (constant).
  * @todo
- * 1. move contents of 
- * 2. change path across all files if necessary
  * 
  * @author		M. Nielson
  */
 define('IPP_PATH','./');
 
-/* eGPS required files. */
+//* @remark required files
 require_once(IPP_PATH . 'etc/init.php');
 require_once(IPP_PATH . 'include/db.php');
 require_once(IPP_PATH . 'include/auth.php');

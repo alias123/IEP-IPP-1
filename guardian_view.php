@@ -1,6 +1,6 @@
 <?php
-/**
- * @BRIEF 	display guardian information
+/** @file
+ *  @brief	display guardian information
  * 
  */
  

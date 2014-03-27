@@ -12,23 +12,11 @@
     You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * @authors		Rik Goldman, Sabre Goldman, Jason Banks, Alex, James, Paul, Bryan, TJ, Jonathan, Micah, Stephen, Joseph
  * @author		M. Nielson
- * @todo		Filter input
+ * @todo		Delete this page carefully
  */ 
  
  
-/**
- * launch.php -- initial screen will launch the ipp program
- *               the rationale behind this is to get a window
- *               without navigational and file bars.
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * This a simple login screen.
- * Created: June 06, 2005
- * Modified:
- *
- */
+
 
 /**
  * Path for eGPS required files.
@@ -53,12 +41,7 @@ if(isset($system_message)) $system_message = $system_message; else $system_messa
             @import "<?php echo IPP_PATH;?>layout/greenborders.css";
         -->
     </style>
-    <!-- All code Copyright &copy; 2005 Grasslands Regional Division #6.
-         -Concept and Design by Grasslands IPP Focus Group 2005
-         -Programming and Database Design by M. Nielsen, Grasslands
-          Regional Division #6
-         -CSS and layout images are courtesy A. Clapton.
-     -->
+
      <SCRIPT LANGUAGE="JavaScript">
         <!-- This script and many more are available free online at -->
         <!-- The JavaScript Source!! http://javascript.internet.com -->
@@ -82,9 +65,9 @@ if(isset($system_message)) $system_message = $system_message; else $system_messa
             <td class="shadow-left"></td>
             <td class="shadow-center" valign="top">
                 <table class="frame" width=620px align=center border="0">
-                    <tr align="Center">
+                    <!--  <tr align="Center">
                     <td><center><img src="<?php echo $page_logo_path; ?>"></center></td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td valign="top">
                         <div id="main">

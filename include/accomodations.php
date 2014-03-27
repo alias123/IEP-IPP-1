@@ -13,7 +13,7 @@
  * @author		M. Nielson
  * @todo		Delete if this isn't included in any  script.
  */
-//the authorization level for this page!
+
 $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
 
 /**
