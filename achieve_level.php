@@ -40,7 +40,7 @@ require_once(IPP_PATH . 'include/user_functions.php');
 require_once(IPP_PATH . 'include/navbar.php');
 require_once(IPP_PATH . 'include/supporting_functions.php');
 
-no_cash(); //don't cache this page!
+header('Pragma: no-cache'); //don't cache this page!
 
 	if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 		if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {

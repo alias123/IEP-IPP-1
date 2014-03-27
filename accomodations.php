@@ -72,7 +72,7 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
         exit();
     }
 } else {
-    if(!validate()) {
+    if (!validate()) {
         $system_message = $system_message . $error_message;
         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'login.php');
