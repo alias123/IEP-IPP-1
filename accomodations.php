@@ -30,7 +30,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  *
  */
 
-/** @var
+/** @var		$system_message
  *  @brief		Makes sure the value is cleared.
  *  @details	The purpose of this variable is unclear. But it's the only one that is secured on most pages.
  *  @todo		call is a function...perhaps a single page init function
@@ -42,7 +42,6 @@ $system_message = "";
  *  @brief		constant - relative path to IEP-IPP directory
  *  @detail		
  * 	Provides most pages the path to IEP-IPP/ wherein all project code can be found, including  and include.
- * 	
  * 	@author		M. Nielson
  * 	@todo		
  * 	1. Move contents of  to parent directory
@@ -63,7 +62,7 @@ require_once(IPP_PATH . 'include/user_functions.php');
 require_once(IPP_PATH . 'include/navbar.php');
 require_once(IPP_PATH . 'include/supporting_functions.php');
 
-echo header('Pragma: no-cache'); //don't cache this page!
+header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 		if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
