@@ -82,17 +82,17 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 //************* SESSION active past here **************************
 
 $student_id=""; //cleared for security
-	if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];  //in case of get
-	if(isset($_POST['student_id'])) $student_id = $_POST['student_id']; //in case of post
+	if (isset($_GET['student_id'])) $student_id= $_GET['student_id'];  //in case of get
+	if (isset($_POST['student_id'])) $student_id = $_POST['student_id']; //in case of post
 
-   if($student_id=="") {
+   if ($student_id=="") {
    //we shouldn't be here without a student id.
 		echo "You've entered this page without supplying a valid student id. Fatal, quitting";
 		exit();
-
+}
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
-if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
+if ($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
     $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
