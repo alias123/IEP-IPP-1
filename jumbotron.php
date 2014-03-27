@@ -45,7 +45,7 @@
           <a class="navbar-brand" href="#">MyIEP</a>
         </div>
         <div class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right" role="form" nctype="multipart/form-data" action="<?php echo IPP_PATH . './jumbotron.php'; ?>" method="post">
+          <form class="navbar-form navbar-right" role="form" nctype="multipart/form-data" action="<?php echo IPP_PATH . 'jumbotron.php'; ?>" method="post">
             <div class="form-group">
               <input type="text" placeholder="User Name" class="form-control" value="<?php echo $LOGIN_NAME;?>">
             </div>
