@@ -57,11 +57,11 @@ if(isset($LOGIN_NAME)) $LOGIN_NAME = $LOGIN_NAME; else $LOGIN_NAME="";
 </HEAD>
     <BODY>
         <table class="shadow" border="0" cellspacing="0" cellpadding="0" align="center">  
-        <tr>
+        <!--<tr>
           <td class="shadow-topLeft"></td>
             <td class="shadow-top"></td>
             <td class="shadow-topRight"></td>
-        </tr>
+        </tr>-->
         <tr>
             <td class="shadow-left"></td>
             <td class="shadow-center" valign="top">
