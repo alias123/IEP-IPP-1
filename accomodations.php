@@ -66,16 +66,16 @@ header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] , $_POST['PASSWORD'] )) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
         require(IPP_PATH . 'src/login.php');
         exit();
     }
 } else {
     if(!validate()) {
-        $MESSAGE = $MESSAGE . $error_message;
-        IPP_LOG($MESSAGE,$_SESSION['egps_username'],'ERROR');
-        require(IPP_PATH . 'src/login.php');
+        $system_message = $system_message . $error_message;
+        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+        require(IPP_PATH . 'login.php');
         exit();
     }
 }
@@ -131,6 +131,7 @@ if(isset($_GET['add_accomodation']) && $have_write_permission) {
    //        $check_row = mysql_fetch_array($check_result);
    //        $system_message = $system_message . "That is already a program area of this student<BR>";
    //    } else {
+           
            $add_query = "INSERT INTO accomodation (student_id,accomodation,start_date,end_date,subject) VALUES (" . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_GET['accomodation']) . "',NOW(),NULL,'" . mysql_real_escape_string($_GET['subject']) . "')";
            $add_result = mysql_query($add_query);
            if(!$add_result) {
