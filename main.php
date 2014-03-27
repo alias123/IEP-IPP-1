@@ -82,7 +82,7 @@ header('Pragma: no-cache'); //don't cache this page!
     <div class="jumbotron">
       <div class="container">
         <h1>Welcome to MyIEP</h1>
-        <p>MyIEP is a Web-based IEP Management system under active development by students at <a href="http://chelseaschool">Chelsea School in Hyattsville, MD.</a></p>
+        <p>MyIEP is a Web-based IEP Management system under active development by students at <a href="http://chelseaschool.edu">Chelsea School</a> in Hyattsville, MD.</p>
         <p>&copy; 2014 Chelsea School - <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPLv2</a>.</p>
         <p><a class="btn btn-primary btn-lg" href="about.php" role="button">Learn More &raquo;</a></p>
         
@@ -105,7 +105,7 @@ header('Pragma: no-cache'); //don't cache this page!
         </div>
         <div class="col-md-4">
           <h2>Change Password</h2>
-          <p><em>Important</em>: Go here to change your password, particularly if it's still set to the default password you were assigned.</p>
+          <p><em>Important</em>: Go here to <em>change your password</em>, particularly if it's still set to the default password you were assigned.</p>
           <p><a class="btn btn-default" href="change_ipp_password.php" role="button">Change Password &raquo;</a></p>
        </div>
         <div class="col-md-4">
