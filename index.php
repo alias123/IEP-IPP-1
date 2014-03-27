@@ -33,7 +33,6 @@ if(!is_file(IPP_PATH . "etc/init.php")){
 /* eGPS required files. */
 require_once(IPP_PATH . "etc/init.php");
 require_once(IPP_PATH . 'include/auth.php');
-require_once(IPP_PATH . 'etc/init.php');
 include_once(IPP_PATH . 'include/db.php');
 
 header('Pragma: no-cache'); //don't cache this page!
@@ -48,11 +47,7 @@ if(isset($LOGIN_NAME)) $LOGIN_NAME = $LOGIN_NAME; else $LOGIN_NAME="";
 <HEAD>
     <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
     <TITLE><?php echo $page_title; ?></TITLE>
-    <style type="text/css" media="screen">
-        <!--
-            @import "<?php echo IPP_PATH;?>layout/greenborders.css";
-        -->
-    </style>
+    
 
 </HEAD>
     <BODY>
