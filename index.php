@@ -38,23 +38,7 @@ include_once(IPP_PATH . 'include/db.php');
 
 header('Pragma: no-cache'); //don't cache this page!
 
-if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
-    if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $system_message = $system_message . $error_message;
-        if(isset($_SESSION['egps_username'])) IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-        else IPP_LOG($system_message,'no session','ERROR');
-        require(IPP_PATH . 'index.php');
-        exit();
-    }
-} else {
-    if(!validate()) {
-        $system_message = $system_message . $error_message;
-        if(isset($_SESSION['egps_username'])) IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-        else IPP_LOG($system_message,"no session",'ERROR');
-        require(IPP_PATH . 'index.php');
-        exit();
-    }
-}
+
 if(isset($system_message)) $system_message = $system_message; else $system_message="";
 if(isset($LOGIN_NAME)) $LOGIN_NAME = $LOGIN_NAME; else $LOGIN_NAME="";
 
