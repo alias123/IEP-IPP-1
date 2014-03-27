@@ -32,7 +32,6 @@ function confirm_valid_session() {
 			return False;
 		}
 	}
-return True
 }	
 	
 	
