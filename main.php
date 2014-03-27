@@ -136,17 +136,17 @@ header('Pragma: no-cache'); //don't cache this page!
         <div class="col-md-4">
           <h2>Schools</h2>
           <p>Manage schools.</p>
-          <p><a class="btn btn-default" href="" role="button">View Schools &raquo;</a></p>
+          <p><a class="btn btn-default" href="school_info.php" role="button">View Schools &raquo;</a></p>
         </div>
         <div class="col-md-4">
           <h2>View Logs</h2>
           <p>Choose from list of users.</p>
-          <p><a class="btn btn-default" href="./user_audit.php" role="button">View Logs &raquo;</a></p>
+          <p><a class="btn btn-default" href="log.php.php" role="button">View Logs &raquo;</a></p>
        </div>
         <div class="col-md-4">
           <h2>Manage Users</h2>
           <p>Manage MyIEP accounts.</p>
-          <p><a class="btn btn-default" href="./superuser_manage_coding.php" role="button">Access Accounts &raquo;</a></p>
+          <p><a class="btn btn-default" href="./superuser_manage_users.php" role="button">Access Accounts &raquo;</a></p>
         </div>
       </div>     
       <hr>
