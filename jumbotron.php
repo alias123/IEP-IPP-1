@@ -31,6 +31,7 @@ require_once(IPP_PATH . 'include/navbar.php');
 
 header('Pragma: no-cache'); //don't cache this page!
 
+/*
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
     if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
         $system_message = $system_message . $error_message;
@@ -57,6 +58,7 @@ if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL
     require(IPP_PATH . 'security_error.php');
     exit();
 }
+*/
 
 //create the list of menu options based upon this users
 //access rights.
