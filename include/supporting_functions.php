@@ -12,6 +12,31 @@
  *
  */
 
+function no_cash() {
+	echo header('Pragma: no-cache');
+}	
+
+function confirm_valid_session() {
+	if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
+		if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
+			$system_message = $system_message . $error_message;
+			IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+			require(IPP_PATH . 'index.php');
+			return False;
+		}
+	} else {
+		if(!validate()) {
+			$system_message = $system_message . $error_message;
+			IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+			require(IPP_PATH . 'index.php');
+			return False;
+		}
+	}
+return True
+}	
+	
+	
+	
 //summary: Just a spell check function...dev differentiates from user functions
 
 if(!defined('IPP_PATH')) define('IPP_PATH','../');
