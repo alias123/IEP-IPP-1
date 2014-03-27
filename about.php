@@ -12,6 +12,15 @@
  * @author		M. Nielson
  */
 
+/** @mainpage
+ * MyIEP Documentation
+ * @todo
+ * 1. Deploy new functions
+ * 2. Move js (Javascript files) into JS folder and change all references
+ * 3. Move css out of style folder and into css folder (standard)
+ */
+
+
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;    //anybody
 

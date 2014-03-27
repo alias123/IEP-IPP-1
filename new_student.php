@@ -1,7 +1,7 @@
 <?php
 
-/**
- * @BRIEF 	add student
+/** @file
+ * @brief 	add student to database
  * 
  */
  
@@ -10,19 +10,9 @@
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 50;
 
-/**
- * new_student.php -- add student
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: June 13, 2005
- * By: M. Nielsen
- * Modified: January 11,2007
- *
- */
 
-/*   INPUTS: $_GET['add_username'] must be a username...
+
+/** @remark   INPUTS: $_GET['add_username'] must be a username...
  *
  */
 
@@ -32,7 +22,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 50;
 
 $system_message = "";
 
-define('IPP_PATH','./');
+define('IPP_PATH','./'); //replace with function
 
 /* eGPS required files. */
 require_once(IPP_PATH . 'etc/init.php');
@@ -41,6 +31,12 @@ require_once(IPP_PATH . 'include/auth.php');
 require_once(IPP_PATH . 'include/log.php');
 require_once(IPP_PATH . 'include/user_functions.php');
 
+/** @remark
+ * Why is caching prevention commented out?
+ * 
+ * @todo
+ * 1. justify or uncomment
+ */
 //header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {

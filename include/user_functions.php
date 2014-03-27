@@ -1,19 +1,22 @@
 <?php
 
-/**
- * user_functions.php -- eGPS IPP user functions
- *
- * Copyright (c) 2005 Grasslands Regional Division #6
- * All rights reserved
- *
- * Created: June 06, 2005
- * By: M. Nielsen
- * Modified:
- * todo: add copyright
+/** @file
+ *  @brief		Functions called on in other scripts to provide user functionality
+ *  @todo
+ *  1. Document functions thoroughly
+ *  2. Incorporate functions from "include/productive_functions.php"
+ *  
  */
 
 if(!defined('IPP_PATH')) define('IPP_PATH','../');
 
+/** @fn		 	getNumUsers()
+ *  @brief		Gets total number of users from the support_member table
+ *  @detail		Errors are trapped, logged
+ *  @return		count of fetched rows, I think
+ *  @todo		Locate where this is called from. I don't think it's used throughout the code. There may be a better place for it.	
+ * 
+ */
 function getNumUsers() {
     //returns the number of users in support_member tables
     //or NULL on fail.
@@ -34,6 +37,13 @@ function getNumUsers() {
     return mysql_num_rows($result);
 }
 
+/** @fn 		getUserSchoolCode($egps_username="")
+ *  @brief		get school code of selected user (by egps_username)
+ *  @detail		traps and logs errors
+ *  @remark		changed addslashes to mysql_real_escape_string - but why was addslashes() there? 
+ * @param 		$egps_username
+ * @return		row with school code 
+ */
 function getUserSchoolCode($egps_username="") {
    global $error_message;
 
@@ -42,7 +52,7 @@ function getUserSchoolCode($egps_username="") {
         return NULL;
     }
 
-    $query = "SELECT school_code FROM support_member WHERE egps_username='" . addslashes($egps_username) . "'"; //todo: find alternative escape mechanism for output; standardize
+    $query = "SELECT school_code FROM support_member WHERE egps_username='" . mysql_real_escape_string($egps_username) . "'"; //todo: find alternative escape mechanism for output; standardize
     $result = mysql_query($query);
     if(!$result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '$query'<BR>";
@@ -52,6 +62,12 @@ function getUserSchoolCode($egps_username="") {
     return $user_row['school_code'];
 }
 
+/** @fn isLocalAdministrator($egps_username="")
+ * 
+ * Determines if a "member" is a local (school?) administrator
+ * @param $egps_username
+ * @return	returns boolean, assuming no errors
+ */
 function isLocalAdministrator($egps_username="") {
    global $error_message;
 
@@ -70,7 +86,11 @@ function isLocalAdministrator($egps_username="") {
     if($user_row['is_local_ipp_administrator'] == 'Y') return TRUE;
     return FALSE;
 }
-
+/** @fn			getNumUsersOnline()
+ *  @brief		gets count of logged-in support_members
+ *  @detail		Returns NULL on failure
+ *  @todo		See where this function is called; perhaps move to a better place
+ */
 function getNumUsersOnline() {
     //returns the number of users in support_member tables
     //or NULL on fail.
@@ -90,6 +110,12 @@ function getNumUsersOnline() {
 
     return mysql_num_rows($result);
 }
+
+/** @fn				username_to_common($username="-unknown-")
+ *  @breif			change first.last to common name with title case
+ *  @detail			No error catching. Starts with unknown username. Then returns proper name string represented by $username
+ *  @todo			Dev comments suggest this function could be better. Why is it needed (check SQL); is it used? Can it be improved?
+ */
 
 //get change firstname.lastname to Firsteame Lastname
   function username_to_common($username="-unknown-") {
