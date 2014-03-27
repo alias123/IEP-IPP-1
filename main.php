@@ -84,7 +84,7 @@ header('Pragma: no-cache'); //don't cache this page!
         <h1>Welcome to MyIEP</h1>
         <p>MyIEP is a Web-based IEP Management system under active development by students at <a href="http://chelseaschool">Chelsea School in Hyattsville, MD.</a></p>
         <p>&copy; 2014 Chelsea School - <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPLv2</a>.</p>
-        <p><a class="btn btn-primary btn-lg" href="about.php" role="button">Learn more &raquo;</a></p>
+        <p><a class="btn btn-primary btn-lg" href="about.php" role="button">Learn More &raquo;</a></p>
         
         <?php if ($system_message) { echo "<p>" . $system_message . "</p>";} ?>
       </div>
@@ -93,7 +93,7 @@ header('Pragma: no-cache'); //don't cache this page!
 
 
 
-
+<p>Access to the following sections is restricted.</p>
 
     <div class="container">
       <!-- Example row of columns -->
