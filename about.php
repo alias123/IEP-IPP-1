@@ -77,7 +77,7 @@ header('Pragma: no-cache'); //don't cache this page!
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">MyIEP</a>
+          <a class="navbar-brand" href="main.php">MyIEP</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
