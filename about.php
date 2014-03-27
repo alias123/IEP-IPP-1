@@ -118,7 +118,7 @@ header('Pragma: no-cache'); //don't cache this page!
     <div class="jumbotron">
         <h1>About MyIEP</h1>
         <p>MyIEP (Version <?php echo $IPP_CURRENT_VERSION; ?>) was originally developed as IEP-IPP through the coordinated efforts of many people at Grasslands Public Schools.</p>
-        <p>MyIEP is underdevelopment by students, faculty, and administrators at <h ref="http://chelseaschool.edu">Chelsea School</a> in Hyattsville, MD.</p>
+        <p>MyIEP is under continuing development by students, faculty, and administrators at <h ref="http://chelseaschool.edu">Chelsea School</a> in Hyattsville, MD.</p>
         <p>
           <a class="btn btn-lg btn-primary" href="main.php" role="button">Return to MyIEP &raquo;</a>
         </p>
