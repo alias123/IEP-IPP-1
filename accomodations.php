@@ -73,7 +73,10 @@ $student_id=""; //cleared for security
 	if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];  //in case of get
 	if(isset($_POST['student_id'])) $student_id = $_POST['student_id']; //in case of post
 
-check_student_id_set($student_id);
+   if($student_id=="") {
+   //we shouldn't be here without a student id.
+		echo "You've entered this page without supplying a valid student id. Fatal, quitting";
+		exit();
 
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
