@@ -30,7 +30,7 @@ if(isset($system_message)) $system_message = $system_message; else $system_messa
 
 /**@var define('IPP_PATH','./')
  * @brief		Path for IPP required files (constant).
- * @todo
+ * @todo		make a safe function; this is on every page
  * 
  * @author		M. Nielson
  */
@@ -44,7 +44,7 @@ require_once(IPP_PATH . 'include/log.php');
 require_once(IPP_PATH . 'include/user_functions.php');
 require_once(IPP_PATH . 'include/navbar.php');
 require_once(IPP_PATH . 'include/supporting_functions.php');
-//require_once("Numbers/Roman.php"); //require pear roman numerals class
+
 
 header('Pragma: no-cache'); //don't cache this page!
 

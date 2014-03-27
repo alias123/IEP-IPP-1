@@ -82,9 +82,9 @@ if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NUL
 $our_permission = getStudentPermission($student_id);
 if($our_permission == "WRITE" || $our_permission == "ASSIGN" || $our_permission == "ALL") {
     //we have write permission.
-    $have_write_permission = true;
+    $have_write_permission = True;
 }  else {
-    $have_write_permission = false;
+    $have_write_permission = False;
 }
 
 //************** validated past here SESSION ACTIVE WRITE PERMISSION CONFIRMED****************
@@ -185,7 +185,7 @@ if(isset($_POST['add_performance_testing']) && $have_write_permission) {
      $insert_result = mysql_query($insert_query);
      if(!$insert_result) {
         $error_message = "Database query failed (" . __FILE__ . ":" . __LINE__ . "): " . mysql_error() . "<BR>Query: '" . substr($coord_query,0,40) . "[truncated]'<BR>";
-        $system_message= $system_message . $error_message;
+        $system_message = $system_message . $error_message;
         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
      } else {
        //clear the fields...
@@ -228,7 +228,7 @@ if(!$performance_result) {
 }
 
 ?> 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML>
 <HTML>
 <HEAD>
     <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
