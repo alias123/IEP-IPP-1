@@ -69,7 +69,9 @@ confirm_valid_session();
 
 //************* SESSION active past here **************************
 
-set_student_id();
+$student_id=""; //cleared for security
+	if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];  //in case of get
+	if(isset($_POST['student_id'])) $student_id = $_POST['student_id']; //in case of post
 
 check_student_id_set($student_id);
 
