@@ -69,9 +69,9 @@ confirm_valid_session();
 
 //************* SESSION active past here **************************
 
-set_student_id()
+set_student_id();
 
-check_student_id_set($student_id)
+check_student_id_set($student_id);
 
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
