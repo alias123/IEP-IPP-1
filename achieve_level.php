@@ -42,21 +42,8 @@ require_once(IPP_PATH . 'include/supporting_functions.php');
 
 header('Pragma: no-cache'); //don't cache this page!
 
-if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
-    if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
-        $system_message = $system_message . $error_message;
-        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-        require(IPP_PATH . 'index.php');
-        exit();
-    }
-} else {
-    if(!validate()) {
-        $system_message = $system_message . $error_message;
-        IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-        require(IPP_PATH . 'index.php');
-        exit();
-    }
-}
+confirm_valid_session();
+
 //************* SESSION active past here **************************
 
 $student_id="";
