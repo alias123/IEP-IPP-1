@@ -1,38 +1,4 @@
-<?php
 
-/**@file
- * @brief 		main menu (bootstrap Jumbotron)
- * @details		main menu with buttons dynamically created
- */
- 
- 
-//the authorization level for this page!
-//$MINIMUM_AUTHORIZATION_LEVEL = 100;
-
-//check if we are running install wizard
-if(!is_file(IPP_PATH . "etc/init.php")){
-	require_once(IPP_PATH . 'install/index.php');
-	exit();
-	
-
-
-if(isset($system_message)) $system_message = $system_message;
-else $system_message = "";
-
-define('IPP_PATH','./');
-
-/* eGPS required files. */
-require_once(IPP_PATH . 'etc/init.php');
-require_once(IPP_PATH . 'include/db.php');
-require_once(IPP_PATH . 'include/auth.php');
-if ((int)phpversion() < 5) { require_once(IPP_PATH . 'include/fileutils.php'); } //only for pre v5
-require_once(IPP_PATH . 'include/log.php');
-require_once(IPP_PATH . 'include/navbar.php');
-
-header('Pragma: no-cache'); //don't cache this page!
-
-
-?> 
 
 
 
