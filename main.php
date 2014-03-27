@@ -93,7 +93,7 @@ header('Pragma: no-cache'); //don't cache this page!
 
 
 
-<p>Access to the following sections is restricted.</p>
+<p><center>Access to the following sections is restricted.</center></p>
 
     <div class="container">
       <!-- Example row of columns -->
