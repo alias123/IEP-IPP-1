@@ -9,6 +9,12 @@
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;
 
+//check if we are running install wizard
+if(!is_file(IPP_PATH . "etc/init.php")){
+	require_once(IPP_PATH . 'install/index.php');
+	exit();
+	
+
 
 if(isset($system_message)) $system_message = $system_message;
 else $system_message = "";
@@ -54,13 +60,15 @@ if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL
 
 //create the list of menu options based upon this users
 //access rights.
-$services = get_services($permission_level);
-if(!$services) {
-    //throw an error
-    $system_message = $system_message . $error_message;
-    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-}
 
+/** Not currently in use
+* $services = get_services($permission_level);
+* if(!$services) {
+*     //throw an error
+*     $system_message = $system_message . $error_message;
+*     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+* }
+*/
 ?> 
 
 
@@ -107,17 +115,17 @@ if(!$services) {
           </button>
           <a class="navbar-brand" href="#">MyIEP</a>
         </div>
-        <!--<div class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right" role="form">
+        <div class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form" nctype="multipart/form-data" action="<?php echo IPP_PATH . './jumbotron.php'; ?>" method="post">
             <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
+              <input type="text" placeholder="User Name" class="form-control" value="<?php echo $LOGIN_NAME;?>">
             </div>
             <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
+              <input type="password" placeholder="Password" class="form-control" name="PASSWORD" value="">
             </div>
             <button type="submit" class="btn btn-success">Sign in</button>
           </form>
-        </div><!--/.navbar-collapse --> -->
+        </div><!--/.navbar-collapse -->
       </div>
     </div>
 
