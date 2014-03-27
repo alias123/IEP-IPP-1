@@ -40,7 +40,7 @@ require_once(IPP_PATH . 'include/user_functions.php');
 require_once(IPP_PATH . 'include/navbar.php');
 require_once(IPP_PATH . 'include/supporting_functions.php');
 
-header('Pragma: no-cache'); //don't cache this page!
+no_cash(); //don't cache this page!
 
 confirm_valid_session();
 

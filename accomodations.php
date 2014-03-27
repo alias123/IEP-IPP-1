@@ -69,15 +69,9 @@ confirm_valid_session();
 
 //************* SESSION active past here **************************
 
-$student_id="";
-if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];
-if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
+set_student_id()
 
-if($student_id=="") {
-   //we shouldn't be here without a student id.
-   echo "You've entered this page without supplying a valid student id. Fatal, quitting";
-   exit();
-}
+check_student_id_set($student_id)
 
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
