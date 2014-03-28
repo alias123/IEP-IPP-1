@@ -13,11 +13,12 @@
  */
 
 /** @mainpage
- * MyIEP Documentation
+ * MyIEP: Web-Based IEP Management by students at <a href="http://chelseaschool.edu">Chelsea School</a>
  * @todo
  * 1. Deploy new functions
  * 2. Move js (Javascript files) into JS folder and change all references
  * 3. Move css out of style folder and into css folder (standard)
+ * 4. Implement HTML5 spelling
  */
 
 
