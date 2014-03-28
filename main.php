@@ -1,5 +1,4 @@
 <?php
-
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;
 
@@ -7,6 +6,18 @@ if(isset($system_message)) $system_message = $system_message;
 else $system_message = "";
 
 define('IPP_PATH','./');
+
+//successful validation will start session; unsuccessful will log errors
+//validate($szLogin=$_POST['LOGIN_NAME'],$szPassword=$_POST['PASSWORD']);
+	
+
+
+
+
+
+
+
+
 
 /* eGPS required files. */
 require_once(IPP_PATH . 'etc/init.php');
@@ -35,6 +46,17 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
         exit();
     }
 }
+//************** validated past here SESSION ACTIVE****************
+$permission_level=getPermissionLevel($_SESSION['egps_username']);
+//check permission levels
+if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
+    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
+    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
+    require(IPP_PATH . 'security_error.php');
+    exit();
+}
+
+
 ?>
 
 

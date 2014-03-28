@@ -16,7 +16,7 @@
  * 2. fix html tag problem (extra rectangle appears on browser rendering
  */
 
-define('IPP_PATH','./');
+//define('IPP_PATH','./');
 
 
 
