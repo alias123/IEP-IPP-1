@@ -28,7 +28,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100;
 
 if(isset($system_message)) $system_message = $system_message; else $system_message = "";
 
-/**@var define('IPP_PATH','./')
+/**@constant define('IPP_PATH','./')
  * @brief		Path for IPP required files (constant).
  * @todo		make a safe function; this is on every page
  * 
@@ -127,6 +127,13 @@ if(isset($_GET['next']) && $have_write_permission) {
      header("Location: ./add_goal_1.php?goal_area=" . $_GET['goal_area'] . "&student_id=" . $student_id);
   //}
 }
+/*For later
+ * $host  = $_SERVER['HTTP_HOST'];
+ * $uri  = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+ * $extra = 'mypage.php';
+ * header("Location: http://$host$uri/$extra");
+ * exit;
+ */
 
 if(isset($_GET['setUncompleted']) && $have_write_permission) {
    $update_query = "UPDATE long_term_goal SET is_complete='N' WHERE goal_id=" . mysql_real_escape_string($_GET['setUncompleted']);
