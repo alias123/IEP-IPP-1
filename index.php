@@ -33,10 +33,10 @@ if(!is_file(IPP_PATH . "etc/init.php")){
 /* eGPS required files. */
 require_once(IPP_PATH . "etc/init.php");
 require_once(IPP_PATH . 'include/auth.php');
-require_once(IPP_PATH . 'etc/init.php');
 include_once(IPP_PATH . 'include/db.php');
 
 header('Pragma: no-cache'); //don't cache this page!
+
 
 if(isset($system_message)) $system_message = $system_message; else $system_message="";
 if(isset($LOGIN_NAME)) $LOGIN_NAME = $LOGIN_NAME; else $LOGIN_NAME="";
@@ -47,20 +47,16 @@ if(isset($LOGIN_NAME)) $LOGIN_NAME = $LOGIN_NAME; else $LOGIN_NAME="";
 <HEAD>
     <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
     <TITLE><?php echo $page_title; ?></TITLE>
-    <style type="text/css" media="screen">
-        <!--
-            @import "<?php echo IPP_PATH;?>layout/greenborders.css";
-        -->
-    </style>
+    
 
 </HEAD>
     <BODY>
         <table class="shadow" border="0" cellspacing="0" cellpadding="0" align="center">  
-        <tr>
+        <!--<tr>
           <td class="shadow-topLeft"></td>
             <td class="shadow-top"></td>
             <td class="shadow-topRight"></td>
-        </tr>
+        </tr>-->
         <tr>
             <td class="shadow-left"></td>
             <td class="shadow-center" valign="top">

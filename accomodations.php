@@ -15,7 +15,7 @@
  */
  
  
-/** @var
+/** @var		$MINIMUM_AUTHORIZATION_LEVEL
  *  @brief		the authorization level for this page. Integer.
  *  @author	M. Nielson
  *  @todo
@@ -30,7 +30,7 @@ $MINIMUM_AUTHORIZATION_LEVEL = 100; //everybody
  *
  */
 
-/** @var
+/** @var		$system_message
  *  @brief		Makes sure the value is cleared.
  *  @details	The purpose of this variable is unclear. But it's the only one that is secured on most pages.
  *  @todo		call is a function...perhaps a single page init function
@@ -42,7 +42,6 @@ $system_message = "";
  *  @brief		constant - relative path to IEP-IPP directory
  *  @detail		
  * 	Provides most pages the path to IEP-IPP/ wherein all project code can be found, including  and include.
- * 	
  * 	@author		M. Nielson
  * 	@todo		
  * 	1. Move contents of  to parent directory
@@ -66,35 +65,34 @@ require_once(IPP_PATH . 'include/supporting_functions.php');
 header('Pragma: no-cache'); //don't cache this page!
 
 if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
-    if(!validate( $_POST['LOGIN_NAME'] ,  $_POST['PASSWORD'] )) {
+    if(!validate( $_POST['LOGIN_NAME'] , $_POST['PASSWORD'] )) {
         $system_message = $system_message . $error_message;
         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-        require(IPP_PATH . 'index.php');
+        require(IPP_PATH . 'login.php');
         exit();
     }
 } else {
-    if(!validate()) {
+    if (!validate()) {
         $system_message = $system_message . $error_message;
         IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-        require(IPP_PATH . 'index.php');
+        require(IPP_PATH . 'login.php');
         exit();
     }
 }
 //************* SESSION active past here **************************
 
-$student_id="";
-if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];
-if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
+$student_id=""; //cleared for security
+	if (isset($_GET['student_id'])) $student_id= $_GET['student_id'];  //in case of get
+	if (isset($_POST['student_id'])) $student_id = $_POST['student_id']; //in case of post
 
-if($student_id=="") {
+   if ($student_id=="") {
    //we shouldn't be here without a student id.
-   echo "You've entered this page without supplying a valid student id. Fatal, quitting";
-   exit();
+		echo "You've entered this page without supplying a valid student id. Fatal, quitting";
+		exit();
 }
-
 //check permission levels
 $permission_level = getPermissionLevel($_SESSION['egps_username']);
-if( $permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
+if ($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
     $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
     IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
     require(IPP_PATH . 'security_error.php');
@@ -133,6 +131,7 @@ if(isset($_GET['add_accomodation']) && $have_write_permission) {
    //        $check_row = mysql_fetch_array($check_result);
    //        $system_message = $system_message . "That is already a program area of this student<BR>";
    //    } else {
+           
            $add_query = "INSERT INTO accomodation (student_id,accomodation,start_date,end_date,subject) VALUES (" . mysql_real_escape_string($student_id) . ",'" . mysql_real_escape_string($_GET['accomodation']) . "',NOW(),NULL,'" . mysql_real_escape_string($_GET['subject']) . "')";
            $add_result = mysql_query($add_query);
            if(!$add_result) {

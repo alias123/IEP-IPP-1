@@ -1,17 +1,7 @@
 <?php
 
-/**@file
- * @brief 	main menu
- * 
- */
- 
- 
 //the authorization level for this page!
 $MINIMUM_AUTHORIZATION_LEVEL = 100;
-
-/**
- * Path for required files.
- */
 
 if(isset($system_message)) $system_message = $system_message;
 else $system_message = "";
@@ -45,97 +35,172 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
         exit();
     }
 }
-//************** validated past here SESSION ACTIVE****************
-$permission_level=getPermissionLevel($_SESSION['egps_username']);
-//check permission levels
-if($permission_level > $MINIMUM_AUTHORIZATION_LEVEL || $permission_level == NULL) {
-    $system_message = $system_message . "You do not have permission to view this page (IP: " . $_SERVER['REMOTE_ADDR'] . ")";
-    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-    require(IPP_PATH . 'security_error.php');
-    exit();
-}
+?>
 
-//create the list of menu options based upon this users
-//access rights.
-$services = get_services($permission_level);
-if(!$services) {
-    //throw an error
-    $system_message = $system_message . $error_message;
-    IPP_LOG($system_message,$_SESSION['egps_username'],'ERROR');
-}
 
-?> 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-    <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">
-    <TITLE><?php echo $page_title; ?></TITLE>
-    <style type="text/css" media="screen">
-        <!--
-            @import "<?php echo IPP_PATH;?>layout/greenborders.css";
-        -->
-    </style>
-</HEAD>
-    <BODY>
-        <table class="shadow" border="0" cellspacing="0" cellpadding="0" align="center">  
-        <tr>
-          <td class="shadow-topLeft"></td>
-            <td class="shadow-top"></td>
-            <td class="shadow-topRight"></td>
-        </tr>
-        <tr>
-            <td class="shadow-left"></td>
-            <td class="shadow-center" valign="top">
-                <table class="frame" width=620px align=center border="0">
-                    <tr align="Center">
-                    <td><center><img src="<?php echo $page_logo_path; ?>"></center></td>
-                    </tr>
-                    <tr><td>
-                    <center><?php navbar("main.php"); ?></center>
-                    </td></tr>
-                    <tr>
-                        <td valign="top">
-                        <div id="main">
-                        <?php if ($system_message) { echo "<center><table width=\"80%\"><tr><td><p class=\"message\">" . $system_message . "</p></td></tr></table></center>";} ?>
 
-                        <center><table><tr><td><center><p class="header">- Home -</p></center></td></tr></table></center>
-                        <?php
-                            $index = count($services);
-                            //display list of menu options
-                            $count=1;
-                            echo "<center><table border=\"0\"><tr>";
-                                while($index > 0) {
-                                    if($count % 4 == 0) { echo "</tr><tr>"; $count=1; }
-                                    $service = $services[$index-1];
-                                    echo "<td><center><a href=\"" . $service->getLocation() . "\"><img src=\" " . IPP_PATH  . "images/mainbutton.php?title=" . $service->getTitle() . "\" border=0></a></center></td>\n";
-                                    $index--;
-                                    $count++;
-                                }
-                                while($count %4 != 0) {
-                                   echo "<td>&nbsp;</td>";
-                                   $count++;
-                                }
-                                echo "</tr></table></center>\n";
-                            //end display menu options.
-                        ?>
-                        </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td class="shadow-right"></td>   
-        </tr>
-        <tr>
-            <td class="shadow-left">&nbsp;</td>
-            <td class="shadow-center"><table border="0" width="100%"><tr><td valign="bottom" align="center">Logged in as: <?php echo $_SESSION['egps_username'];?></td></tr></table><table border="0" width="100%"><tr><td align="right"></td></tr></table></td>
-            <td class="shadow-right">&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="shadow-bottomLeft"></td>
-            <td class="shadow-bottom"></td>
-            <td class="shadow-bottomRight"></td>
-        </tr>
-        </table> 
-        <center></center>
-    </BODY>
-</HTML>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Rik Goldman" >
+    <link rel="shortcut icon" href="./assets/ico/favicon.ico">
+
+    <title>MyIEP</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./jumbotron.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">MyIEP</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="about.php">About</a></li>
+             
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Navigation <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="./manage_student.php">Students</a></li>
+                <li class="divider"></li>
+                <li><a href="change_ipp_password.php">Reset Password</a></li>
+                <li><a href="superuser_add_goals.php">Goals Database</a></li>
+                <li><a href="student_archive.php">Archive</a></li>
+                <li><a href="user_audit.php">Audit</a></li>
+                <li><a href="superuser_manage_coding.php">Manage Codes</a></li>
+                <li><a href="superuser_add_goals.php">Goals Database</a></li>
+                <li><a href="school_info.php">Manage Schools</a></li>
+                <li><a href="superuser_view_logs.php">View Logs</a></li>
+              </ul>
+            </li>
+          </ul>
+         </div><!--/.nav-collapse -->
+        <!--<div class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form" nctype="multipart/form-data" action="jumbotron.php" method="post">
+            <div class="form-group">
+              <input type="text" placeholder="User Name" class="form-control" value="<?php echo $LOGIN_NAME;?>">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control" name="PASSWORD" value="">
+            </div>
+            <button type="submit" value="submit" class="btn btn-success">Sign in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Welcome to MyIEP</h1>
+        <p>MyIEP is a Web-based IEP Management system under active development by students at <a href="http://chelseaschool.edu">Chelsea School</a> in Hyattsville, MD.</p>
+        <p>&copy; 2014 Chelsea School - <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPLv2</a>.</p>
+        <p><a class="btn btn-primary btn-lg" href="about.php" role="button">Learn More &raquo;</a></p>
+        
+        <?php if ($system_message) { echo "<p>" . $system_message . "</p>";} ?>
+      </div>
+    </div>
+
+
+
+
+<p><center>Access to the following sections is restricted.</center></p>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Students</h2>
+          <p>List available students; update progress on objectives; create IEP; revise IEP.</p>
+          <p><a class="btn btn-default" href="./manage_student.php" role="button">Access Student Records &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Change Password</h2>
+          <p><em>Important</em>: Go here to <em>change your password</em>, particularly if it's still set to the default password you were assigned.</p>
+          <p><a class="btn btn-default" href="change_ipp_password.php" role="button">Change Password &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Goals Database</h2>
+          <p>Enter goals or objectives into Goals and Objectives bank.</p>
+          <p><a class="btn btn-default" href="./superuser_add_goals.php" role="button">Update Goal Bank &raquo;</a></p>
+        </div>
+      </div>
+<div class="row">
+        <div class="col-md-4">
+          <h2>Archives</h2>
+          <p>Access archived student records.</p>
+          <p><a class="btn btn-default" href="./student_archive.php" role="button">View Archive &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>User Audit</h2>
+          <p>Choose from list of users.</p>
+          <p><a class="btn btn-default" href="./user_audit.php" role="button">Browse Users &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Manage Codes</h2>
+          <p>Manage codes available for use with IEPs.</p>
+          <p><a class="btn btn-default" href="./superuser_manage_coding.php" role="button">Manage Codes &raquo;</a></p>
+        </div>
+      </div>
+      
+ <div class="row">
+        <div class="col-md-4">
+          <h2>Schools</h2>
+          <p>Manage schools.</p>
+          <p><a class="btn btn-default" href="school_info.php" role="button">View Schools &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>View Logs</h2>
+          <p>Access system history..</p>
+          <p><a class="btn btn-default" href="superuser_view_logs.php" role="button">View Logs &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Manage Accounts</h2>
+          <p>Manage MyIEP user accounts.</p>
+          <p><a class="btn btn-default" href="./superuser_manage_users.php" role="button">Access Accounts &raquo;</a></p>
+        </div>
+      </div>     
+      <hr>
+
+      <footer>
+        <p>&copy; Chelsea School 2014</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+  </body>
+</html>
