@@ -67,7 +67,7 @@ if(isset($_POST['LOGIN_NAME']) && isset( $_POST['PASSWORD'] )) {
 
 $student_id="";
 if(isset($_GET['student_id'])) $student_id= $_GET['student_id'];
-if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
+//if(isset($_POST['student_id'])) $student_id = $_POST['student_id'];
 
 if($student_id=="") {
    //we shouldn't be here without a student id.

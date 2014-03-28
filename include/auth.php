@@ -26,6 +26,10 @@
     require_once(IPP_PATH . 'include/db.php');
     require_once(IPP_PATH . 'etc/init.php');
 
+    /** @fn register($szLogin='',$szPassword='')
+     *  @brief login and register session
+     */
+    
     function register($szLogin='',$szPassword='') {
         global $mysql_user_append_to_login,$error_message, $mysql_user_select_login, $mysql_user_select_password, $mysql_user_table, $mysql_user_append_to_login,$IPP_TIMEOUT;
 
